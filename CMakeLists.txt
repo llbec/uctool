@@ -173,6 +173,18 @@ if(NOT PTHREAD_FOUND)
 endif()
 
 #MYSQL
+if(MYSQL)
+  execute_process(COMMAND mysql_config --libs_r OUTPUT_VARIABLE MYSQL_LIB OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND mysql_config --include OUTPUT_VARIABLE MYSQL_INCLUDE OUTPUT_STRIP_TRAILING_WHITESPACE)
+  message("-- MySQL include: ${MYSQL_INCLUDE}")
+  message("-- MySQL library: ${MYSQL_LIB}")
+  if(NOT MYSQL_LIB)
+    message(FATAL_ERROR "MySQL library not found!")
+  endif()
+  if(NOT MYSQL_INCLUDE)
+    message(FATAL_ERROR "MySQL header not found!")
+  endif()
+endif()
 
 message("") # add an empty line
 
@@ -208,4 +220,9 @@ message("") # empty line
 file(GLOB LIB_SOURCES common/*.cc)
 add_library(utcenter STATIC ${LIB_SOURCES})
 
-add_subdirectory(licensetool)
+if(MYSQL)
+  file(GLOB LIB_DBSQL libdbsql/*.cpp)
+  add_library(dbsql STATIC ${LIB_DBSQL})
+
+  add_subdirectory(licensetool)
+endif()
