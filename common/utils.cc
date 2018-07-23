@@ -3,6 +3,7 @@
 #include <boost/program_options/detail/config_file.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <stdio.h>
+#include <iostream>
 
 #include "utils.h"
 
@@ -44,7 +45,7 @@ static bool ToolsInterpretBool(const std::string& strValue)
 {
     if (strValue.empty())
         return true;
-    return (atoi(strValue) != 0);
+    return (atoi(strValue.c_str()) != 0);
 }
 
 /** Turn -noX into -X=0 */
@@ -85,7 +86,7 @@ void LoadConfigFile(map<string, string>& mapSettingsRet,
         // Don't overwrite existing settings so command line settings override ulord.conf
         string strKey = string("-") + it->string_key;
         string strValue = it->value[0];
-        InterpretNegativeSetting(strKey, strValue);
+        ToolsInterpretNegativeSetting(strKey, strValue);
         if (mapSettingsRet.count(strKey) == 0)
             mapSettingsRet[strKey] = strValue;
         mapMultiSettingsRet[strKey].push_back(strValue);
