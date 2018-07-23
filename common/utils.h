@@ -20,8 +20,8 @@ extern std::map<std::string, std::vector<std::string> > mapMultiConfigs;
 
 class Strings {
 public:
-  static string Format(const char * fmt, ...);
-  static void Append(string & dest, const char * fmt, ...);
+  static std::string Format(const char * fmt, ...);
+  static void Append(std::string & dest, const char * fmt, ...);
 };
 
 void SetFilePath(const std::string & filename);
