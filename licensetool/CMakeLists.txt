@@ -24,5 +24,5 @@ file(GLOB LICTOOL_SRC "*.cpp"  "*.cc")
 add_executable(licensetool ${TOOL_SRC} ${TOOL_HEADERS} ${COMMON_SRC} ${COMMON_H})
 target_link_libraries(licensetool ${IMPORTLIB})
 
-message("--   ********* cmdtools end *********")
+message("--   ********* LicenseTool End *********")
 message("") # empty line 
