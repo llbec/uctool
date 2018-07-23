@@ -18,6 +18,12 @@ typedef uint64_t uint64;
 extern std::map<std::string, std::string> mapConfigs;
 extern std::map<std::string, std::vector<std::string> > mapMultiConfigs;
 
+class Strings {
+public:
+  static string Format(const char * fmt, ...);
+  static void Append(string & dest, const char * fmt, ...);
+};
+
 void SetFilePath(const std::string & filename);
 void LoadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
                     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
