@@ -207,3 +207,5 @@ set(THIRD_LIBRARIES ${BITCOIN_LIBRARIES}
 message("") # empty line
 file(GLOB LIB_SOURCES common/*.cc)
 add_library(utcenter STATIC ${LIB_SOURCES})
+
+add_subdirectory(licensetool)
