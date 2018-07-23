@@ -2,7 +2,7 @@
 
 int main(int argc, char const *argv[])
 {
-    SetFilePath("tool.conf");
+    SetFilePath("licensetool.conf");
 	LoadConfigFile(mapConfigs, mapMultiConfigs);
 
     return 0;
