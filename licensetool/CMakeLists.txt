@@ -9,7 +9,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 set(IMPORTLIB
     ${THIRD_LIBRARIES}
-	pthread
+	  pthread
    )
 
 if(NOT APPLE)
@@ -21,8 +21,8 @@ endif()
 
 file(GLOB LICTOOL_HEADERS "*.h" )
 file(GLOB LICTOOL_SRC "*.cpp"  "*.cc")
-add_executable(licensetool ${TOOL_SRC} ${TOOL_HEADERS} ${COMMON_SRC} ${COMMON_H})
-target_link_libraries(licensetool ${IMPORTLIB})
+add_executable(licensetool ${LICTOOL_SRC} ${LICTOOL_HEADERS})
+target_link_libraries(licensetool utcenter ${IMPORTLIB})
 
 message("--   ********* LicenseTool End *********")
 message("") # empty line 
