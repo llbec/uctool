@@ -26,8 +26,7 @@
 
 #ifdef MYSQL_ENABLE
 
-#include <stdint.h>
-#include <stdio.h>
+#include "utils.h"
 
 using std::string;
 using std::vector;
