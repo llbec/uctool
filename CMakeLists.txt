@@ -184,6 +184,8 @@ if(MYSQL)
   if(NOT MYSQL_INCLUDE)
     message(FATAL_ERROR "MySQL header not found!")
   endif()
+
+  add_definitions("-DMYSQL_ENABLE")
 endif()
 
 message("") # add an empty line
@@ -227,8 +229,8 @@ file(GLOB LIB_SOURCES common/*.cc)
 add_library(utcenter STATIC ${LIB_SOURCES})
 
 if(MYSQL)
-  file(GLOB LIB_DBSQL libdbsql/*.cpp)
-  add_library(dbsql STATIC ${LIB_DBSQL})
+  #file(GLOB LIB_DBSQL libdbsql/*.cpp)
+  #add_library(dbsql STATIC ${LIB_DBSQL})
 
   add_subdirectory(licensetool)
 endif()

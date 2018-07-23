@@ -15,6 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifdef MYSQL_ENABLE
+
 #include "MySQLConnection.h"
 
 #include <mysql/mysql.h>
@@ -245,3 +247,5 @@ bool multiInsert(MySQLConnection &db, const string &table,
 
   return true;
 }
+
+#endif // MYSQL_ENABLE

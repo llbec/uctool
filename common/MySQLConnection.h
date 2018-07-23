@@ -23,6 +23,9 @@
  */
 #ifndef MYSQL_CONNECTION_H_
 #define MYSQL_CONNECTION_H_
+
+#ifdef MYSQL_ENABLE
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -129,4 +132,6 @@ public:
 bool multiInsert(MySQLConnection &db, const string &table,
                  const string &fields, const vector<string> &values);
 
-#endif
+#endif // MYSQL_ENABLE
+
+#endif // MYSQL_CONNECTION_H_
