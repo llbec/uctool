@@ -51,7 +51,7 @@ bool ReadAllNodeToNet(sql::Connection * con, std::vector<CMstNodeData>& vecnode 
 void ScanTable(string dbuser, string dbpwd, int nThread)
 {
     vector<CMstNodeData> vecnode;
-    ConnPool* pPool = ConnPool::GetInstance(dbuser, dbpass, nThread);
+    ConnPool* pPool = ConnPool::GetInstance(dbuser, dbpwd, nThread);
     if(pPool != NULL)
     {
         sql::Connection * pConn = pPool->GetConnection();
@@ -71,7 +71,7 @@ int main(int argc, char const *argv[])
     SetFilePath("licensetool.conf");
 	LoadConfigFile(mapConfigs, mapMultiConfigs);
 
-    ScanTable(GetArg("-sqluser", "root"), GetArg("-sqlpwd", "123456"), atoi(GetArg("-sqlthread", "1")));
+    ScanTable(GetArg("-sqluser", "root"), GetArg("-sqlpwd", "123456"), GetArg("-sqlthread", 1));
 
     return 0;
 }
