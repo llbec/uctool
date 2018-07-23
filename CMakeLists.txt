@@ -204,6 +204,7 @@ include_directories(common
                     ${Boost_INCLUDE_DIRS}
                     ${LIBEVENT_INCLUDE_DIR}
                     ${LIBZMQ_INCLUDE_DIR}
+                    ${GLOG_INCLUDE_DIRS}
                     )
 if(MYSQL)
 include_directories(${MYSQL_INCLUDE})
@@ -219,6 +220,7 @@ set(THIRD_LIBRARIES ${BITCOIN_LIBRARIES}
                     ${LIBEVENT_PTHREADS_LIB}
                     ${secp256k1_LIBRARIES}
                     ${PTHREAD_LIBRARIES}
+                    ${GLOG_LIBRARIES}
                     )
 if(MYSQL)
 list(APPEND THIRD_LIBRARIES ${MYSQL_LIB})
