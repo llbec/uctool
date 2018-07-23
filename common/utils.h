@@ -24,6 +24,7 @@ public:
   static void Append(std::string & dest, const char * fmt, ...);
 };
 
+std::string GetLogPath();
 void SetFilePath(const std::string & filename);
 void LoadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
                     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);

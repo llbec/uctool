@@ -23,7 +23,7 @@ boost::filesystem::path GetUtCenterDir()
     // Unix: ~/.utcenters
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "UTCenters";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "utCenters";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -33,7 +33,7 @@ boost::filesystem::path GetUtCenterDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/UTCenters";
+    return pathRet / "Library/Application Support/utCenters";
 #else
     // Unix
     return pathRet / ".utcenters";
@@ -67,12 +67,21 @@ void SetFilePath(const std::string & filename)
     cout << "Info: Using config file " << g_pathConfigFile.string() << endl;
 }
 
+std::string GetLogPath()
+{
+	boost::filesystem::path logpath = GetUtCenterDir();
+	logpath /= "logs";
+	boost::filesystem::create_directories(logpath);
+	return logpath.string();
+}
+
 void LoadConfigFile(map<string, string>& mapSettingsRet,
                     map<string, vector<string> >& mapMultiSettingsRet)
 {
     boost::filesystem::ifstream streamConfig(g_pathConfigFile);
     if (!streamConfig.good()){
         // Create empty ulord.conf if it does not excist
+		boost::filesystem::create_directories(g_pathConfigFile);
         FILE* configFile = fopen(g_pathConfigFile.string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);
