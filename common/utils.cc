@@ -2,6 +2,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/program_options/detail/config_file.hpp>
 #include <boost/program_options/parsers.hpp>
+#include <stdio.h>
 
 #include "utils.h"
 
@@ -36,6 +37,24 @@ boost::filesystem::path GetUtCenterDir()
     return pathRet / ".utcenters";
 #endif
 #endif
+}
+
+/** Interpret string as boolean, for argument parsing */
+static bool ToolsInterpretBool(const std::string& strValue)
+{
+    if (strValue.empty())
+        return true;
+    return (atoi(strValue) != 0);
+}
+
+/** Turn -noX into -X=0 */
+static void ToolsInterpretNegativeSetting(std::string& strKey, std::string& strValue)
+{
+    if (strKey.length()>3 && strKey[0]=='-' && strKey[1]=='n' && strKey[2]=='o')
+    {
+        strKey = "-" + strKey.substr(3);
+        strValue = ToolsInterpretBool(strValue) ? "0" : "1";
+    }
 }
 
 void SetFilePath(const std::string & filename)
