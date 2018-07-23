@@ -203,6 +203,9 @@ include_directories(common
                     ${LIBEVENT_INCLUDE_DIR}
                     ${LIBZMQ_INCLUDE_DIR}
                     )
+if(MYSQL)
+include_directories(${MYSQL_INCLUDE})
+endif()
 set(THIRD_LIBRARIES ${BITCOIN_LIBRARIES}
                     ${OPENSSL_CRYPTO_LIBRARY}
                     ${OPENSSL_SSL_LIBRARY}
@@ -215,6 +218,9 @@ set(THIRD_LIBRARIES ${BITCOIN_LIBRARIES}
                     ${secp256k1_LIBRARIES}
                     ${PTHREAD_LIBRARIES}
                     )
+if(MYSQL)
+list(APPEND THIRD_LIBRARIES ${MYSQL_LIB})
+endif()
 
 message("") # empty line
 file(GLOB LIB_SOURCES common/*.cc)
