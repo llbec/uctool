@@ -22,7 +22,7 @@ void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
     {
         mstnode._txid      = row[6];
         mstnode._voutid    = atoi(row[7]);
-        mstnode._status    = row[10];
+        mstnode._status    = atoi(row[10]);
         mstnode._validflag = atoi(row[11]);
         mstnode._licperiod = atoi(row[12]);
         mstnode._licence   = atoi(row[13]);
@@ -71,7 +71,7 @@ void ThreadCheckDB()
     {
         MilliSleep(ncheckinterval);
 
-        for (nPings = 0; nPings < 3; i++) {
+        for (nPings = 0; nPings < 3; nPings++) {
             if (db.ping())
                 break;
         }
@@ -115,7 +115,7 @@ int main(int argc, char const *argv[])
 
     if(argc > 1)
     {
-        if("test" == argv[1])
+        if("test" == string(argv[1]))
         {
             DBTest();
             return 0;
