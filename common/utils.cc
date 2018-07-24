@@ -10,16 +10,16 @@
 
 using namespace std;
 
-boost::filesystem::path g_pathConfigFile;
-std::map<std::string, std::string> mapConfigs;
-std::map<std::string, std::vector<std::string> > mapMultiConfigs;
+boost::filesystem::path _pathConfigFile;
+//std::map<std::string, std::string> _mapConfigs;
+//std::map<std::string, std::vector<std::string> > _mapMultiConfigs;
 
 boost::filesystem::path GetUtCenterDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\UTCenters
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\UTCenters
-    // Mac: ~/Library/Application Support/UTCenters
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\utCenters
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\utCenters
+    // Mac: ~/Library/Application Support/utCenters
     // Unix: ~/.utcenters
 #ifdef WIN32
     // Windows
@@ -61,10 +61,11 @@ static void ToolsInterpretNegativeSetting(std::string& strKey, std::string& strV
 
 void SetFilePath(const std::string & filename)
 {
+    boost::filesystem::create_directories(GetUtCenterDir());
     boost::filesystem::path pathFile (GetUtCenterDir() / filename);
-    g_pathConfigFile = pathFile.string();
+    _pathConfigFile = pathFile.string();
 
-    cout << "Info: Using config file " << g_pathConfigFile.string() << endl;
+    cout << "Info: Using config file " << _pathConfigFile.string() << endl;
 }
 
 std::string GetLogPath()
@@ -78,11 +79,11 @@ std::string GetLogPath()
 void LoadConfigFile(map<string, string>& mapSettingsRet,
                     map<string, vector<string> >& mapMultiSettingsRet)
 {
-    boost::filesystem::ifstream streamConfig(g_pathConfigFile);
+    boost::filesystem::ifstream streamConfig(_pathConfigFile);
     if (!streamConfig.good()){
         // Create empty ulord.conf if it does not excist
-		boost::filesystem::create_directories(g_pathConfigFile);
-        FILE* configFile = fopen(g_pathConfigFile.string().c_str(), "a");
+		boost::filesystem::create_directories(_pathConfigFile);
+        FILE* configFile = fopen(_pathConfigFile.string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);
         return; // Nothing to read, so just return
@@ -104,39 +105,53 @@ void LoadConfigFile(map<string, string>& mapSettingsRet,
 }
 
 string Strings::Format(const char * fmt, ...) {
-  char tmp[512];
-  string dest;
-  va_list al;
-  va_start(al, fmt);
-  int len = vsnprintf(tmp, 512, fmt, al);
-  va_end(al);
-  if (len>511) {
-    char * destbuff = new char[len+1];
+    char tmp[512];
+    string dest;
+    va_list al;
     va_start(al, fmt);
-    len = vsnprintf(destbuff, len+1, fmt, al);
+    int len = vsnprintf(tmp, 512, fmt, al);
     va_end(al);
-    dest.append(destbuff, len);
-    delete[] destbuff;
-  } else {
-    dest.append(tmp, len);
-  }
-  return dest;
+    if (len>511) {
+        char * destbuff = new char[len+1];
+        va_start(al, fmt);
+        len = vsnprintf(destbuff, len+1, fmt, al);
+        va_end(al);
+        dest.append(destbuff, len);
+        delete[] destbuff;
+    } else {
+        dest.append(tmp, len);
+    }
+    return dest;
 }
 
 void Strings::Append(string & dest, const char * fmt, ...) {
-  char tmp[512];
-  va_list al;
-  va_start(al, fmt);
-  int len = vsnprintf(tmp, 512, fmt, al);
-  va_end(al);
-  if (len>511) {
-    char * destbuff = new char[len+1];
+    char tmp[512];
+    va_list al;
     va_start(al, fmt);
-    len = vsnprintf(destbuff, len+1, fmt, al);
+    int len = vsnprintf(tmp, 512, fmt, al);
     va_end(al);
-    dest.append(destbuff, len);
-    delete[] destbuff;
-  } else {
-    dest.append(tmp, len);
-  }
+    if (len>511) {
+        char * destbuff = new char[len+1];
+        va_start(al, fmt);
+        len = vsnprintf(destbuff, len+1, fmt, al);
+        va_end(al);
+        dest.append(destbuff, len);
+        delete[] destbuff;
+    } else {
+        dest.append(tmp, len);
+    }
+}
+
+void InitLog()
+{
+    // Initialize Google's logging library.	
+    google::InitGoogleLogging(argv[0]);
+    FLAGS_log_dir = GetLogPath();
+    // Log messages at a level >= this flag are automatically sent to
+    // stderr in addition to log files.
+    FLAGS_stderrthreshold = 3;    // 3: FATAL
+    FLAGS_max_log_size    = 100;  // max log file size 100 MB
+    FLAGS_logbuflevel     = -1;   // don't buffer logs
+    FLAGS_stop_logging_if_full_disk = true;
+    return;
 }

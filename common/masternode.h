@@ -111,7 +111,7 @@ public:
 };
 
 /*
-1     `id` BIGINT (20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+1    `id` BIGINT (20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
 2	 `gmt_create` BIGINT (20) NOT NULL COMMENT '创建时间',
 3	 `gmt_modify` BIGINT (20) NOT NULL COMMENT '修改时间',
 4	 `user_id` VARCHAR (32) DEFAULT NULL,
@@ -129,7 +129,8 @@ public:
 16	 `audit_num` INT (3) NOT NULL DEFAULT '0' COMMENT '绑定确认次数',
 17	 `auditor` VARCHAR (32) DEFAULT NULL COMMENT '绑定确认审核人',
 18	 `gmt_audit` BIGINT (20) DEFAULT NULL COMMENT '绑定确认审核时间',
-19	 `ext_info` VARCHAR (255) DEFAULT NULL COMMENT '扩展信息',
+19   `node_period' BIGINT (20) DEFAULT NULL COMMENT '节点有效时间',
+20	 `ext_info` VARCHAR (255) DEFAULT NULL COMMENT '扩展信息',
  */
 class CMstNodeData  
 {  
@@ -142,11 +143,11 @@ private:
         ar & _version;
         ar & _txid;
 		ar & _voutid;
-        ar & _hostname;
-        ar & _hostip;
+        ar & _status;
         ar & _validflag;
 		ar & _licperiod;
 		ar & _licence;
+        ar & _nodeperiod;
     }
       
 public:  
@@ -163,25 +164,23 @@ public:
         _version   = b._version;
         _txid      = b._txid;
 		_voutid    = b._voutid;
-        _hostname  = b._hostname;
-        _hostip    = b._hostip;
+        _status    = b._status;
         _validflag = b._validflag;
 		_licperiod = b._licperiod;
 		_licence   = b._licence;
+        _nodeperiod= b._nodeperiod;
         return * this;
     }
 public:  
     int _version;  
-    //std::string  _masteraddr; // node addr
     std::string  _txid;       //
     unsigned int _voutid;
-    std::string  _hostname;   // 
-    std::string  _hostip;     // 
+    int          _status;
     int          _validflag;  //
     int64_t      _licperiod;  //licence period
     std::string  _licence;    //licence
+    int64_t      _nodeperiod;
     unsigned int _time;       //read db time
-    //std::string  _text;  
 };  
 
 #endif

@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <glog/logging.h>
 
 typedef int8_t int8;
 typedef uint8_t uint8;
@@ -15,8 +16,8 @@ typedef uint32_t uint32;
 typedef int64_t int64;
 typedef uint64_t uint64;
 
-extern std::map<std::string, std::string> mapConfigs;
-extern std::map<std::string, std::vector<std::string> > mapMultiConfigs;
+//extern std::map<std::string, std::string> _mapConfigs;
+//extern std::map<std::string, std::vector<std::string> > _mapMultiConfigs;
 
 class Strings {
 public:
@@ -28,5 +29,6 @@ std::string GetLogPath();
 void SetFilePath(const std::string & filename);
 void LoadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
                     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
+void InitLog();
 
 #endif // UTCENTER_UTILS_H
