@@ -82,7 +82,6 @@ void LoadConfigFile(map<string, string>& mapSettingsRet,
     boost::filesystem::ifstream streamConfig(_pathConfigFile);
     if (!streamConfig.good()){
         // Create empty ulord.conf if it does not excist
-		boost::filesystem::create_directories(_pathConfigFile);
         FILE* configFile = fopen(_pathConfigFile.string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);

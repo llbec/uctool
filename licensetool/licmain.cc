@@ -10,7 +10,7 @@ using namespace std;
 void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
 {
     string sql;
-    sql = Strings::Format("select *from %s", GetArg("-dbtable","udevforums_major_node_bind"));
+    sql = Strings::Format("select *from %s", GetArg("-dbtable","udevforums_major_node_bind").c_str());
     MySQLResult res;
 
     db.query(sql, res);
