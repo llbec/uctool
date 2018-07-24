@@ -20,13 +20,13 @@ void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
 
     while(row != nullptr)
     {
-        mstnode._txid      = row(6);
-        mstnode._voutid    = atoi(row(7));
-        mstnode._status    = row(10);
-        mstnode._validflag = atoi(row(11));
-        mstnode._licperiod = atoi(row(12));
-        mstnode._licence   = atoi(row(13));
-        mstnode._nodeperiod= atoi(row(19));
+        mstnode._txid      = row[6];
+        mstnode._voutid    = atoi(row[7]);
+        mstnode._status    = row[10];
+        mstnode._validflag = atoi(row[11]);
+        mstnode._licperiod = atoi(row[12]);
+        mstnode._licence   = atoi(row[13]);
+        mstnode._nodeperiod= atoi(row[19]);
         vecnode.push_back(mstnode);
         printf("DBReadMNInfo: get masternode <%s:%d>", mstnode._txid.c_str(), mstnode._voutid);
 
@@ -111,7 +111,7 @@ int main(int argc, char const *argv[])
     /*init*/
     SetFilePath("licensetool.conf");
 	LoadConfigFile(mapArgs, mapMultiArgs);
-    InitLog();
+    InitLog(argv);
 
     if(argc > 1)
     {

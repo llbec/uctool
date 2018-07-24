@@ -142,7 +142,7 @@ void Strings::Append(string & dest, const char * fmt, ...) {
     }
 }
 
-void InitLog()
+void InitLog(char const *argv[])
 {
     // Initialize Google's logging library.	
     google::InitGoogleLogging(argv[0]);

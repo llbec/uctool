@@ -29,6 +29,6 @@ std::string GetLogPath();
 void SetFilePath(const std::string & filename);
 void LoadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
                     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
-void InitLog();
+void InitLog(char const *argv[]);
 
 #endif // UTCENTER_UTILS_H
