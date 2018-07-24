@@ -125,12 +125,13 @@ public:
 12	 `validdate` BIGINT (20) DEFAULT '0' COMMENT '签证的有效期 validflag=1有效 必填',  
 13	 `certificate` VARCHAR (255) DEFAULT NULL COMMENT '证书',
 14	 `ut_addr` VARCHAR (255) DEFAULT NULL COMMENT 'Ulord地址',
-15	 `remark` VARCHAR (255) DEFAULT NULL COMMENT '绑定确认失败原因',
-16	 `audit_num` INT (3) NOT NULL DEFAULT '0' COMMENT '绑定确认次数',
-17	 `auditor` VARCHAR (32) DEFAULT NULL COMMENT '绑定确认审核人',
-18	 `gmt_audit` BIGINT (20) DEFAULT NULL COMMENT '绑定确认审核时间',
-19   `node_period' BIGINT (20) DEFAULT NULL COMMENT '节点有效时间',
-20	 `ext_info` VARCHAR (255) DEFAULT NULL COMMENT '扩展信息',
+15   'balance' DECIMAL (20, 5) DEFAULT "0.00000" COMMENT '主节点锁定币的数量',
+16	 `remark` VARCHAR (255) DEFAULT NULL COMMENT '绑定确认失败原因',
+17	 `audit_num` INT (3) NOT NULL DEFAULT '0' COMMENT '绑定确认次数',
+18	 `auditor` VARCHAR (32) DEFAULT NULL COMMENT '绑定确认审核人',
+19	 `gmt_audit` BIGINT (20) DEFAULT NULL COMMENT '绑定确认审核时间',
+20   `node_period' BIGINT (20) DEFAULT NULL COMMENT '节点有效时间',
+21	 `ext_info` VARCHAR (255) DEFAULT NULL COMMENT '扩展信息',
  */
 class CMstNodeData  
 {  

@@ -20,13 +20,19 @@ void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
 
     while(row != nullptr)
     {
-        mstnode._txid      = row[6];
-        mstnode._voutid    = atoi(row[7]);
-        mstnode._status    = atoi(row[10]);
-        mstnode._validflag = atoi(row[11]);
-        mstnode._licperiod = atoi(row[12]);
-        mstnode._licence   = row[13];
-        mstnode._nodeperiod= atoi(row[19]);
+        if(row[5] == NULL || row[6] == NULL)
+            continue;
+        mstnode._txid       = row[5];
+        mstnode._voutid     = atoi(row[6]);
+        mstnode._status     = atoi(row[9]);
+        mstnode._validflag  = atoi(row[10]);
+        mstnode._licperiod  = atoi(row[11]);
+        if(row[12] != NULL)
+            mstnode._licence    = row[12];
+        if(row[19] != NULL)
+            mstnode._nodeperiod = atoi(row[19]);
+        else
+            mstnode._nodeperiod = 0;
         vecnode.push_back(mstnode);
         printf("DBReadMNInfo: get masternode <%s:%d>", mstnode._txid.c_str(), mstnode._voutid);
 
