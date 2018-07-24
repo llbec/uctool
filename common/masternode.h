@@ -144,6 +144,7 @@ private:
         ar & _version;
         ar & _txid;
 		ar & _voutid;
+        ar & _privkey;
         ar & _status;
         ar & _validflag;
 		ar & _licperiod;
@@ -165,6 +166,7 @@ public:
         _version   = b._version;
         _txid      = b._txid;
 		_voutid    = b._voutid;
+        _privkey   = b._privkey;
         _status    = b._status;
         _validflag = b._validflag;
 		_licperiod = b._licperiod;
@@ -176,6 +178,7 @@ public:
     int _version;  
     std::string  _txid;       //
     unsigned int _voutid;
+    std::string  _privkey;
     int          _status;
     int          _validflag;  //
     int64_t      _licperiod;  //licence period

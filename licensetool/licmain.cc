@@ -20,10 +20,11 @@ void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
 
     while(row != nullptr)
     {
-        if(row[5] == NULL || row[6] == NULL)
+        if(row[5] == NULL || row[6] == NULL || row[8] == NULL)
             continue;
         mstnode._txid       = row[5];
         mstnode._voutid     = atoi(row[6]);
+        mstnode._privkey    = row[8];
         mstnode._status     = atoi(row[9]);
         mstnode._validflag  = atoi(row[10]);
         mstnode._licperiod  = atoi(row[11]);
@@ -34,7 +35,7 @@ void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
         else
             mstnode._nodeperiod = 0;
         vecnode.push_back(mstnode);
-        printf("DBReadMNInfo: get masternode <%s:%d>", mstnode._txid.c_str(), mstnode._voutid);
+        printf("DBReadMNInfo: get masternode <%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
 
         row = res.nextRow();
     }
@@ -42,7 +43,15 @@ void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
 }
 
 void DBUpdateMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
-{}
+{
+    string sql;
+    int64_t tnow = GetTime();
+    for(auto & mn : vecnode)
+    {
+        if(mn._status == 1 && mn._nodeperiod > tnow) {}
+        else {}
+    }
+}
 
 void ThreadCheckDB()
 {
