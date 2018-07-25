@@ -1,5 +1,5 @@
-#ifndef MYSQL_CONNECTION_H_
-#define MYSQL_CONNECTION_H_
+#ifndef UTCENTER_MYSQL_CONNECTION_H_
+#define UTCENTER_MYSQL_CONNECTION_H_
 
 #ifdef MYSQL_ENABLE
 
@@ -110,4 +110,4 @@ bool multiInsert(MySQLConnection &db, const string &table,
 
 #endif // MYSQL_ENABLE
 
-#endif // MYSQL_CONNECTION_H_
+#endif // UTCENTER_MYSQL_CONNECTION_H_

@@ -1,125 +1,12 @@
 #ifdef MYSQL_ENABLE
 
 #include "utils.h"
-#include "MySQLConnection.h"
+#include "dbwatcher.h"
+
 #include "util.h"
-#include "masternode.h"
+#include "privsend.h"
 
 using namespace std;
-
-void DBReadMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
-{
-    string sql;
-    sql = Strings::Format("select *from %s", GetArg("-dbtable","udevforums_major_node_bind").c_str());
-    MySQLResult res;
-
-    db.query(sql, res);
-    printf("DBReadMNInfo: read db %ld rows\n", res.numRows());
-    char **row = res.nextRow();
-    CMstNodeData mstnode;
-
-    while(row != nullptr)
-    {
-        if(row[5] == NULL || row[6] == NULL || row[8] == NULL)
-            continue;
-        mstnode._txid       = row[5];
-        mstnode._voutid     = atoi(row[6]);
-        mstnode._privkey    = row[8];
-        mstnode._status     = atoi(row[9]);
-        mstnode._validflag  = atoi(row[10]);
-        mstnode._licperiod  = atoi(row[11]);
-        if(row[12] != NULL)
-            mstnode._licence    = row[12];
-        if(row[19] != NULL)
-            mstnode._nodeperiod = atoi(row[19]);
-        else
-            mstnode._nodeperiod = 0;
-        vecnode.push_back(mstnode);
-        printf("DBReadMNInfo: get masternode <%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
-
-        row = res.nextRow();
-    }
-    return;
-}
-
-void DBUpdateMNInfo(MySQLConnection & db, std::vector<CMstNodeData>& vecnode)
-{
-    string sql;
-    int64_t tnow = GetTime();
-    for(auto & mn : vecnode)
-    {
-        if(mn._status == 1 && mn._nodeperiod > tnow) {}
-        else {}
-    }
-}
-
-void ThreadCheckDB()
-{
-    static bool fOneThread;
-    if(fOneThread) return;
-    fOneThread = true;
-
-    // Make this thread recognisable
-    //RenameThread("ucenter-checkdb");
-
-    MysqlConnectInfo *ptrDBInfo = nullptr;
-    {
-        int32_t poolDBPort = GetArg("-dbport", 3306);
-        ptrDBInfo = new MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"),
-                                            poolDBPort,
-                                            GetArg("-dbuser", "root"),
-                                            GetArg("-dbpwd", "123456"),
-                                            GetArg("-dbname", "mysql"));
-    }
-
-    string sql;
-    sql = Strings::Format("select *from udevforums_major_node_bind");
-    MySQLResult res;
-
-    MySQLConnection db(*ptrDBInfo);
-    vector<CMstNodeData> vecnode;
-
-    int ncheckinterval = GetArg("-dbcheckinterval",60000);
-    size_t nPings = 0;
-
-    while(true)
-    {
-        MilliSleep(ncheckinterval);
-
-        for (nPings = 0; nPings < 3; nPings++) {
-            if (db.ping())
-                break;
-        }
-
-        if(nPings >= 3) {
-            LOG(ERROR) << "DB ping failed, can not read mysql";
-            return;
-        }
-
-        vecnode.clear();
-        DBReadMNInfo(db, vecnode);
-    }
-}
-
-void DBTest()
-{
-    MysqlConnectInfo *ptrDBInfo = nullptr;
-    {
-        int32_t poolDBPort = GetArg("-dbport", 3306);
-        ptrDBInfo = new MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"), poolDBPort,
-                                            GetArg("-dbuser", "root"),
-                                            GetArg("-dbpwd", "123456"),
-                                            GetArg("-dbname", "mysql"));
-    }
-
-    vector<CMstNodeData> vecnode;
-    MySQLConnection db(*ptrDBInfo);
-    for (size_t i = 0; i < 3; i++) {
-      if (db.ping())
-        break;
-    }
-    DBReadMNInfo(db, vecnode);
-}
 
 int main(int argc, char const *argv[])
 {
@@ -127,12 +14,35 @@ int main(int argc, char const *argv[])
     SetFilePath("licensetool.conf");
 	LoadConfigFile(mapArgs, mapMultiArgs);
     InitLog(argv);
+    CKey ucenterPrivkey;
+    CPubKey ucenterPubkey;
+    std::string strUCenterPrivKey = GetArg("-privkey", "");
+    if(!strUCenterPrivKey.empty()) {
+        if(!privSendSigner.GetKeysFromSecret(strUCenterPrivKey, ucenterPrivkey, ucenterPubkey)) {
+            printf("Invalid ulord center private key in the configuration!\n");
+            return -1;
+        }
+    } else {
+        printf("You must specify a Ulord Center privkey in the configuration.!\n");
+        return -1;
+    }
+    DBWatcher watcher = DBWatcher(ucenterPrivkey);
+    vector<CMstNodeData> vecnode;
 
     if(argc > 1)
     {
         if("test" == string(argv[1]))
         {
-            DBTest();
+            watcher.SelectMNData(vecnode);
+            watcher.UpdateDB(vecnode);
+            return 0;
+        }
+        if("clear" == string(argv[1]))
+        {
+            watcher.SelectMNData(vecnode);
+            for(auto & mn : vecnode) {
+                watcher.ClearMNData(mn);
+            }
             return 0;
         }
     }
