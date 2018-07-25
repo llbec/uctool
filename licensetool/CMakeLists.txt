@@ -4,7 +4,6 @@ message("--   target LicenseTool")
 
 include_directories(${CHAIN_SRC_ROOT}/src 
                     ${PROJECT_SOURCE_DIR}/common
-                    ${PROJECT_SOURCE_DIR}/libdbsql
                     )
 link_directories( ${PROJECT_BINARY_DIR}/lib )
 
@@ -12,7 +11,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 set(IMPORTLIB
     ${THIRD_LIBRARIES}
-	  pthread
+	pthread
    )
 
 if(NOT APPLE)

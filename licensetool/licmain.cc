@@ -26,7 +26,14 @@ int main(int argc, char const *argv[])
         printf("You must specify a Ulord Center privkey in the configuration.!\n");
         return -1;
     }
-    DBWatcher watcher = DBWatcher(ucenterPrivkey);
+
+	MysqlConnectInfo * ptrDBInfo = new MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"),
+														GetArg("-dbport", 3306),
+														GetArg("-dbuser", "root"),
+                                        				GetArg("-dbpwd", "123456"),
+                                        				GetArg("-dbname", "mysql"));
+
+    DBWatcher watcher = DBWatcher(ucenterPrivkey, *ptrDBInfo);
     vector<CMstNodeData> vecnode;
 
     if(argc > 1)

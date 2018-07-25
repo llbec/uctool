@@ -58,10 +58,9 @@ private:
     const CKey watcherKey_;
     const int64_t licPeriodLimit_ = 2592000;
 public:
-    MysqlConnectInfo *_ptrDBInfo;
     MySQLConnection _db;
 
-    DBWatcher(CKey priv);
+    DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo);
     bool IsDBOnline();
     void SelectMNData(std::vector<CMstNodeData> & vecnode);
     bool UpdateMNData(const CMstNodeData & mn);
@@ -69,7 +68,7 @@ public:
     bool SignMNLicense(CMstNodeData & mn);
     void UpdateDB(std::vector<CMstNodeData> & vecnode);
     void SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode);
-}
+};
 
 #endif // MYSQL_ENABLE
 

@@ -7,22 +7,15 @@
 
 using namespace std;
 
-DBWatcher::DBWatcher(CKey priv) : watcherKey_(priv)
+DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) : watcherKey_(priv), _db(ptrDBInfo)
 {
-    int32_t poolDBPort = GetArg("-dbport", 3306);
-    _ptrDBInfo = new MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"), poolDBPort,
-                                        GetArg("-dbuser", "root"),
-                                        GetArg("-dbpwd", "123456"),
-                                        GetArg("-dbname", "mysql"));
-
-    _db(*_ptrDBInfo);
     tablename_ = GetArg("-dbtable","udevforums_major_node_bind");
 }
 
 bool DBWatcher::IsDBOnline()
 {
     for (size_t nPings = 0; nPings < 3; nPings++) {
-        if (db.ping())
+        if (_db.ping())
             return true;
     }
     LOG(INFO) << "DBWatcher db is offline!";
@@ -136,7 +129,7 @@ void DBWatcher::UpdateDB(std::vector<CMstNodeData> & vecnode)
 void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
 {
     int64_t tnow = GetTime();
-    int64_t tlimit tnow + LIMIT_MASTERNODE_LICENSE;
+    int64_t tlimit = tnow + LIMIT_MASTERNODE_LICENSE;
     MySQLResult res;
     string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE node_period > %ld AND validdate < tlimit",
                                     tablename_.c_str(), tnow, tlimit);

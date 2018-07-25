@@ -83,13 +83,13 @@ message("------------------------------- Libs -------------------------------")
 # chain's libs
 #
 set(BITCOIN_LIBRARIES
-    "${CHAIN_SRC_ROOT}/src/libbitcoin_common.a"
     "${CHAIN_SRC_ROOT}/src/libbitcoin_server.a"
+	"${CHAIN_SRC_ROOT}/src/libbitcoin_zmq.a"
+	"${CHAIN_SRC_ROOT}/src/libbitcoin_wallet.a"
+	"${CHAIN_SRC_ROOT}/src/hello/libbitcoin_hello.a"
+	"${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto.a"
+	"${CHAIN_SRC_ROOT}/src/libbitcoin_common.a"
     "${CHAIN_SRC_ROOT}/src/libbitcoin_util.a"
-    "${CHAIN_SRC_ROOT}/src/libbitcoin_wallet.a"
-    "${CHAIN_SRC_ROOT}/src/libbitcoin_zmq.a"
-    "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto.a"
-    "${CHAIN_SRC_ROOT}/src/hello/libbitcoin_hello.a"
    )
 
 list(GET BITCOIN_LIBRARIES 0 BITCOIN_LIBRARIE)
@@ -226,13 +226,19 @@ if(MYSQL)
 list(APPEND THIRD_LIBRARIES ${MYSQL_LIB})
 endif()
 
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
 message("") # empty line
 file(GLOB LIB_SOURCES common/*.cc)
+file(GLOB LIB_HEAD common/*.h)
 add_library(utcenter STATIC ${LIB_SOURCES})
 
 if(MYSQL)
   #file(GLOB LIB_DBSQL libdbsql/*.cpp)
   #add_library(dbsql STATIC ${LIB_DBSQL})
 
-  add_subdirectory(licensetool)
+  #add_subdirectory(licensetool)
+  file(GLOB_RECURSE LICENSETOOL_SOURCES licensetool/*.cc)
+  add_executable(licensetool ${LICENSETOOL_SOURCES})
+  target_link_libraries(licensetool utcenter ${THIRD_LIBRARIES})
 endif()
