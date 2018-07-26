@@ -59,6 +59,10 @@ int main(int argc, char const *argv[])
     {
         if("test" == string(argv[1]))
         {
+            if(!watcher.IsDBOnline()) {
+                printf("can't connect to db!\n");
+                return -1;
+            }
             watcher.SelectMNData(vecnode);
             watcher.UpdateDB(vecnode);
             return 0;
