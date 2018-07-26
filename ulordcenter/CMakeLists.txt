@@ -1,5 +1,5 @@
 message("") # empty line
-message("--   target LicenseTool")
+message("--   target ulordcenter")
 
 include_directories(${CHAIN_SRC_ROOT}/src
                     ${PROJECT_SOURCE_DIR}/common
@@ -20,10 +20,10 @@ if(NOT CENTOS)
   list(APPEND IMPORTLIB miniupnpc)
 endif()
 
-file(GLOB LICTOOL_HEADERS "*.h" )
-file(GLOB LICTOOL_SRC "*.cpp"  "*.cc")
-add_executable(licensetool ${LICTOOL_SRC} ${LICTOOL_HEADERS})
-target_link_libraries(licensetool utcenter ${IMPORTLIB})
+file(GLOB UCENTER_HEADERS "*.h" )
+file(GLOB UCDENTER_SRC "*.cpp"  "*.cc")
+add_executable(ulordcenter ${UCDENTER_SRC} ${UCENTER_HEADERS})
+target_link_libraries(ulordcenter utcenter ${IMPORTLIB})
 
-message("--   LicenseTool end")
+message("--   ulordcenter end")
 message("") # empty line 
