@@ -77,6 +77,8 @@ int main(int argc, char const *argv[])
         }
     }
 
+    watcher.Runner();
+
     return 0;
 }
 

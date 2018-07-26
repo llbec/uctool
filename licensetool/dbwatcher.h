@@ -56,7 +56,9 @@ private:
     };
     std::string tablename_;
     const CKey watcherKey_;
-    const int64_t licPeriodLimit_ = 2592000;
+    const int64_t licPeriodLimit_;
+    const int64_t needUpdatePeriod_;
+    const int64_t runInterval_;
 public:
     MySQLConnection _db;
 
@@ -68,6 +70,7 @@ public:
     bool SignMNLicense(CMstNodeData & mn);
     void UpdateDB(std::vector<CMstNodeData> & vecnode);
     void SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode);
+    void Runner();
 };
 
 #endif // MYSQL_ENABLE

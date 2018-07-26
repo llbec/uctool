@@ -7,7 +7,12 @@
 
 using namespace std;
 
-DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) : watcherKey_(priv), _db(ptrDBInfo)
+DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
+watcherKey_(priv),
+_db(ptrDBInfo),
+licPeriodLimit_(86400*GetArg("-periodlimit",30)),
+needUpdatePeriod_(86400*GetArg("-needupdate",3)),
+runInterval_(GetArg("-runinterval",60000))
 {
     tablename_ = GetArg("-dbtable","udevforums_major_node_bind");
 }
@@ -93,12 +98,14 @@ bool DBWatcher::ClearMNData(const CMstNodeData & mn)
 bool DBWatcher::SignMNLicense(CMstNodeData & mn)
 {
     vector<unsigned char> vchSig;
+    int64_t tnow = GetTime();
+    int64_t tlimit = tnow + needUpdatePeriod_;
     
-    if(mn._licperiod >= mn._nodeperiod) {
+    if(mn._licperiod >= mn._nodeperiod || mn._licperiod > tlimit) {
         return false;
     }
 
-    mn._licperiod = GetTime() + licPeriodLimit_;
+    mn._licperiod = tnow + licPeriodLimit_;
     if(mn._licperiod > mn._nodeperiod)
         mn._licperiod = mn._nodeperiod;
 
@@ -117,11 +124,9 @@ bool DBWatcher::SignMNLicense(CMstNodeData & mn)
 void DBWatcher::UpdateDB(std::vector<CMstNodeData> & vecnode)
 {
     for(auto & mn : vecnode) {
-        if(mn.IsNeedUpdateLicense()) {
-            if(SignMNLicense(mn)) {
-                if(!UpdateMNData(mn))
-                    LOG(INFO) << "UpdateMNData failed, masternode<" << mn._txid << ":" << mn._voutid << ">";
-            }
+        if(SignMNLicense(mn)) {
+            if(!UpdateMNData(mn))
+                LOG(INFO) << "UpdateMNData failed, masternode<" << mn._txid << ":" << mn._voutid << ">";
         }
     }
 }
@@ -129,7 +134,7 @@ void DBWatcher::UpdateDB(std::vector<CMstNodeData> & vecnode)
 void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
 {
     int64_t tnow = GetTime();
-    int64_t tlimit = tnow + LIMIT_MASTERNODE_LICENSE;
+    int64_t tlimit = tnow + needUpdatePeriod_;
     MySQLResult res;
     string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE node_period > %ld AND validdate < tlimit",
                                     tablename_.c_str(), tnow, tlimit);
@@ -165,6 +170,17 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
         //printf("DBReadMNInfo: get masternode <%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
 
         row = res.nextRow();
+    }
+}
+
+void DBWatcher::Runner()
+{
+    vector<CMstNodeData> vecnode;
+    while(true) {
+        vecnode.clear();
+        SelectNeedUpdateMNData(vecnode);
+        UpdateDB(vecnode);
+        MilliSleep(runInterval_);
     }
 }
 #endif // MYSQL_ENABLE
