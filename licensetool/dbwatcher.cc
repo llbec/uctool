@@ -142,7 +142,7 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
     if(!IsDBOnline())
         return;
     _db.query(sql, res);
-    LOG(INFO) << "DBWatcher::SelectNeedUpdateMNData:Read DB and select <" << res.numRows() << " masternodes";
+    LOG(INFO) << "DBWatcher::SelectNeedUpdateMNData:Read DB and select " << res.numRows() << " masternodes";
     if(res.numRows() == 0)
         return;
 
