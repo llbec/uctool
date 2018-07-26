@@ -136,7 +136,7 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
     int64_t tnow = GetTime();
     int64_t tlimit = tnow + needUpdatePeriod_;
     MySQLResult res;
-    string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE node_period > %ld AND validdate < tlimit",
+    string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE node_period > %ld AND validdate < %ld",
                                     tablename_.c_str(), tnow, tlimit);
 
     if(!IsDBOnline())
