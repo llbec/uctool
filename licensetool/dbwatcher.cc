@@ -9,10 +9,10 @@ using namespace std;
 
 DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
 watcherKey_(priv),
-_db(ptrDBInfo),
 licPeriodLimit_(86400*GetArg("-periodlimit",30)),
 needUpdatePeriod_(86400*GetArg("-needupdate",3)),
-runInterval_(GetArg("-runinterval",60000))
+runInterval_(GetArg("-runinterval",60000)),
+_db(ptrDBInfo)
 {
     tablename_ = GetArg("-dbtable","udevforums_major_node_bind");
 }
@@ -176,6 +176,7 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
 void DBWatcher::Runner()
 {
     vector<CMstNodeData> vecnode;
+    printf("Runner inerval is %ld ms, update time=%ld s, license period=%ld s\n", runInterval_, needUpdatePeriod_, licPeriodLimit_);
     while(true) {
         vecnode.clear();
         SelectNeedUpdateMNData(vecnode);
