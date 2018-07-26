@@ -72,7 +72,7 @@ bool DBWatcher::UpdateMNData(const CMstNodeData & mn)
                                     tablename_.c_str(),
                                     mn._licperiod,
                                     mn._licence.c_str(),
-                                    mn._txid,
+                                    mn._txid.c_str(),
                                     mn._voutid);
 
     return _db.execute(sql);
@@ -84,7 +84,7 @@ bool DBWatcher::ClearMNData(const CMstNodeData & mn)
         return false;
     string sql = Strings::Format("UPDATE %s SET validflag = 0, validdate = 0, certificate = NULL WHERE trade_txid='%s' AND trade_vout_no=%d",
                                     tablename_.c_str(),
-                                    mn._txid,
+                                    mn._txid.c_str(),
                                     mn._voutid);
 
     return _db.execute(sql);
