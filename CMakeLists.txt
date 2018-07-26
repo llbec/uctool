@@ -177,6 +177,11 @@ if(NOT PTHREAD_FOUND)
   message(FATAL_ERROR "libpthread not found!")
 endif()
 
+find_package(BDB)
+if(NOT BDB_FOUND)
+  message(FATAL_ERROR "Berkeley DB not found!")
+endif()
+
 #MYSQL
 if(MYSQL)
   execute_process(COMMAND mysql_config --libs_r OUTPUT_VARIABLE MYSQL_LIB OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -213,6 +218,7 @@ include_directories(common
                     ${LIBEVENT_INCLUDE_DIR}
                     ${LIBZMQ_INCLUDE_DIR}
                     ${GLOG_INCLUDE_DIRS}
+					${BDB_INCLUDE_DIR}
                     )
 if(MYSQL)
 include_directories(${MYSQL_INCLUDE})
@@ -229,6 +235,7 @@ set(THIRD_LIBRARIES ${BITCOIN_LIBRARIES}
                     ${secp256k1_LIBRARIES}
                     ${PTHREAD_LIBRARIES}
                     ${GLOG_LIBRARIES}
+					${BDB_LIBRARYS}
                     )
 if(MYSQL)
 list(APPEND THIRD_LIBRARIES ${MYSQL_LIB})
