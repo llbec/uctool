@@ -2,7 +2,7 @@ message("") # empty line
 message("------------------------------- LicenseTool -------------------------------")
 message("--   target LicenseTool")
 
-include_directories(${CHAIN_SRC_ROOT}/src 
+include_directories(${CHAIN_SRC_ROOT}/src
                     ${PROJECT_SOURCE_DIR}/common
                     )
 link_directories( ${PROJECT_BINARY_DIR}/lib )

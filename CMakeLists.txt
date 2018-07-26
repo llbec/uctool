@@ -83,13 +83,13 @@ message("------------------------------- Libs -------------------------------")
 # chain's libs
 #
 set(BITCOIN_LIBRARIES
-    "${CHAIN_SRC_ROOT}/src/libbitcoin_server.a"
-	"${CHAIN_SRC_ROOT}/src/libbitcoin_zmq.a"
+	"${CHAIN_SRC_ROOT}/src/libbitcoin_server.a"
 	"${CHAIN_SRC_ROOT}/src/libbitcoin_wallet.a"
-	"${CHAIN_SRC_ROOT}/src/hello/libbitcoin_hello.a"
-	"${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto.a"
 	"${CHAIN_SRC_ROOT}/src/libbitcoin_common.a"
-    "${CHAIN_SRC_ROOT}/src/libbitcoin_util.a"
+	"${CHAIN_SRC_ROOT}/src/libbitcoin_util.a"
+	"${CHAIN_SRC_ROOT}/src/libbitcoin_zmq.a"
+	"${CHAIN_SRC_ROOT}/src/hello/libbitcoin_hello.a"
+    "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto.a"
    )
 
 list(GET BITCOIN_LIBRARIES 0 BITCOIN_LIBRARIE)
@@ -152,9 +152,14 @@ if(NOT OPENSSL_FOUND)
   message(FATAL_ERROR "OpenSSL not found!")
 endif()
 
+find_package(libzmq)
+if(NOT LIBZMQ_FOUND)
+  message(FATAL_ERROR "libzmq not found!")
+endif()
+
 find_package(Glog)
 if(NOT GLOG_FOUND)
-message(FATAL_ERROR "Glog not found!")
+  message(FATAL_ERROR "Glog not found!")
 endif()
 
 find_package(LibEvent)
@@ -197,6 +202,9 @@ message("------------------------------- Targets -------------------------------
 include_directories(common
                     ${CHAIN_SRC_ROOT}/src
                     ${CHAIN_SRC_ROOT}/src/config
+					${CHAIN_SRC_ROOT}/src/wallet
+					${CHAIN_SRC_ROOT}/src/crypto
+					${CHAIN_SRC_ROOT}/src/hello
                     ${secp256k1_DIR}/include
                     ${univalue_DIR}/include
                     ${leveldb_DIR}/include
@@ -237,8 +245,8 @@ if(MYSQL)
   #file(GLOB LIB_DBSQL libdbsql/*.cpp)
   #add_library(dbsql STATIC ${LIB_DBSQL})
 
-  #add_subdirectory(licensetool)
-  file(GLOB_RECURSE LICENSETOOL_SOURCES licensetool/*.cc)
-  add_executable(licensetool ${LICENSETOOL_SOURCES})
-  target_link_libraries(licensetool utcenter ${THIRD_LIBRARIES})
+  add_subdirectory(licensetool)
+  #file(GLOB_RECURSE LICENSETOOL_SOURCES licensetool/*.cc)
+  #add_executable(licensetool ${LICENSETOOL_SOURCES})
+  #target_link_libraries(licensetool utcenter ${THIRD_LIBRARIES})
 endif()
