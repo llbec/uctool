@@ -207,9 +207,9 @@ message("------------------------------- Targets -------------------------------
 include_directories(common
                     ${CHAIN_SRC_ROOT}/src
                     ${CHAIN_SRC_ROOT}/src/config
-					${CHAIN_SRC_ROOT}/src/wallet
-					${CHAIN_SRC_ROOT}/src/crypto
-					${CHAIN_SRC_ROOT}/src/hello
+                    ${CHAIN_SRC_ROOT}/src/wallet
+                    ${CHAIN_SRC_ROOT}/src/crypto
+                    ${CHAIN_SRC_ROOT}/src/hello
                     ${secp256k1_DIR}/include
                     ${univalue_DIR}/include
                     ${leveldb_DIR}/include
@@ -217,8 +217,8 @@ include_directories(common
                     ${Boost_INCLUDE_DIRS}
                     ${LIBEVENT_INCLUDE_DIR}
                     ${LIBZMQ_INCLUDE_DIR}
+                    ${BDB_INCLUDE_DIR}
                     ${GLOG_INCLUDE_DIRS}
-					${BDB_INCLUDE_DIR}
                     )
 if(MYSQL)
 include_directories(${MYSQL_INCLUDE})
@@ -230,12 +230,12 @@ set(THIRD_LIBRARIES ${BITCOIN_LIBRARIES}
                     ${leveldb_LIBRARIES}
                     ${Boost_LIBRARIES}
                     ${LIBZMQ_LIBRARIES}
+                    ${BDB_LIBRARYS}
                     ${LIBEVENT_LIB}
                     ${LIBEVENT_PTHREADS_LIB}
                     ${secp256k1_LIBRARIES}
                     ${PTHREAD_LIBRARIES}
                     ${GLOG_LIBRARIES}
-					${BDB_LIBRARYS}
                     )
 if(MYSQL)
 list(APPEND THIRD_LIBRARIES ${MYSQL_LIB})
@@ -249,11 +249,5 @@ file(GLOB LIB_HEAD common/*.h)
 add_library(utcenter STATIC ${LIB_SOURCES})
 
 if(MYSQL)
-  #file(GLOB LIB_DBSQL libdbsql/*.cpp)
-  #add_library(dbsql STATIC ${LIB_DBSQL})
-
   add_subdirectory(licensetool)
-  #file(GLOB_RECURSE LICENSETOOL_SOURCES licensetool/*.cc)
-  #add_executable(licensetool ${LICENSETOOL_SOURCES})
-  #target_link_libraries(licensetool utcenter ${THIRD_LIBRARIES})
 endif()

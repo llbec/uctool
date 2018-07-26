@@ -1,5 +1,4 @@
 message("") # empty line
-message("------------------------------- LicenseTool -------------------------------")
 message("--   target LicenseTool")
 
 include_directories(${CHAIN_SRC_ROOT}/src
@@ -26,4 +25,5 @@ file(GLOB LICTOOL_SRC "*.cpp"  "*.cc")
 add_executable(licensetool ${LICTOOL_SRC} ${LICTOOL_HEADERS})
 target_link_libraries(licensetool utcenter ${IMPORTLIB})
 
+message("--   LicenseTool end")
 message("") # empty line 
