@@ -252,3 +252,5 @@ if(MYSQL)
   add_subdirectory(licensetool)
   add_subdirectory(ulordcenter)
 endif()
+
+  add_subdirectory(tools)

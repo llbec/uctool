@@ -12,10 +12,10 @@ void GetMNLicenseHelp()
         << "getmnlicense txid voutid ..." << endl
 		<< "getmnlicense \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
 }
-void GetMNLicense(int argc, char* argv[])
+void GetMNLicense(int argc, char const * argv[])
 {
     if(argc < 4) {
-        GetMNLicenseHelp()
+        GetMNLicenseHelp();
         return;
     }
     string strtx = argv[2];
@@ -25,13 +25,14 @@ void GetMNLicense(int argc, char* argv[])
 
     mstnodequest mstquest(111,MST_QUEST_ONE);
 
-    CMasternode mn();
+    CMasternode mn;
     COutPoint mncoin(txhash, nindex);
     mn.vin.prevout = mncoin;
 
     bool proxyConnectionFailed = false;
 	SOCKET hSocket;
-    if(ConnectSocket(ucenterservice, hSocket, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
+    CService tService = CService(GetArg("-ucenterserver", "10.175.0.211:5009"));
+    if(ConnectSocket(tService, hSocket, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
         if (!IsSelectableSocket(hSocket)) {
             printf("Cannot create connection: non-selectable socket created (fd >= FD_SETSIZE ?)\n");
             CloseSocket(hSocket);
