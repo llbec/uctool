@@ -94,9 +94,9 @@ void GetMNLicense(int argc, char const * argv[])
         if(mstres._num == 1) {  			  
             CMstNodeData mstnode;
             ia >> mstnode;
-            if(mstnode._validflag <= 0 || mstnode._txid != mn.vin.prevout.hash.GetHex() || mstnode._voutid != mn.vin.prevout.n) {
+            if(mstnode._txid != mn.vin.prevout.hash.GetHex() || mstnode._voutid != mn.vin.prevout.n) {
                 CloseSocket(hSocket);
-                printf("ERROR:receive a invalid msg validflag %d, <%s:%d>\n", mstnode._validflag, mstnode._txid.c_str(), mstnode._voutid);
+                printf("ERROR:receive a invalid msg mn<%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
                 return;
             }
 
