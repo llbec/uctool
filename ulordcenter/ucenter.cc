@@ -84,7 +84,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
     oa<<mstres;
     for(auto & node : vecnode)
     {
-        strinfo += Strings::Format("\t<%s:%d>\n", node._txid.c_str(), node._voutid);
+        strinfo += Strings::Format("\t<%s:%d> %s - %ld\n", node._txid.c_str(), node._voutid, node._license.c_str(), node._licperiod);
         oa << node;
     }
     LOG(INFO) << strinfo;
