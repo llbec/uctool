@@ -4,7 +4,7 @@ message("--   target ulordcenter")
 #message("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
 #message("PROJECT_BINARY_DIR= ${PROJECT_BINARY_DIR}")
 #message("CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
-set(MUDUO_LIB_INCLUDE ${CMAKE_SOURCE_DIR}/lib)
+set(MUDUO_LIB_INCLUDE ${CMAKE_SOURCE_DIR}/muduo/lib)
 
 include_directories(${CHAIN_SRC_ROOT}/src ${PROJECT_SOURCE_DIR}/common ${CMAKE_SOURCE_DIR})
 link_directories(${PROJECT_BINARY_DIR}/lib  /usr/local/lib ${MUDUO_LIB_INCLUDE})
