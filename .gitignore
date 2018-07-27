@@ -7,3 +7,4 @@ cmake-build-debug/
 /patches/
 /data/
 .DS_Store
+build/

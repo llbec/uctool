@@ -1,7 +1,7 @@
 #ifndef MUDUO_EXAMPLES_ASIO_CHAT_CODEC_H
 #define MUDUO_EXAMPLES_ASIO_CHAT_CODEC_H
 
-//#include <muduo/base/Logging.h>
+#include <muduo/base/Logging.h>
 #include <muduo/net/Buffer.h>
 #include <muduo/net/Endian.h>
 #include <muduo/net/TcpConnection.h>

@@ -1,7 +1,7 @@
 #ifndef UTCENTER_UCENTER_H
 #define UTCENTER_UCENTER_H
 #ifdef MYSQL_ENABLE
-//#include <muduo/base/Logging.h>
+#include <muduo/base/Logging.h>
 #include <muduo/base/Mutex.h>
 #include <muduo/net/EventLoop.h>
 #include <muduo/net/TcpServer.h>
