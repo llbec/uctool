@@ -102,10 +102,10 @@ void GetMNLicense(int argc, char const * argv[])
 
             printf("Info:Receive MasterNode<%s:%d> certificate %s time = %ld\n", mstnode._txid.c_str(), mstnode._voutid, mstnode._licence.c_str(), mstnode._licperiod);
 
-            if(!mstnode.VerifyLicense()) {
+            /*if(!mstnode.VerifyLicense()) {
                 printf("ERROR: verify license failed\n");
                 return;
-            }
+            }*///without pubkey & privkey 
         }
 	}
     CloseSocket(hSocket);
