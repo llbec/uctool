@@ -50,11 +50,16 @@ int main(int argc, char const *argv[])
 														GetArg("-dbuser", "root"),
                                         				GetArg("-dbpwd", "123456"),
                                         				GetArg("-dbname", "mysql"));
-
-    //DBWatcher watcher = DBWatcher(ucenterPrivkey, *ptrDBInfo);
-    vector<CMstNodeData> vecnode;
-
-
+    EventLoop loop;
+    uint16_t port = static_cast<uint16_t>(GetArg("-tcpport", 5009));
+    InetAddress serverAddr(port);
+    UlordServer utcenter = UlordServer(&loop, GetArg("-idleseconds", 60), serverAddr, ucenterPrivkey, *ptrDBInfo);
+    int nThread = GetArg("-thread", 2)
+    if (nThread > 1)
+        server.setThreadNum(nThread);
+    server.start();
+    loop.loop();
+    
     return 0;
 }
 
