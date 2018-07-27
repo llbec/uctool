@@ -80,7 +80,7 @@ void GetMNLicense(int argc, char const * argv[])
 
         if(msglen != nBytes - mstnd_iReqMsgHeadLen) {
             CloseSocket(hSocket);
-            printf("Error: receive a error msg length is %d, recv bytes is %d", msglen, nBytes);
+            printf("Error: receive a error msg length is %d, recv bytes is %d\n", msglen, nBytes);
             return;
         }
 
@@ -96,11 +96,11 @@ void GetMNLicense(int argc, char const * argv[])
             ia >> mstnode;
             if(mstnode._validflag <= 0 || mstnode._txid != mn.vin.prevout.hash.GetHex() || mstnode._voutid != mn.vin.prevout.n) {
                 CloseSocket(hSocket);
-                printf("ERROR:receive a invalid msg validflag %d, <%s:%d>", mstnode._validflag, mstnode._txid.c_str(), mstnode._voutid);
+                printf("ERROR:receive a invalid msg validflag %d, <%s:%d>\n", mstnode._validflag, mstnode._txid.c_str(), mstnode._voutid);
                 return;
             }
 
-            printf("Info:Receive MasterNode<%s:%d> certificate %s time = %d\n", mstnode._txid.c_str(), mstnode._voutid, mstnode._licence.c_str(), mstnode._licperiod);
+            printf("Info:Receive MasterNode<%s:%d> certificate %s time = %ld\n", mstnode._txid.c_str(), mstnode._voutid, mstnode._licence.c_str(), mstnode._licperiod);
 
             if(!mstnode.VerifyLicense()) {
                 printf("ERROR: verify license failed\n");
