@@ -75,15 +75,19 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         return;
     }
 
+    std::string strinfo;
     mstnoderes  mstres(mstquest._msgversion);
     mstres._num= vecnode.size();
+    strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
     std::ostringstream os;
     boost::archive::binary_oarchive oa(os);
     oa<<mstres;
     for(auto & node : vecnode)
     {
+        strinfo += Strings::Format("\t<%s:%d>\n", node._txid.c_str(), node._voutid);
         oa << node;
     }
+    LOG(INFO) << strinfo;
     std::string content = os.str();
     muduo::StringPiece sendmessage(content);
     codec_.send(tcpcli, sendmessage);
