@@ -1,7 +1,7 @@
 #ifndef MUDUO_EXAMPLES_ASIO_CHAT_CODEC_H
 #define MUDUO_EXAMPLES_ASIO_CHAT_CODEC_H
 
-#include <muduo/base/Logging.h>
+//#include <muduo/base/Logging.h>
 #include <muduo/net/Buffer.h>
 #include <muduo/net/Endian.h>
 #include <muduo/net/TcpConnection.h>
@@ -9,6 +9,8 @@
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <vector>
+
+#include "utils.h"
 
 class LengthHeaderCodec : boost::noncopyable
 {
@@ -33,11 +35,14 @@ class LengthHeaderCodec : boost::noncopyable
       int32_t be321 = *static_cast<const int32_t*>(data); // SIGBUS
       int32_t be32 =  buf->peekInt32(); // SIGBUS
       const int32_t len =  muduo::net::sockets::networkToHost32(be321);
-      assert(len==be32);    
+      //assert(len==be32);
+      if(len!=be32) {
+	LOG(FATAL) << "should not be here len=" << len << " be32=" << be32;
+	}
 
       if (len > 65536 || len < 0)
       {
-        LOG_ERROR << "Invalid length " << len;
+        LOG(INFO) << "ERROR:Invalid length " << len;
         conn->shutdown();  // FIXME: disable reading
         break;
       }

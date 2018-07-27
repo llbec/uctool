@@ -1,7 +1,7 @@
 #ifndef UTCENTER_UCENTER_H
 #define UTCENTER_UCENTER_H
 #ifdef MYSQL_ENABLE
-#include <muduo/base/Logging.h>
+//#include <muduo/base/Logging.h>
 #include <muduo/base/Mutex.h>
 #include <muduo/net/EventLoop.h>
 #include <muduo/net/TcpServer.h>
@@ -10,11 +10,16 @@
 #include "MySQLConnection.h"
 #include "masternodeman.h"
 
+#include "codec.h"
+
 using namespace muduo;
 using namespace muduo::net;
 
 class UlordServer : boost::noncopyable
 {
+public:
+    typedef boost::weak_ptr<TcpConnection> WeakTcpConnectionPtr;
+    typedef std::list<WeakTcpConnectionPtr> WeakConnectionList;
 private:
     struct Node : public muduo::copyable
     { 
@@ -32,8 +37,6 @@ private:
     MySQLConnection db_;
 public:
     UlordServer(EventLoop* loop, int idleSeconds, const InetAddress& listenAddr, const CKey priv, const MysqlConnectInfo & ptrDBInfo);
-    typedef boost::weak_ptr<TcpConnection> WeakTcpConnectionPtr;
-    typedef std::list<WeakTcpConnectionPtr> WeakConnectionList;
     void setThreadNum(int numThreads) { server_.setThreadNum(numThreads); }
     void start() { server_.start(); }
 private:

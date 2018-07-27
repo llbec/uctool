@@ -250,4 +250,5 @@ add_library(ulordtool STATIC ${LIB_SOURCES})
 
 if(MYSQL)
   add_subdirectory(licensetool)
+  add_subdirectory(ulordcenter)
 endif()

@@ -1,7 +1,8 @@
 #ifdef MYSQL_ENABLE
-#include "codec.h"
 #include "ucenter.h"
 #include "utils.h"
+
+#include "privsend.h"
 
 #include <string>
 #include <boost/log/trivial.hpp>  
@@ -15,10 +16,10 @@ using namespace muduo::net;
 using namespace boost;
 
 UlordServer::UlordServer(EventLoop * loop, int idleSeconds, const InetAddress & listenAddr, const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
-ucenterKey_(priv),
-server_(loop, listenAddr, "UlordServer"),
 idleSeconds_(idleSeconds),
+server_(loop, listenAddr, "UlordServer"),
 codec_(boost::bind(&UlordServer::onStringMessage, this, _1, _2, _3)),
+ucenterKey_(priv),
 db_(ptrDBInfo)
 {
     server_.setConnectionCallback(boost::bind(&UlordServer::onConnection, this, _1));
@@ -54,7 +55,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
     //ParseQuest
     std::vector<CMstNodeData> vecnode;
     mstnodequest  mstquest;
-    std::istringstream is(buf);  
+    std::istringstream is(message);  
     boost::archive::binary_iarchive ia(is);  
     ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
     if(mstquest._questtype == MST_QUEST_ONE) {
@@ -83,9 +84,9 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
     {
         oa << node;
     }
-    string content = os.str();
-    muduo::StringPiece message(content);
-    codec_.send(tcpcli, message);
+    std::string content = os.str();
+    muduo::StringPiece sendmessage(content);
+    codec_.send(tcpcli, sendmessage);
     return;
 }
 
@@ -147,7 +148,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
 {
     bool result = false;
     MySQLResult res;
-    string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE trade_txid = %s AND trade_vout_no < %d",
+    std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE trade_txid = %s AND trade_vout_no < %d",
                                     tablename_.c_str(), txid, voutid);
 
     if(!IsDBOnline())

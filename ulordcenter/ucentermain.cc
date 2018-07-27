@@ -1,5 +1,6 @@
 #ifdef MYSQL_ENABLE
 #include "utils.h"
+#include "ucenter.h"
 
 #include "util.h"
 #include "privsend.h"
