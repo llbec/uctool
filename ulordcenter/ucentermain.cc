@@ -53,11 +53,11 @@ int main(int argc, char const *argv[])
     EventLoop loop;
     uint16_t port = static_cast<uint16_t>(GetArg("-tcpport", 5009));
     InetAddress serverAddr(port);
-    UlordServer utcenter = UlordServer(&loop, GetArg("-idleseconds", 60), serverAddr, ucenterPrivkey, *ptrDBInfo);
-    int nThread = GetArg("-thread", 2)
+    UlordServer utcenter(&loop, GetArg("-idleseconds", 60), serverAddr, ucenterPrivkey, *ptrDBInfo);
+    int nThread = GetArg("-thread", 2);
     if (nThread > 1)
-        server.setThreadNum(nThread);
-    server.start();
+        utcenter.setThreadNum(nThread);
+    utcenter.start();
     loop.loop();
     
     return 0;
