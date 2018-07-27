@@ -1,21 +1,32 @@
 message("") # empty line
 message("--   target ulordcenter")
 
-#message("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
-#message("PROJECT_BINARY_DIR= ${PROJECT_BINARY_DIR}")
-#message("CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
-set(MUDUO_LIB_INCLUDE ${CMAKE_SOURCE_DIR}/muduo/lib)
+message("--    nuduo libs")
+set(MUDUO_DIR ${CMAKE_SOURCE_DIR}/ulordcenter/3rdlibs)
+set(MUDUO_LIB_DIR ${MUDUO_DIR}/build/release/lib)
+set(MUDUO_LIBRARIES ${MUDUO_LIB_DIR}/libmuduo_base_cpp11.a ${MUDUO_LIB_DIR}/libmuduo_net_cpp11.a)
+set(MUDUO_INCLUDE ${MUDUO_DIR}/muduo)
 
-include_directories(${CHAIN_SRC_ROOT}/src ${PROJECT_SOURCE_DIR}/common ${CMAKE_SOURCE_DIR})
-link_directories(${PROJECT_BINARY_DIR}/lib  /usr/local/lib ${MUDUO_LIB_INCLUDE})
+list(GET MUDUO_LIBRARIES 0 MUDUO_LIBRARIE)
+if (NOT EXISTS ${MUDUO_LIBRARIE})
+  message(STATUS "building muduo...")
+  execute_process(WORKING_DIRECTORY "${MUDUO_DIR}" COMMAND ./build.sh)
+endif()
+
+foreach(MUDUO_LIBRARIE ${MUDUO_LIBRARIES})
+  if (NOT EXISTS ${MUDUO_LIBRARIE})
+    message(FATAL_ERROR "${MUDUO_LIBRARIE} not exists!")
+  endif()
+endforeach()
+
+include_directories(${CHAIN_SRC_ROOT}/src ${PROJECT_SOURCE_DIR}/common ${MUDUO_INCLUDE})
+link_directories(${PROJECT_BINARY_DIR}/lib)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 set(IMPORTLIB
     ${THIRD_LIBRARIES}
-    boost_log_setup
-    muduo_base_cpp11
-    muduo_net_cpp11
+    ${MUDUO_LIBRARIES}
     pthread
    )
 
@@ -26,8 +37,8 @@ if(NOT CENTOS)
   list(APPEND IMPORTLIB miniupnpc)
 endif()
 
-file(GLOB UCENTER_HEADERS "*.h" )
-file(GLOB UCDENTER_SRC "*.cpp"  "*.cc")
+file(GLOB UCENTER_HEADERS "ucenter.h" )
+file(GLOB UCDENTER_SRC "ucenter.cc"  "ucentermain.cc")
 add_executable(ulordcenter ${UCDENTER_SRC} ${UCENTER_HEADERS})
 target_link_libraries(ulordcenter ulordtool ${IMPORTLIB})
 
