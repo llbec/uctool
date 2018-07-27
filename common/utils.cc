@@ -17,13 +17,13 @@ boost::filesystem::path _pathConfigFile;
 boost::filesystem::path GetUtCenterDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\utCenters
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\utCenters
-    // Mac: ~/Library/Application Support/utCenters
-    // Unix: ~/.utcenters
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\utTool
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\utTool
+    // Mac: ~/Library/Application Support/utTool
+    // Unix: ~/.uttool
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "utCenters";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "utTool";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -33,10 +33,10 @@ boost::filesystem::path GetUtCenterDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/utCenters";
+    return pathRet / "Library/Application Support/utTool";
 #else
     // Unix
-    return pathRet / ".utcenters";
+    return pathRet / ".uttool";
 #endif
 #endif
 }

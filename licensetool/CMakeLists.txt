@@ -23,7 +23,7 @@ endif()
 file(GLOB LICTOOL_HEADERS "*.h" )
 file(GLOB LICTOOL_SRC "*.cpp"  "*.cc")
 add_executable(licensetool ${LICTOOL_SRC} ${LICTOOL_HEADERS})
-target_link_libraries(licensetool utcenter ${IMPORTLIB})
+target_link_libraries(licensetool ulordtool ${IMPORTLIB})
 
 message("--   LicenseTool end")
 message("") # empty line 

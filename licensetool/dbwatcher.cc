@@ -12,7 +12,7 @@ watcherKey_(priv),
 licPeriodLimit_(86400*GetArg("-periodlimit",30)),
 needUpdatePeriod_(86400*GetArg("-needupdate",3)),
 runInterval_(GetArg("-runinterval",60000)),
-_db(ptrDBInfo)
+db_(ptrDBInfo)
 {
     tablename_ = GetArg("-dbtable","udevforums_major_node_bind");
 }
@@ -20,7 +20,7 @@ _db(ptrDBInfo)
 bool DBWatcher::IsDBOnline()
 {
     for (size_t nPings = 0; nPings < 3; nPings++) {
-        if (_db.ping())
+        if (db_.ping())
             return true;
     }
     LOG(INFO) << "DBWatcher db is offline!";
@@ -33,7 +33,7 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
     std::string sql = Strings::Format("SELECT * FROM %s", tablename_.c_str());
     if(!IsDBOnline())
         return;
-    _db.query(sql, res);
+    db_.query(sql, res);
     LOG(INFO) << "DBWatcher::SelectMNData:Read DB and select <" << res.numRows() << " masternodes";
     if(res.numRows() == 0)
         return;
@@ -80,7 +80,7 @@ bool DBWatcher::UpdateMNData(const CMstNodeData & mn)
                                     mn._txid.c_str(),
                                     mn._voutid);
 
-    return _db.execute(sql);
+    return db_.execute(sql);
 }
 
 bool DBWatcher::ClearMNData(const CMstNodeData & mn)
@@ -92,7 +92,7 @@ bool DBWatcher::ClearMNData(const CMstNodeData & mn)
                                     mn._txid.c_str(),
                                     mn._voutid);
 
-    return _db.execute(sql);
+    return db_.execute(sql);
 }
 
 bool DBWatcher::SignMNLicense(CMstNodeData & mn)
@@ -141,7 +141,7 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
 
     if(!IsDBOnline())
         return;
-    _db.query(sql, res);
+    db_.query(sql, res);
     LOG(INFO) << "DBWatcher::SelectNeedUpdateMNData:Read DB and select " << res.numRows() << " masternodes";
     if(res.numRows() == 0)
         return;

@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project (UTCENTER)
+project (ULORDTOOL)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 ###################################### Options ######################################
@@ -83,12 +83,12 @@ message("------------------------------- Libs -------------------------------")
 # chain's libs
 #
 set(BITCOIN_LIBRARIES
-	"${CHAIN_SRC_ROOT}/src/libbitcoin_server.a"
-	"${CHAIN_SRC_ROOT}/src/libbitcoin_wallet.a"
-	"${CHAIN_SRC_ROOT}/src/libbitcoin_common.a"
-	"${CHAIN_SRC_ROOT}/src/libbitcoin_util.a"
-	"${CHAIN_SRC_ROOT}/src/libbitcoin_zmq.a"
-	"${CHAIN_SRC_ROOT}/src/hello/libbitcoin_hello.a"
+	  "${CHAIN_SRC_ROOT}/src/libbitcoin_server.a"
+	  "${CHAIN_SRC_ROOT}/src/libbitcoin_wallet.a"
+	  "${CHAIN_SRC_ROOT}/src/libbitcoin_common.a"
+	  "${CHAIN_SRC_ROOT}/src/libbitcoin_util.a"
+	  "${CHAIN_SRC_ROOT}/src/libbitcoin_zmq.a"
+	  "${CHAIN_SRC_ROOT}/src/hello/libbitcoin_hello.a"
     "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto.a"
    )
 
@@ -246,7 +246,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 message("") # empty line
 file(GLOB LIB_SOURCES common/*.cc)
 file(GLOB LIB_HEAD common/*.h)
-add_library(utcenter STATIC ${LIB_SOURCES})
+add_library(ulordtool STATIC ${LIB_SOURCES})
 
 if(MYSQL)
   add_subdirectory(licensetool)

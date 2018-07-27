@@ -29,7 +29,7 @@ void InitChain()
 int main(int argc, char const *argv[])
 {
     /*init*/
-    SetFilePath("licensetool.conf");
+    SetFilePath("ulordcenter.conf");
 	LoadConfigFile(mapArgs, mapMultiArgs);
     InitChain();
     InitLog(argv);

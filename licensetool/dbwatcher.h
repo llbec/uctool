@@ -59,9 +59,8 @@ private:
     const int64_t licPeriodLimit_;
     const int64_t needUpdatePeriod_;
     const int64_t runInterval_;
+    MySQLConnection db_;
 public:
-    MySQLConnection _db;
-
     DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo);
     bool IsDBOnline();
     void SelectMNData(std::vector<CMstNodeData> & vecnode);

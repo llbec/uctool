@@ -10,6 +10,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 set(IMPORTLIB
     ${THIRD_LIBRARIES}
+    muduo_base_cpp11 muduo_net_cpp11
 	  pthread
    )
 
@@ -23,7 +24,7 @@ endif()
 file(GLOB UCENTER_HEADERS "*.h" )
 file(GLOB UCDENTER_SRC "*.cpp"  "*.cc")
 add_executable(ulordcenter ${UCDENTER_SRC} ${UCENTER_HEADERS})
-target_link_libraries(ulordcenter utcenter ${IMPORTLIB})
+target_link_libraries(ulordcenter ulordtool ${IMPORTLIB})
 
 message("--   ulordcenter end")
 message("") # empty line 
