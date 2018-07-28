@@ -102,7 +102,7 @@ bool DBWatcher::SignMNLicense(CMstNodeData & mn)
     int64_t tnow = GetTime();
     int64_t tlimit = tnow + needUpdatePeriod_;
     
-    if(mn._licperiod >= mn._nodeperiod || mn._licperiod > tlimit) {
+    if(mn._licperiod >= mn._nodeperiod || mn._licperiod > tlimit || mn._status != 1) {
         return false;
     }
 
