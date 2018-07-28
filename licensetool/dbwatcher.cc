@@ -9,8 +9,8 @@ using namespace std;
 
 DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
 watcherKey_(priv),
-licPeriodLimit_(86400*GetArg("-periodlimit",30)),
-needUpdatePeriod_(86400*GetArg("-needupdate",3)),
+licPeriodLimit_(GetArg("-periodunit",86400)*GetArg("-periodlimit",30)),
+needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
 runInterval_(GetArg("-runinterval",60000)),
 db_(ptrDBInfo)
 {
