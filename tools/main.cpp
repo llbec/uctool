@@ -45,7 +45,7 @@ void InitChain()
 int main(int argc, char const *argv[])
 {
     /*init*/
-    SetFilePath("ulordcenter.conf");
+    SetFilePath("ulordtool.conf");
 	LoadConfigFile(mapArgs, mapMultiArgs);
     InitChain();
     InitLog(argv);
