@@ -152,7 +152,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
 {
     bool result = false;
     MySQLResult res;
-    std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE trade_txid = '%s' AND trade_vout_no = %d",
+    std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, certificate, node_period FROM %s WHERE trade_txid = '%s' AND trade_vout_no = %d",
                                     tablename_.c_str(), txid.c_str(), voutid);
 
     if(!IsDBOnline())
@@ -176,7 +176,9 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
         mstnode._status     = atoi(row[3]);
         mstnode._licperiod  = atoi(row[4]);
         if(row[5] != NULL)
-            mstnode._nodeperiod = atoi(row[5]);
+            mstnode._licence = row[5];
+        if(row[6] != NULL)
+            mstnode._nodeperiod = atoi(row[6]);
         else
             mstnode._nodeperiod = 0;
 
