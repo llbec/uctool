@@ -168,11 +168,10 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
     char **row = res.nextRow();
     CMstNodeData mstnode;
     while(row != nullptr) {
-        if(row[0] == NULL || row[1] == NULL || row[2] == NULL)
-            continue;
         mstnode._txid       = row[0];
         mstnode._voutid     = atoi(row[1]);
-        mstnode._privkey    = row[2];
+        if(row[2] != NULL)
+            mstnode._privkey    = row[2];
         mstnode._status     = atoi(row[3]);
         mstnode._licperiod  = atoi(row[4]);
         if(row[5] != NULL)
