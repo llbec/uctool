@@ -159,11 +159,11 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
         return false;
     db_.query(sql, res);
     if(res.numRows() == 0) {
-        LOG(INFO) << "get none info for masternode <" << txid << ":" << voutid << ">";
+        LOG(INFO) << "UlordServer::SelectMNData:get none info for masternode <" << txid << ":" << voutid << ">";
         return false;
     }
     if(res.numRows() > 1)
-        LOG(WARNING) << "get" << res.numRows() << " infos for masternode <" << txid << ":" << voutid << ">";
+        LOG(WARNING) << "UlordServer::SelectMNData:get" << res.numRows() << " infos for masternode <" << txid << ":" << voutid << ">";
     
     char **row = res.nextRow();
     CMstNodeData mstnode;
@@ -183,7 +183,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
 
         CKey mnpriv;
         if(!privSendSigner.GetKeysFromSecret(mstnode._privkey, mnpriv, mstnode._pubkey)) {
-            LOG(INFO) << "DBWatcher::SelectMNData:masternode <" <<mstnode._txid << ":" <<mstnode._voutid << "> private key string " << mstnode._privkey << " is invalid!";
+            LOG(INFO) << "UlordServer::SelectMNData:masternode <" <<mstnode._txid << ":" <<mstnode._voutid << "> private key string " << mstnode._privkey << " is invalid!";
             row = res.nextRow();
             continue;
         }
