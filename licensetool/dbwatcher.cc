@@ -59,6 +59,7 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
         CKey mnpriv;
         if(!privSendSigner.GetKeysFromSecret(mstnode._privkey, mnpriv, mstnode._pubkey)) {
             LOG(INFO) << "DBWatcher::SelectMNData:masternode <" <<mstnode._txid << ":" <<mstnode._voutid << "> private key string " << mstnode._privkey << " is invalid!";
+            row = res.nextRow();
             continue;
         }
         vecnode.push_back(mstnode);
@@ -149,8 +150,10 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
     char **row = res.nextRow();
     CMstNodeData mstnode;
     while(row != nullptr) {
-        if(row[0] == NULL || row[1] == NULL || row[2] == NULL)
+        if(row[0] == NULL || row[1] == NULL || row[2] == NULL) {
+            row = res.nextRow();
             continue;
+        }
         mstnode._txid       = row[0];
         mstnode._voutid     = atoi(row[1]);
         mstnode._privkey    = row[2];
@@ -164,6 +167,7 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
         CKey mnpriv;
         if(!privSendSigner.GetKeysFromSecret(mstnode._privkey, mnpriv, mstnode._pubkey)) {
             LOG(INFO) << "DBWatcher::SelectMNData:masternode <" <<mstnode._txid << ":" <<mstnode._voutid << "> private key string " << mstnode._privkey << " is invalid!";
+            row = res.nextRow();
             continue;
         }
         vecnode.push_back(mstnode);

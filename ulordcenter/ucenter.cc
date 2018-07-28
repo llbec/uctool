@@ -184,6 +184,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
         CKey mnpriv;
         if(!privSendSigner.GetKeysFromSecret(mstnode._privkey, mnpriv, mstnode._pubkey)) {
             LOG(INFO) << "DBWatcher::SelectMNData:masternode <" <<mstnode._txid << ":" <<mstnode._voutid << "> private key string " << mstnode._privkey << " is invalid!";
+            row = res.nextRow();
             continue;
         }
         mn = mstnode;
