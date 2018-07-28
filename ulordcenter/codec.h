@@ -37,8 +37,8 @@ class LengthHeaderCodec : boost::noncopyable
       const int32_t len =  muduo::net::sockets::networkToHost32(be321);
       //assert(len==be32);
       if(len!=be32) {
-	LOG(FATAL) << "should not be here len=" << len << " be32=" << be32;
-	}
+        LOG(FATAL) << "should not be here len=" << len << " be32=" << be32;
+      }
 
       if (len > 65536 || len < 0)
       {

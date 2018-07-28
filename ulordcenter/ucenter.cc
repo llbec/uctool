@@ -50,7 +50,10 @@ void UlordServer::onConnection(const TcpConnectionPtr & conn)
 
 void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::string & message, Timestamp time)
 {
-    LOG(INFO) << "receive msg  "<< message.size(); 
+    uint32_t expectlen = GetArg("-requestlen",137);
+    LOG(INFO) << "receive msg  "<< message.size() << " ,expect length is " << expectlen;
+    if(message.size() != expectlen)
+        return;
     
     //ParseQuest
     std::vector<CMstNodeData> vecnode;
