@@ -1,8 +1,9 @@
 # ulordtool
 
 Prepare:
+---------------
+**install mysql**
 
-install mysql
 ```bash
 sudo apt-get install mysql-server
 sudo apt install mysql-client
@@ -10,7 +11,7 @@ sudo apt install libmysqlclient-dev
 sudo apt-get install  libmysqlcppconn-dev
 ```
 
-install glog
+**install glog**
 ```bash
 git clone https://github.com/google/glog.git
 cd glog
@@ -20,10 +21,10 @@ make
 make install
 ```
 
-download UlordChain & compiles
+**download UlordChain & compiles**
 https://github.com/UlordChain/UlordChain.git
 
-create mysql table
+**create mysql table**
 ```bash
 CREATE TABLE udevforums_major_node_bind (
 	id BIGINT (20) NOT NULL AUTO_INCREMENT COMMENT "主键ID",
