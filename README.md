@@ -41,7 +41,7 @@ CREATE TABLE udevforums_major_node_bind (
 	certificate VARCHAR (255) DEFAULT NULL COMMENT "证书",
 	ut_addr VARCHAR (255) DEFAULT NULL COMMENT "Ulord地址",
 	balance DECIMAL (20, 5) DEFAULT "0.00000" COMMENT "主节点锁定币的数量",
-    remark VARCHAR (255) DEFAULT NULL COMMENT "绑定确认失败原因",
+        remark VARCHAR (255) DEFAULT NULL COMMENT "绑定确认失败原因",
 	audit_num INT (3) NOT NULL DEFAULT "0" COMMENT "绑定确认次数",
 	auditor VARCHAR (32) DEFAULT NULL COMMENT "绑定确认审核人",
 	gmt_audit BIGINT (20) DEFAULT NULL COMMENT "绑定确认审核时间",
