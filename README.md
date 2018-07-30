@@ -63,4 +63,4 @@ cmake -DCHAIN_SRC_ROOT={UlordChain Path} ..
 ```
 
 ### configure & log file
-path: /home/*username*/.uttool
+path: /home/*{username}*/.uttool
