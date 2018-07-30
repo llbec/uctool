@@ -10,6 +10,7 @@ sudo apt install mysql-client
 sudo apt install libmysqlclient-dev
 sudo apt-get install  libmysqlcppconn-dev
 ```
+Optional, if without ulordcenter & licensetool, can skip this step.
 
 **install glog**
 ```bash
