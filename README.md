@@ -1,8 +1,8 @@
 # ulordtool
 
-Prepare:
----------------
-**install mysql**
+## Prepare:
+
+### install mysql
 
 ```bash
 sudo apt-get install mysql-server
@@ -12,7 +12,7 @@ sudo apt-get install  libmysqlcppconn-dev
 ```
 Optional, if without ulordcenter & licensetool, can skip this step.
 
-**install glog**
+### install glog
 ```bash
 git clone https://github.com/google/glog.git
 cd glog
@@ -22,10 +22,10 @@ make
 make install
 ```
 
-**download UlordChain & compiles**
+### download UlordChain & compiles
 https://github.com/UlordChain/UlordChain.git
 
-**create mysql table**
+### create mysql table
 ```bash
 CREATE TABLE udevforums_major_node_bind (
 	id BIGINT (20) NOT NULL AUTO_INCREMENT COMMENT "主键ID",
@@ -52,4 +52,12 @@ CREATE TABLE udevforums_major_node_bind (
 	PRIMARY KEY (id),
 	UNIQUE KEY trade_vin (trade_txid, trade_vout_no)
 ) ENGINE = INNODB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COMMENT = "主节点绑定表";
+```
+### ulordtool
+```bash
+git clone https://github.com/pazzaBec/ulordtool.git
+cd ulordtool
+mkdir build
+cd build
+cmake -DCHAIN_SRC_ROOT={UlordChain Path} ..
 ```
