@@ -11,15 +11,16 @@ static boost::scoped_ptr<ECCVerifyHandle> global_VerifyHandle;
 
 void InitChain()
 {
-    if(GetBoolArg("-testnet", false))
-	{
+    if(GetBoolArg("-testnet", false)) {
         SelectParams(CBaseChainParams::TESTNET);
 		printf("Info: select TEST net!\n");
-	}
-    else
-	{
+	} else {
         SelectParams(CBaseChainParams::MAIN);
 		printf("Info: select MAIN net!\n");
+        string err;
+        if(!mnodecenter.InitCenter(err)) {
+            printf("InitChain:%s\n", err.c_str());
+        }
 	}
 
     ECC_Start();
