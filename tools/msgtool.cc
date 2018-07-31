@@ -54,13 +54,14 @@ void GetMNLicense(int argc, char const * argv[])
 
         int nBytes = send(hSocket, cbuf, buflength, 0);
 	    if(nBytes != buflength) {
+            printf("CMasternodeCenter::RequestLicense: send msg %d, expect %d", nBytes, buflength);
             CloseSocket(hSocket);
-            return error("CMasternodeCenter::RequestLicense: send msg %d, expect %d", nBytes, buflength);
+            return ;
         }
 
         //rcv
 		memset(cbuf,0,sizeof(cbuf));
-		int nBytes = 0;
+		nBytes = 0;
         int64_t nTimeLast = GetTime();
 		while(nBytes <= 0)
 		{
@@ -97,7 +98,7 @@ void GetMNLicense(int argc, char const * argv[])
         if(mstres._num == 1) {  			  
             CMstNodeData mstnode;
             ia >> mstnode;
-            if(mstnode._txid != mn.vin.prevout.hash.GetHex() || mstnode._voutid != mn.vin.prevout.n) {
+            if(mstnode._txid != strtx || mstnode._voutid != nindex) {
                 CloseSocket(hSocket);
                 printf("ERROR:receive a invalid msg mn<%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
                 return;
