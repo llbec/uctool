@@ -8,6 +8,8 @@
 #include <boost/log/trivial.hpp>  
 #include <boost/lexical_cast.hpp>  
 #include <boost/algorithm/string.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 
 using namespace std;
 
@@ -24,16 +26,21 @@ void GetMNLicense(int argc, char const * argv[])
         GetMNLicenseHelp();
         return;
     }
+    const int mstnd_iReqBufLen = 600;
+    const int mstnd_iReqMsgHeadLen = 4;
+    const int mstnd_iReqMsgTimeout = 10;
+
+    char cbuf[mstnd_iReqBufLen];
+    memset(cbuf,0,sizeof(cbuf));
+
     string strtx = argv[2];
     uint32_t nindex = atoi(argv[3]);
-    uint256 txhash;
-    txhash.SetHex(strtx);
 
     mstnodequest mstquest(111,MST_QUEST_ONE);
-
-    CMasternode mn;
-    COutPoint mncoin(txhash, nindex);
-    mn.vin.prevout = mncoin;
+    mstquest._timeStamps = GetTime();
+	mstquest._txid = strtx;
+	mstquest._voutid = nindex;
+    int buflength = mstquest.GetMsgBuf(cbuf);
 
     bool proxyConnectionFailed = false;
 	SOCKET hSocket;
@@ -45,17 +52,13 @@ void GetMNLicense(int argc, char const * argv[])
             return;
         }
 
-        if(!SendRequestNsg(hSocket, mn, mstquest)) {
+        int nBytes = send(hSocket, cbuf, buflength, 0);
+	    if(nBytes != buflength) {
             CloseSocket(hSocket);
-            printf("send RequestMsgType error\n");
-            return;
+            return error("CMasternodeCenter::RequestLicense: send msg %d, expect %d", nBytes, buflength);
         }
 
         //rcv
-        const int mstnd_iReqBufLen = 600;
-        const int mstnd_iReqMsgHeadLen = 4;
-        const int mstnd_iReqMsgTimeout = 10;
-        char cbuf[mstnd_iReqBufLen];
 		memset(cbuf,0,sizeof(cbuf));
 		int nBytes = 0;
         int64_t nTimeLast = GetTime();
