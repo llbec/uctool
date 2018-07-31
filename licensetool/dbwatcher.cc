@@ -8,6 +8,7 @@
 using namespace std;
 
 DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
+licversion_(GetArg("-licversion",1)),
 watcherKey_(priv),
 licPeriodLimit_(GetArg("-periodunit",86400)*GetArg("-periodlimit",30)),
 needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
@@ -62,6 +63,7 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
             row = res.nextRow();
             continue;
         }
+        mstnode._licversion = licversion_;
         vecnode.push_back(mstnode);
         //printf("DBReadMNInfo: get masternode <%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
 
@@ -177,6 +179,7 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
             row = res.nextRow();
             continue;
         }
+        mstnode._licversion = licversion_;
         vecnode.push_back(mstnode);
         //printf("DBReadMNInfo: get masternode <%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
 

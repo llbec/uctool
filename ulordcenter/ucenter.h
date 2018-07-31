@@ -34,6 +34,7 @@ private:
     WeakConnectionList connectionList_;
     std::string tablename_;
     const CKey ucenterKey_;
+    const int licversion_;
     MySQLConnection db_;
 public:
     UlordServer(EventLoop* loop, int idleSeconds, const InetAddress& listenAddr, const CKey priv, const MysqlConnectInfo & ptrDBInfo);

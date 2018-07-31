@@ -55,6 +55,7 @@ private:
         TB_EXT
     };
     std::string tablename_;
+    const int licversion_;
     const CKey watcherKey_;
     const int64_t licPeriodLimit_;
     const int64_t needUpdatePeriod_;

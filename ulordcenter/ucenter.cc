@@ -20,6 +20,7 @@ idleSeconds_(idleSeconds),
 server_(loop, listenAddr, "UlordServer"),
 codec_(boost::bind(&UlordServer::onStringMessage, this, _1, _2, _3)),
 ucenterKey_(priv),
+licversion_(GetArg("-licversion",1)),
 db_(ptrDBInfo)
 {
     server_.setConnectionCallback(boost::bind(&UlordServer::onConnection, this, _1));
@@ -70,7 +71,6 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         if(vecnode.size()==0) {
             CMstNodeData node(0,mstquest._txid, mstquest._voutid);
             node._status = 0;
-            node._validflag = 0;
             vecnode.push_back(node);
         }
     } if(mstquest._questtype == MST_QUEST_ALL) {
@@ -191,7 +191,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
             continue;
         }
         mn = mstnode;
-        mn._validflag = 1;
+        mn._licversion = licversion_;;
         result = true;
         break;
     }
