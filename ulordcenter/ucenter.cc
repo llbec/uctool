@@ -74,7 +74,8 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
             vecnode.push_back(node);
         }
         mstnoderes  mstres(mstquest._msgversion);
-        mstres._num= vecnode.size();
+        mstres._num = vecnode.size();
+        mstres._nodetype = MST_QUEST_ONE;
         strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
         std::ostringstream os;
         boost::archive::binary_oarchive oa(os);
@@ -87,6 +88,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
     } else if (mstquest._questtype == MST_QUEST_KEY) {
         mstnoderes  mstres(mstquest._msgversion);
         mstres._num= mapUCenterkey_.size();
+        mstres._nodetype = MST_QUEST_KEY;
         strinfo = Strings::Format("Send msg: %d ucenter keys\n", mstres._num);
         std::ostringstream os;
         boost::archive::binary_oarchive oa(os);
