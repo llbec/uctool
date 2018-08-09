@@ -30,6 +30,12 @@ void GetMNLicense(int argc, char const * argv[])
     const int mstnd_iReqMsgHeadLen = 4;
     const int mstnd_iReqMsgTimeout = 10;
 
+    string strService = GetArg("-ucenterserver", "");
+    if(strService.empty()) {
+        printf("Configure server ip and port in ulordtool.conf frist! Example:ucenterserver=127.0.0.1:5009\n");
+        return;
+    }
+
     char cbuf[mstnd_iReqBufLen];
     memset(cbuf,0,sizeof(cbuf));
 
@@ -44,7 +50,7 @@ void GetMNLicense(int argc, char const * argv[])
 
     bool proxyConnectionFailed = false;
 	SOCKET hSocket;
-    CService tService = CService(GetArg("-ucenterserver", "10.175.0.211:5009"));
+    CService tService = CService(strService);
     if(ConnectSocket(tService, hSocket, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
         if (!IsSelectableSocket(hSocket)) {
             printf("Cannot create connection: non-selectable socket created (fd >= FD_SETSIZE ?)\n");

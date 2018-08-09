@@ -20,6 +20,10 @@ class UlordServer : boost::noncopyable
 public:
     typedef boost::weak_ptr<TcpConnection> WeakTcpConnectionPtr;
     typedef std::list<WeakTcpConnectionPtr> WeakConnectionList;
+    typedef std::map <int, CKey> map_int_key_t;
+    typedef std::pair <int, CKey> pair_int_key_t;
+    typedef typename map_int_key_t::iterator map_int_key_it;
+    typedef typename map_int_key_t::const_iterator map_int_key_cit;
 private:
     struct Node : public muduo::copyable
     { 
@@ -33,11 +37,11 @@ private:
     ConnectionList connections_;
     WeakConnectionList connectionList_;
     std::string tablename_;
-    const CKey ucenterKey_;
     const int licversion_;
     MySQLConnection db_;
+    map_int_key_t mapUCenterkey_;
 public:
-    UlordServer(EventLoop* loop, int idleSeconds, const InetAddress& listenAddr, const CKey priv, const MysqlConnectInfo & ptrDBInfo);
+    UlordServer(EventLoop* loop, int idleSeconds, const InetAddress& listenAddr, const MysqlConnectInfo & ptrDBInfo);
     void setThreadNum(int numThreads) { server_.setThreadNum(numThreads); }
     void start() { server_.start(); }
 private:
@@ -48,6 +52,7 @@ private:
     void dumpConnectionList() const;
     bool IsDBOnline();
     bool SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn);
+    bool InitUCenterKey();
 };
 
 #endif // MYSQL_ENABLE

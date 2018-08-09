@@ -54,10 +54,10 @@ private:
         TB_PERIOD,
         TB_EXT
     };
-    typedef std::map <int, CKey> map_t;
-    typedef std::pair <int, CKey> pair_t;
-    typedef typename map_t::iterator map_it;
-    typedef typename map_t::const_iterator map_cit;
+    typedef std::map <int, CKey> map_int_key_t;
+    typedef std::pair <int, CKey> pair_int_key_t;
+    typedef typename map_int_key_t::iterator map_int_key_it;
+    typedef typename map_int_key_t::const_iterator map_int_key_cit;
 
     std::string tablename_;
     const int licversion_;
@@ -65,7 +65,7 @@ private:
     const int64_t needUpdatePeriod_;
     const int64_t runInterval_;
     MySQLConnection db_;
-    map_t mapWatcherkey_;
+    map_int_key_t mapWatcherkey_;
     int keyVersion_;
 public:
     DBWatcher(const MysqlConnectInfo & ptrDBInfo);

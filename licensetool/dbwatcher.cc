@@ -222,7 +222,7 @@ bool DBWatcher::InitWatcherKey()
             printf("Invalid ulord center private key in the configuration! %s\n", strWatcherKey.c_str());
             return false;
         }
-        mapWatcherkey_.insert(pair_t(keyVersion, privkey));
+        mapWatcherkey_.insert(pair_int_key_t(keyVersion, privkey));
         keyVersion_ = keyVersion;
         LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strWatcherKey << ">";
         keyVersion++;

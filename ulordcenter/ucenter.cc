@@ -15,11 +15,10 @@ using namespace muduo;
 using namespace muduo::net;
 using namespace boost;
 
-UlordServer::UlordServer(EventLoop * loop, int idleSeconds, const InetAddress & listenAddr, const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
+UlordServer::UlordServer(EventLoop * loop, int idleSeconds, const InetAddress & listenAddr, const MysqlConnectInfo & ptrDBInfo) :
 idleSeconds_(idleSeconds),
 server_(loop, listenAddr, "UlordServer"),
 codec_(boost::bind(&UlordServer::onStringMessage, this, _1, _2, _3)),
-ucenterKey_(priv),
 licversion_(GetArg("-licversion",1)),
 db_(ptrDBInfo)
 {
@@ -57,6 +56,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         return;
     
     //ParseQuest
+    std::string strinfo;
     std::vector<CMstNodeData> vecnode;
     mstnodequest  mstquest;
     std::istringstream is(message);  
@@ -73,22 +73,33 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
             node._status = 0;
             vecnode.push_back(node);
         }
-    } if(mstquest._questtype == MST_QUEST_ALL) {
-        LOG(WARNING) << "Rcv MST_QUEST_ALL msg and return.";
+        mstnoderes  mstres(mstquest._msgversion);
+        mstres._num= vecnode.size();
+        strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
+        std::ostringstream os;
+        boost::archive::binary_oarchive oa(os);
+        oa<<mstres;
+        for(auto & node : vecnode)
+        {
+            strinfo += Strings::Format("\t<%s:%d-%s> %s - %ld\n", node._txid.c_str(), node._voutid, HexStr(node._pubkey).c_str(), node._licence.c_str(), node._licperiod);
+            oa << node;
+        }
+    } else if (mstquest._questtype == MST_QUEST_KEY) {
+        mstnoderes  mstres(mstquest._msgversion);
+        mstres._num= mapUCenterkey_.size();
+        strinfo = Strings::Format("Send msg: %d ucenter keys\n", mstres._num);
+        std::ostringstream os;
+        boost::archive::binary_oarchive oa(os);
+        oa<<mstres;
+        for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
+        {
+            CcenterKeyData keyPair(it->frist, it->second);
+            strinfo += Strings::Format("\t<%d:%s>\n", it->frist, it->second);
+            oa << keyPair;
+        }
+    } else {
+        LOG(INFO) << "Unknown Msg";
         return;
-    }
-
-    std::string strinfo;
-    mstnoderes  mstres(mstquest._msgversion);
-    mstres._num= vecnode.size();
-    strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
-    std::ostringstream os;
-    boost::archive::binary_oarchive oa(os);
-    oa<<mstres;
-    for(auto & node : vecnode)
-    {
-        strinfo += Strings::Format("\t<%s:%d-%s> %s - %ld\n", node._txid.c_str(), node._voutid, HexStr(node._pubkey).c_str(), node._licence.c_str(), node._licperiod);
-        oa << node;
     }
     LOG(INFO) << strinfo;
     std::string content = os.str();
@@ -196,5 +207,38 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
         break;
     }
     return result;
+}
+
+bool UlordServer::InitUCenterKey()
+{
+    char cKeyVersion[20];
+    int keyVersion = 1;
+    std::string strKey;
+    
+    while(true)
+    {
+        memset(cKeyVersion, 0, sizeof(cKeyVersion));
+        sprintf(cKeyVersion, "-privkey%d", keyVersion);
+        strKey = GetArg(std::string(cKeyVersion), "");
+        if(strKey.empty()) {
+            break;
+        }
+
+        CKey privkey;
+        CPubKey pubkey;
+        if(!privSendSigner.GetKeysFromSecret(strKey, privkey, pubkey)) {
+            printf("Invalid ulord center private key in the configuration! %s\n", strKey.c_str());
+            return false;
+        }
+        mapUCenterkey_.insert(pair_int_key_t(keyVersion, privkey));
+        //keyVersion_ = keyVersion;
+        LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strKey << ">";
+        keyVersion++;
+    }
+    if(mapUCenterkey_.size() == 0) {
+        printf("You must specify a Ulord Center privkey in the configuration.! example privkey1=123qwe\n");
+        return false;
+    }
+    return true;
 }
 #endif // MYSQL_ENABLE
