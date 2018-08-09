@@ -34,18 +34,6 @@ int main(int argc, char const *argv[])
 	LoadConfigFile(mapArgs, mapMultiArgs);
     InitChain();
     InitLog(argv);
-    CKey ucenterPrivkey;
-    CPubKey ucenterPubkey;
-    std::string strUCenterPrivKey = GetArg("-privkey", "");
-    if(!strUCenterPrivKey.empty()) {
-        if(!privSendSigner.GetKeysFromSecret(strUCenterPrivKey, ucenterPrivkey, ucenterPubkey)) {
-            printf("Invalid ulord center private key in the configuration!\n");
-            return -1;
-        }
-    } else {
-        printf("You must specify a Ulord Center privkey in the configuration.!\n");
-        return -1;
-    }
 
 	MysqlConnectInfo * ptrDBInfo = new MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"),
 														GetArg("-dbport", 3306),
@@ -53,11 +41,14 @@ int main(int argc, char const *argv[])
                                         				GetArg("-dbpwd", "123456"),
                                         				GetArg("-dbname", "mysql"));
 
-    DBWatcher watcher = DBWatcher(ucenterPrivkey, *ptrDBInfo);
-    vector<CMstNodeData> vecnode;
+    DBWatcher watcher = DBWatcher(*ptrDBInfo);
+    if(!watcher.InitWatcherKey())
+        return -1;
 
     if(argc > 1)
     {
+        vector<CMstNodeData> vecnode;
+
         if("test" == string(argv[1]))
         {
             if(!watcher.IsDBOnline()) {

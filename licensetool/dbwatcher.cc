@@ -7,9 +7,8 @@
 
 using namespace std;
 
-DBWatcher::DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo) :
+DBWatcher::DBWatcher(const MysqlConnectInfo & ptrDBInfo) :
 licversion_(GetArg("-licversion",1)),
-watcherKey_(priv),
 licPeriodLimit_(GetArg("-periodunit",86400)*GetArg("-periodlimit",30)),
 needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
 runInterval_(GetArg("-runinterval",60000)),
@@ -110,9 +109,11 @@ bool DBWatcher::SignMNLicense(CMstNodeData & mn)
     mn._licperiod = tnow + licPeriodLimit_;
     if(mn._licperiod > mn._nodeperiod)
         mn._licperiod = mn._nodeperiod;
+    
+    mn._licversion = keyVersion_;
 
-    if(!watcherKey_.SignCompact(mn.GetLicenseWord(), vchSig)){
-        LOG(INFO) << "sign license failed, privkey = " << HexStr(watcherKey_) << "masternode<" << mn._txid << ":" << mn._voutid << ">";
+    if(!mapWatcherkey_[keyVersion_].SignCompact(mn.GetLicenseWord(), vchSig)){
+        LOG(INFO) << "sign license failed, privkey = " << HexStr(mapWatcherkey_[keyVersion_]) << "masternode<" << mn._txid << ":" << mn._voutid << ">";
         return false;
     }
     mn._licence = EncodeBase64(&vchSig[0], vchSig.size());
@@ -196,5 +197,38 @@ void DBWatcher::Runner()
         UpdateDB(vecnode);
         MilliSleep(runInterval_);
     }
+}
+
+bool DBWatcher::InitWatcherKey()
+{
+    char cKeyVersion[20];
+    int keyVersion = 1;
+    std::string strWatcherKey;
+    
+    while(true)
+    {
+        memset(cKeyVersion, 0, sizeof(cKeyVersion));
+        sprintf(cKeyVersion, "-privkey%d", keyVersion);
+        strWatcherKey = GetArg(std::string(cKeyVersion), "");
+        if(strWatcherKey.empty()) {
+            break;
+        }
+
+        CKey privkey;
+        CPubKey pubkey;
+        if(!privSendSigner.GetKeysFromSecret(strWatcherKey, privkey, pubkey)) {
+            printf("Invalid ulord center private key in the configuration! %s\n", strWatcherKey.c_str());
+            return false;
+        }
+        mapWatcherkey_.insert(pair_t(keyVersion, privkey));
+        keyVersion_ = keyVersion;
+        LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strWatcherKey << ">";
+        keyVersion++;
+    }
+    if(mapWatcherkey_.size() == 0) {
+        printf("You must specify a Ulord Center privkey in the configuration.! example privkey1=123qwe\n");
+        return false;
+    }
+    return true;
 }
 #endif // MYSQL_ENABLE

@@ -54,15 +54,21 @@ private:
         TB_PERIOD,
         TB_EXT
     };
+    typedef std::map <int, CKey> map_t;
+    typedef std::pair <int, CKey> pair_t;
+    typedef typename map_t::iterator map_it;
+    typedef typename map_t::const_iterator map_cit;
+
     std::string tablename_;
     const int licversion_;
-    const CKey watcherKey_;
     const int64_t licPeriodLimit_;
     const int64_t needUpdatePeriod_;
     const int64_t runInterval_;
     MySQLConnection db_;
+    map_t mapWatcherkey_;
+    int keyVersion_;
 public:
-    DBWatcher(const CKey priv, const MysqlConnectInfo & ptrDBInfo);
+    DBWatcher(const MysqlConnectInfo & ptrDBInfo);
     bool IsDBOnline();
     void SelectMNData(std::vector<CMstNodeData> & vecnode);
     bool UpdateMNData(const CMstNodeData & mn);
@@ -71,6 +77,7 @@ public:
     void UpdateDB(std::vector<CMstNodeData> & vecnode);
     void SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode);
     void Runner();
+    bool InitWatcherKey();
 };
 
 #endif // MYSQL_ENABLE
