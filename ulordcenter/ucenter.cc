@@ -95,8 +95,8 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         oa<<mstres;
         for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
         {
-            CcenterKeyData keyPair(it->first, it->second);
-            strinfo += Strings::Format("\t<%d:%s>\n", it->first, it->second);
+            CcenterKeyData keyPair(it->first, CBitcoinSecret(it->second).ToString());
+            strinfo += Strings::Format("\t<%d:%s>\n", it->first, CBitcoinSecret(it->second).ToString());
             oa << keyPair;
         }
     } else {

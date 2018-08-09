@@ -44,6 +44,7 @@ public:
     UlordServer(EventLoop* loop, int idleSeconds, const InetAddress& listenAddr, const MysqlConnectInfo & ptrDBInfo);
     void setThreadNum(int numThreads) { server_.setThreadNum(numThreads); }
     void start() { server_.start(); }
+    bool InitUCenterKey();
 private:
     void onConnection(const TcpConnectionPtr& conn);
     void onMessage(const TcpConnectionPtr & tcpcli, Buffer * buf, Timestamp time){}
@@ -52,7 +53,6 @@ private:
     void dumpConnectionList() const;
     bool IsDBOnline();
     bool SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn);
-    bool InitUCenterKey();
 };
 
 #endif // MYSQL_ENABLE
