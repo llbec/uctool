@@ -130,6 +130,8 @@ void DBWatcher::UpdateDB(std::vector<CMstNodeData> & vecnode)
         if(SignMNLicense(mn)) {
             if(!UpdateMNData(mn))
                 LOG(INFO) << "UpdateMNData failed, masternode<" << mn._txid << ":" << mn._voutid << ">";
+            else
+                LOG(INFO) << "UpdateMNData success, masternode<" << mn._txid << ":" << mn._voutid << ">";
         }
     }
 }
