@@ -56,6 +56,8 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         return;
     
     //ParseQuest
+    std::ostringstream os;
+    boost::archive::binary_oarchive oa(os);
     std::string strinfo;
     std::vector<CMstNodeData> vecnode;
     mstnodequest  mstquest;
@@ -77,8 +79,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         mstres._num = vecnode.size();
         mstres._nodetype = MST_QUEST_ONE;
         strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
-        std::ostringstream os;
-        boost::archive::binary_oarchive oa(os);
+        
         oa<<mstres;
         for(auto & node : vecnode)
         {
@@ -90,8 +91,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         mstres._num= mapUCenterkey_.size();
         mstres._nodetype = MST_QUEST_KEY;
         strinfo = Strings::Format("Send msg: %d ucenter keys\n", mstres._num);
-        std::ostringstream os;
-        boost::archive::binary_oarchive oa(os);
+
         oa<<mstres;
         for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
         {
