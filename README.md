@@ -71,4 +71,6 @@ make -j2
 configure file path: /home/*username*/.uttool/
 
 ## Run:
-How to use licensetool [here](./licensetool/README.md)
+[licensetool introduce](./licensetool/README.md)
+[ulordcenter introduce](./ulordcenter/README.md)
+[tools introduce](./tools/README.md)
