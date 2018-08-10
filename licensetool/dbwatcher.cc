@@ -11,7 +11,7 @@ DBWatcher::DBWatcher(const MysqlConnectInfo & ptrDBInfo) :
 licversion_(GetArg("-licversion",1)),
 licPeriodLimit_(GetArg("-periodunit",86400)*GetArg("-periodlimit",30)),
 needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
-runInterval_(GetArg("-runinterval",60000)),
+runInterval_(GetArg("-runinterval",60)),
 db_(ptrDBInfo)
 {
     tablename_ = GetArg("-dbtable","udevforums_major_node_bind");
@@ -192,12 +192,12 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
 void DBWatcher::Runner()
 {
     vector<CMstNodeData> vecnode;
-    printf("Runner inerval is %ld ms, update time=%ld s, license period=%ld s\n", runInterval_, needUpdatePeriod_, licPeriodLimit_);
+    printf("Runner inerval is %ld s, update time=%ld s, license period=%ld s\n", runInterval_, needUpdatePeriod_, licPeriodLimit_);
     while(true) {
         vecnode.clear();
         SelectNeedUpdateMNData(vecnode);
         UpdateDB(vecnode);
-        MilliSleep(runInterval_);
+        MilliSleep(runInterval_*1000);
     }
 }
 
