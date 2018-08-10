@@ -53,14 +53,19 @@ make install
 ### download UlordChain & compiles
 https://github.com/UlordChain/UlordChain.git
 
+##Compile:
+
 ### ulordtool
 ```bash
 git clone https://github.com/pazzaBec/ulordtool.git
 cd ulordtool
 mkdir build
 cd build
-cmake -DCHAIN_SRC_ROOT={UlordChain Path} ..
+cmake -DCHAIN_SRC_ROOT=UlordChain-Path ..
+make -j2
 ```
 
+##Configure:
+
 ### configure & log file
-path: /home/*{username}*/.uttool
+configure file path: /home/*username*/.uttool/
