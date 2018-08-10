@@ -49,7 +49,6 @@ void AskLicense(int argc, char const * argv[])
             CMstNodeData mstnode;
             ia >> mstnode;
             if(mstnode._txid != strtx || mstnode._voutid != nindex) {
-                CloseSocket(hSocket);
                 printf("ERROR:receive a invalid msg mn<%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
                 return;
             }
@@ -102,7 +101,7 @@ bool MSTRequest(const mstnodequest & tAsk, std::string & strResult)
     string strService = GetArg("-ucenterserver", "");
     if(strService.empty()) {
         printf("Configure server ip and port in ulordtool.conf frist! Example:ucenterserver=127.0.0.1:5009\n");
-        return;
+        return false;
     }
     CService tService = CService(strService);
     SOCKET tConnect;
@@ -110,7 +109,7 @@ bool MSTRequest(const mstnodequest & tAsk, std::string & strResult)
     char cbuf[mstnd_iReqBufLen];
     memset(cbuf,0,sizeof(cbuf));
 
-    int buflength = mstquest.GetMsgBuf(cbuf);
+    int buflength = tAsk.GetMsgBuf(cbuf);
 
     if(ConnectSocket(tService, tConnect, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
         if (!IsSelectableSocket(tConnect)) {
@@ -135,7 +134,7 @@ bool MSTRequest(const mstnodequest & tAsk, std::string & strResult)
             if((GetTime() - nTimeLast) >= mstnd_iReqMsgTimeout) {
                 CloseSocket(tConnect);
                 printf("Error: wait for ack message timeout\n");
-                return;
+                return false;
             }
         }
         if(nBytes > mstnd_iReqBufLen) {
