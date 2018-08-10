@@ -20,7 +20,8 @@ void ShowCmds(int argc, char const *argv[])
 
 void RegisterCmd()
 {
-    mapCommand.insert(make_pair("getmnlicense", &GetMNLicense));
+    mapCommand.insert(make_pair("asklicense", &AskLicense));
+    mapCommand.insert(make_pair("askkeyversion", &AskKeyVersion));
 }
 
 static boost::scoped_ptr<ECCVerifyHandle> global_VerifyHandle;

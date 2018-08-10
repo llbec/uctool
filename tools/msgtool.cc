@@ -15,29 +15,17 @@ using namespace std;
 
 void GetMNLicenseHelp()
 {
-    cout << "Command \"getmnlicense\" example :" << endl << endl
-        << "getmnlicense txid voutid ..." << endl
-		<< "getmnlicense \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
+    cout << "Command \"asklicense\" example :" << endl << endl
+        << "asklicense txid voutid ..." << endl
+		<< "asklicense \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
 }
 
-void GetMNLicense(int argc, char const * argv[])
+void AskLicense(int argc, char const * argv[])
 {
     if(argc < 4) {
         GetMNLicenseHelp();
         return;
     }
-    const int mstnd_iReqBufLen = 600;
-    const int mstnd_iReqMsgHeadLen = 4;
-    const int mstnd_iReqMsgTimeout = 10;
-
-    string strService = GetArg("-ucenterserver", "");
-    if(strService.empty()) {
-        printf("Configure server ip and port in ulordtool.conf frist! Example:ucenterserver=127.0.0.1:5009\n");
-        return;
-    }
-
-    char cbuf[mstnd_iReqBufLen];
-    memset(cbuf,0,sizeof(cbuf));
 
     string strtx = argv[2];
     uint32_t nindex = atoi(argv[3]);
@@ -46,62 +34,16 @@ void GetMNLicense(int argc, char const * argv[])
     mstquest._timeStamps = GetTime();
 	mstquest._txid = strtx;
 	mstquest._voutid = nindex;
-    int buflength = mstquest.GetMsgBuf(cbuf);
 
-    bool proxyConnectionFailed = false;
-	SOCKET hSocket;
-    CService tService = CService(strService);
-    if(ConnectSocket(tService, hSocket, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
-        if (!IsSelectableSocket(hSocket)) {
-            printf("Cannot create connection: non-selectable socket created (fd >= FD_SETSIZE ?)\n");
-            CloseSocket(hSocket);
-            return;
-        }
+    mstnoderes  mstres;
+    string strRev;
 
-        int nBytes = send(hSocket, cbuf, buflength, 0);
-	    if(nBytes != buflength) {
-            printf("CMasternodeCenter::RequestLicense: send msg %d, expect %d", nBytes, buflength);
-            CloseSocket(hSocket);
-            return ;
-        }
-
-        //rcv
-		memset(cbuf,0,sizeof(cbuf));
-		nBytes = 0;
-        int64_t nTimeLast = GetTime();
-		while(nBytes <= 0)
-		{
-            nBytes = recv(hSocket, cbuf, sizeof(cbuf), 0);
-            if((GetTime() - nTimeLast) >= mstnd_iReqMsgTimeout) {
-                CloseSocket(hSocket);
-                printf("Error: wait for ack message timeout\n");
-                return;
-            }
-        }
-        if(nBytes > mstnd_iReqBufLen) {
-            CloseSocket(hSocket);
-            printf("Error: msg have too much bytes %d, need increase rcv buf size\n", nBytes);
-            return;
-        }
-
-        int msglen = 0;
-        memcpy(&msglen, cbuf, mstnd_iReqMsgHeadLen);
-        msglen = HNSwapl(msglen);
-
-        if(msglen != nBytes - mstnd_iReqMsgHeadLen) {
-            CloseSocket(hSocket);
-            printf("Error: receive a error msg length is %d, recv bytes is %d\n", msglen, nBytes);
-            return;
-        }
-
-        std::string str(cbuf + mstnd_iReqMsgHeadLen, msglen);
-
-        mstnoderes  mstres;
-        std::istringstream strstream(str);
+    if(MSTRequest(mstquest, strRev)) {
+        std::istringstream strstream(strRev);
         boost::archive::binary_iarchive ia(strstream);
         ia >> mstres;
 
-        if(mstres._num == 1) {  			  
+        if(mstres._num == 1 && mstres._nodetype == MST_QUEST_ONE) {  			  
             CMstNodeData mstnode;
             ia >> mstnode;
             if(mstnode._txid != strtx || mstnode._voutid != nindex) {
@@ -109,15 +51,113 @@ void GetMNLicense(int argc, char const * argv[])
                 printf("ERROR:receive a invalid msg mn<%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
                 return;
             }
-
             printf("Info:Receive MasterNode<%s:%d> certificate %s time = %ld\n", mstnode._txid.c_str(), mstnode._voutid, mstnode._licence.c_str(), mstnode._licperiod);
-
-            /*if(!mstnode.VerifyLicense()) {
-                printf("ERROR: verify license failed\n");
-                return;
-            }*///without pubkey & privkey 
+        } else {
+            printf("Error: receive a invalid msg! num=%d, type=%d\n", mstres._num, mstres._nodetype);
         }
-	}
-    CloseSocket(hSocket);
+    }
     return;
+}
+
+void AskKeyVersion(int argc, char const * argv[])
+{
+    mstnodequest mstquest(111,MST_QUEST_KEY);
+    mstquest._timeStamps = GetTime();
+	mstquest._txid = uint256().GetHex();
+	mstquest._voutid = 0;
+
+    mstnoderes  mstres;
+    string strRev;
+
+    if(MSTRequest(mstquest, strRev)) {
+        std::istringstream strstream(strRev);
+        boost::archive::binary_iarchive ia(strstream);
+        ia >> mstres;
+
+        if(mstres._nodetype == MST_QUEST_KEY) {
+            string output = Strings::Format("Info: Receive %d pairs Key&Version:\n",mstres._num);
+            for(int i = 0; i < mstres._num; i++)
+            {
+                CcenterKeyData keynode;
+                ia >> keynode;
+                Strings::Append(output, "\t<%d:%s>\n", keynode._keyversion, keynode._key.c_str());
+            }
+            printf("%s", output.c_str());
+        } else {
+            printf("Error: receive a invalid msg! type=%d\n", mstres._nodetype);
+        }
+    }
+    return;
+}
+
+bool MSTRequest(const mstnodequest & tAsk, std::string & strResult)
+{
+    const int mstnd_iReqBufLen = 600;
+    const int mstnd_iReqMsgHeadLen = 4;
+    const int mstnd_iReqMsgTimeout = 10;
+    bool proxyConnectionFailed = false;
+
+    string strService = GetArg("-ucenterserver", "");
+    if(strService.empty()) {
+        printf("Configure server ip and port in ulordtool.conf frist! Example:ucenterserver=127.0.0.1:5009\n");
+        return;
+    }
+    CService tService = CService(strService);
+    SOCKET tConnect;
+
+    char cbuf[mstnd_iReqBufLen];
+    memset(cbuf,0,sizeof(cbuf));
+
+    int buflength = mstquest.GetMsgBuf(cbuf);
+
+    if(ConnectSocket(tService, tConnect, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
+        if (!IsSelectableSocket(tConnect)) {
+            printf("Cannot create connection: non-selectable socket created (fd >= FD_SETSIZE ?)\n");
+            CloseSocket(tConnect);
+            return false;
+        }
+
+        int nBytes = send(tConnect, cbuf, buflength, 0);
+	    if(nBytes != buflength) {
+            printf("CMasternodeCenter::RequestLicense: send msg %d, expect %d", nBytes, buflength);
+            CloseSocket(tConnect);
+            return false;
+        }
+
+        memset(cbuf,0,sizeof(cbuf));
+		nBytes = 0;
+        int64_t nTimeLast = GetTime();
+		while(nBytes <= 0)
+		{
+            nBytes = recv(tConnect, cbuf, sizeof(cbuf), 0);
+            if((GetTime() - nTimeLast) >= mstnd_iReqMsgTimeout) {
+                CloseSocket(tConnect);
+                printf("Error: wait for ack message timeout\n");
+                return;
+            }
+        }
+        if(nBytes > mstnd_iReqBufLen) {
+            CloseSocket(tConnect);
+            printf("Error: msg have too much bytes %d, need increase rcv buf size\n", nBytes);
+            return false;
+        }
+
+        int msglen = 0;
+        memcpy(&msglen, cbuf, mstnd_iReqMsgHeadLen);
+        msglen = HNSwapl(msglen);
+
+        if(msglen != nBytes - mstnd_iReqMsgHeadLen) {
+            CloseSocket(tConnect);
+            printf("Error: receive a error msg length is %d, recv bytes is %d\n", msglen, nBytes);
+            return false;
+        }
+
+        std::string str(cbuf + mstnd_iReqMsgHeadLen, msglen);
+        strResult = str;
+        CloseSocket(tConnect);
+        return true;
+    }
+    printf("Error: can't connect to %s\n", strService.c_str());
+    CloseSocket(tConnect);
+    return false;
 }
