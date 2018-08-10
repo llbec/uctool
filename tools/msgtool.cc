@@ -13,6 +13,8 @@
 
 using namespace std;
 
+bool MSTRequest(const mstnodequest & tAsk, std::string & strResult);
+
 void GetMNLicenseHelp()
 {
     cout << "Command \"asklicense\" example :" << endl << endl
