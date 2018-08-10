@@ -1,29 +1,55 @@
-mysql table create:
-```bash
-DROP TABLE IF EXISTS udevforums_major_node_bind;
-CREATE TABLE udevforums_major_node_bind (
-	id BIGINT (20) NOT NULL AUTO_INCREMENT COMMENT "主键ID",
-	gmt_create BIGINT (20) NOT NULL COMMENT "创建时间",
-	gmt_modify BIGINT (20) NOT NULL COMMENT "修改时间",
-	user_id VARCHAR (32) DEFAULT NULL,
-	major_node_nickname VARCHAR (64) DEFAULT NULL COMMENT "主节点昵称",
-	trade_txid VARCHAR (64) DEFAULT NULL COMMENT "1万UT交易ID",
-	trade_vout_no VARCHAR (64) DEFAULT NULL COMMENT "1万UT交易ID对应的Vout序号",
-	ip_address VARCHAR (64) DEFAULT NULL COMMENT "主节点IP地址",
-	special_code VARCHAR (255) DEFAULT NULL COMMENT "主节点特征码",
-	status INT (3) DEFAULT "0" COMMENT "状态,0:绑定中,1:绑定确认成功,2.绑定确认失败",
-	validflag INT (3) DEFAULT "0" COMMENT "有效标志位,0为无效标志，1为有效，不由用户填写",
-	validdate BIGINT (20) DEFAULT "0" COMMENT "签证的有效期 validflag=1 有效,必填",
-	certificate VARCHAR (255) DEFAULT NULL COMMENT "证书",
-	ut_addr VARCHAR (255) DEFAULT NULL COMMENT "Ulord地址",
-	balance DECIMAL (20, 5) DEFAULT "0.00000" COMMENT "主节点锁定币的数量",
-    remark VARCHAR (255) DEFAULT NULL COMMENT "绑定确认失败原因",
-	audit_num INT (3) NOT NULL DEFAULT "0" COMMENT "绑定确认次数",
-	auditor VARCHAR (32) DEFAULT NULL COMMENT "绑定确认审核人",
-	gmt_audit BIGINT (20) DEFAULT NULL COMMENT "绑定确认审核时间",
-	node_period BIGINT (20) DEFAULT NULL COMMENT "节点有效时间",
-	ext_info VARCHAR (255) DEFAULT NULL COMMENT "扩展信息",
-	PRIMARY KEY (id),
-	UNIQUE KEY trade_vin (trade_txid, trade_vout_no)
-) ENGINE = INNODB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COMMENT = "主节点绑定表";
+# licensetool Introduction
+licensetool have two functions. One is periodically scan the database and update its certificate information. And the other is clear all the certificate information of the database.
+## Function 1 - Update Database
+1. Configure  
+	In configure path ~/.uttools, edit file ***ulordcenter.conf***, add a private key.
+```
+#Example:
+privkey1=L1owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Ubaqn
+```
+2. Run  
+	Entry the project path,and run the program ***licensetool***.
+```
+cd
+cd ulordtool/build/bin
+./licensetool
+```
+**Optional**  
+&nbsp;&nbsp;Default this program will scan the database every 1 minutes. To looking for the masternode whose license period less than 3 days(259200 seconds), and update theirs license and license period to 30 days(2592000 seconds) later.  
+&nbsp;&nbsp;If you want to change this times, you can add the follow conffigures in the file ***ulordcenter.conf***  
+- **periodunit** : specify the license period time. unit second, defalut:89600.  
+- **needupdate** : specify the limit of time of the license need to update. It works as _needupdate*periodunit_, default:3.  
+- **periodlimit**: specify the limit of time ot the license. It works as _periodlimit*periodunit_, default:30.  
+- **runinterval**: specify the period ot this program scan the database. unit minutes. default:1.  
+```
+#Example:
+#check database every 2 minutes, update license to 1800(30*60)seconds later of whoes license period is less than 600(10*60) seconds.
+periodunit=60
+needupdate=10
+periodlimit=30
+runinterval=2
+```
+&nbsp;&nbsp;If the private key have been stealed, you need to use a new private key, you can add the follow configures in the file ***ulordcenter.conf***  
+- **privkey2**  :specify the second private key, 3td is privkey3 ...  
+- **uctpubkey2**:specify the second pubkey match the second private key, 3td is uctpubkey3 ...  
+```
+#Example:
+privkey1=L1owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Uba1t
+privkey2=L2owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Uba2d
+privkey3=L3owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Uba3d
+uctpubkey2=02e867486ebaeeadda25f1e47612cdaad3384af49fa1242c5821b424937f8ec12d
+uctpubkey3=03e867486ebaeeadda25f1e47612cdaad3384af49fa1242c5821b424937f8ec13d
+```
+&nbsp;&nbsp;The DataBase parameters use the follow configures:
+- **dbhost** : default is 127.0.0.1
+- **dbport** : default is 3306
+- **dbuser** : default is root
+- **dbpwd**  : default is 123456
+- **dbname** : default is mysql
+## Function 2 - Clear License
+&nbsp;&nbsp;If you want to clear all the license information, you can run as the example
+```
+cd
+cd ulordtool/build/bin
+./licensetool clear
 ```
