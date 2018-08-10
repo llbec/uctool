@@ -64,7 +64,7 @@ cd build
 cmake -DCHAIN_SRC_ROOT=UlordChain-Path ..
 make -j2
 ```
-
+If there is some error,maybe you need to update the UlordChain and rebuild it first!
 ## Configure:
 
 ### configure & log file
