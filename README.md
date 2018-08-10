@@ -69,3 +69,6 @@ make -j2
 
 ### configure & log file
 configure file path: /home/*username*/.uttool/
+
+## Run:
+How to use licensetool [here](./licensetool/README.md)
