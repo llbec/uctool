@@ -13,7 +13,7 @@
 
 using namespace std;
 
-bool MSTRequest(const mstnodequest & tAsk, std::string & strResult);
+bool MSTRequest(mstnodequest & tAsk, std::string & strResult);
 
 void GetMNLicenseHelp()
 {
@@ -91,7 +91,7 @@ void AskKeyVersion(int argc, char const * argv[])
     return;
 }
 
-bool MSTRequest(const mstnodequest & tAsk, std::string & strResult)
+bool MSTRequest(mstnodequest & tAsk, std::string & strResult)
 {
     const int mstnd_iReqBufLen = 600;
     const int mstnd_iReqMsgHeadLen = 4;
