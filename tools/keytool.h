@@ -1,0 +1,4 @@
+#ifndef UTCENTER_KEYTOOL_H
+#define UTCENTER_KEYTOOL_H
+
+#endif // UTCENTER_KEYTOOL_H
