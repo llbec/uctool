@@ -35,3 +35,9 @@ bool CKeyTool::VerifyCompact(const std::vector<unsigned char>& vchSig, std::stri
 {
     return privSendSigner.VerifyMessage(pubkey_, vchSig, strMsg, strErrRet);
 }
+
+bool CKeyTool::Match(std::string strPub)
+{
+    CPubKey pubkey(ParseHex(strPub));
+    return key_.VerifyPubKey(pubkey);
+}

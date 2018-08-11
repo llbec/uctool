@@ -21,6 +21,7 @@ public:
 
     bool SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet);
     bool VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet);
+    bool Match(std::string strPub);
 };
 
 #endif // UTCENTER_ULORD_H
