@@ -80,10 +80,9 @@ void GenKey(int argc, char const * argv[])
 {
     CKeyTool newkey;
     if(newkey.NewKey(false)) {
-        printf("MasterNode Key: %s\nPublic Key: %s\nAddress : %s\n",
+        printf("MasterNode Key: %s\nPublic Key: %s\n",
                 newkey.GetPrivKey().c_str(),
-                newkey.GetPubKey().c_str(),
-                newkey.GetAddress().c_str());
+                newkey.GetPubKey().c_str());
         return;
     }
     printf("Create New Key failed!\n");

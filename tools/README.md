@@ -12,3 +12,21 @@ Send a request message to server for the publickey and license versions.
 cd ulordtool/build/bin
 ./tools askkeyversion
 ```
+## keynew
+Create a private key, and show it's public and address.
+```
+cd ulordtool/build/bin
+./tools keynew
+```
+## keymasternode
+Create a masternode key, and show it's public.
+```
+cd ulordtool/build/bin
+./tools keymasternode
+```
+## keyshow
+Show the specify private key's public key and address.
+```
+cd ulordtool/build/bin
+./tools keyshow
+```
