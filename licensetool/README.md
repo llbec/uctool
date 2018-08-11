@@ -1,20 +1,20 @@
 # licensetool Introduction
 licensetool have two functions. One is periodically scan the database and update its certificate information. And the other is clear all the certificate information of the database.
 ## Function 1 - Update Database
-1. Configure  
+### Configure  
 	In configure path ~/.uttools, edit file ***ulordcenter.conf***, add a private key.
 ```
 #Example:
 privkey1=L1owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Ubaqn
 ```
-2. Run  
+### Run  
 	Entry the project path,and run the program ***licensetool***.
 ```
 cd
 cd ulordtool/build/bin
 ./licensetool
 ```
-**Optional**  
+### Optional
 &nbsp;&nbsp;Default this program will scan the database every 1 minutes. To looking for the masternode whose license period less than 3 days(259200 seconds), and update theirs license and license period to 30 days(2592000 seconds) later.  
 &nbsp;&nbsp;If you want to change this times, you can add the follow conffigures in the file ***ulordcenter.conf***  
 - **periodunit** : specify the license period time. unit second, defalut:89600.  
