@@ -9,15 +9,15 @@ void NewKey(int argc, char const * argv[])
 {
     try {
         CKeyTool key(true);
+        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+                key.GetKeyString().c_str(),
+                key.GetPubKeyString().c_str(),
+                key.GetAddress().c_str());
     }
     catch(int) {
         printf("Create New Key failed!\n");
         return;
     }
-    printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-            key.GetKeyString().c_str(),
-            key.GetPubKeyString().c_str(),
-            key.GetAddress().c_str());
     return;
 }
 
@@ -25,14 +25,14 @@ void GenKey(int argc, char const * argv[])
 {
     try {
         CKeyTool key(false);
+        printf("Masternode Key: %s\nPublic Key: %s\n",
+                key.GetKeyString().c_str(),
+                key.GetPubKeyString().c_str());
     }
     catch(int) {
         printf("Create new masternode Key failed!\n");
         return;
     }
-    printf("Masternode Key: %s\nPublic Key: %s\n",
-            key.GetKeyString().c_str(),
-            key.GetPubKeyString().c_str());
     return;
 }
 
@@ -51,15 +51,15 @@ void Showkey(int argc, char const * argv[])
     string strpriv = argv[2];
     try {
         CKeyTool key(strpriv);
+        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+                key.GetKeyString().c_str(),
+                key.GetPubKeyString().c_str(),
+                key.GetAddress().c_str());
     }
     catch(int) {
         printf("String(%s) is not a valid private key!\n", strpriv.c_str());
         return;
     }
-    printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-            key.GetKeyString().c_str(),
-            key.GetPubKeyString().c_str(),
-            key.GetAddress().c_str());
     return;
 }
 
