@@ -1,4 +1,7 @@
 #include "ulord.h"
+#include "privsend.h"
+
+using namespace std;
 
 CKeyTool::CKeyTool(CKey secret) :
 key_(secret),
@@ -16,19 +19,19 @@ CKeyTool::CKeyTool(bool bCompress)
     address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
 }
 
-CKeyTool::CKeyTool(string strPrivkey)
+CKeyTool::CKeyTool(std::string strPrivkey)
 {
     if(!privSendSigner.GetKeysFromSecret(strPrivkey, key_, pubkey_))
         throw -1;
     address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
 }
 
-bool CKeyTool::SignCompact(string strMsg, vector<unsigned char>& vchSigRet)
+bool CKeyTool::SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet)
 {
     return privSendSigner.SignMessage(strMsg, vchSigRet, key_);
 }
 
-bool CKeyTool::VerifyCompact(const vector<unsigned char>& vchSig, string strMsg, string& strErrRet)
+bool CKeyTool::VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet)
 {
     return privSendSigner.VerifyMessage(pubkey_, vchSig, strMsg, strErrRet);
 }

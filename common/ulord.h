@@ -7,20 +7,20 @@ class CKeyTool
 private:
     CKey key_;
     CPubKey pubkey_;
-    string address_;
+    std::string address_;
 public:
     CKeyTool(CKey secret);
     CKeyTool(bool bCompress);
-    CKeyTool(string strPrivkey);
+    CKeyTool(std::string strPrivkey);
 
-    string GetPrivKey() { return CBitcoinSecret(key_).ToString(); }
-    CKey GetPrivKey() { return key_; }
-    string GetPubKey() { return HexStr(pubkey_); }
+    std::string GetKeyString() { return CBitcoinSecret(key_).ToString(); }
+    CKey GetKey() { return key_; }
+    std::string GetPubKeyString() { return HexStr(pubkey_); }
     CPubKey GetPubKey() { return pubkey_; }
-    string GetAddress() { return address_; }
+    std::string GetAddress() { return address_; }
 
-    bool SignCompact(string strMsg, vector<unsigned char>& vchSigRet);
-    bool VerifyCompact(const vector<unsigned char>& vchSig, string strMsg, string& strErrRet);
+    bool SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet);
+    bool VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet);
 };
 
 #endif // UTCENTER_ULORD_H

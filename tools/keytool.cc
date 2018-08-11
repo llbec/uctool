@@ -14,8 +14,8 @@ void NewKey(int argc, char const * argv[])
         return;
     }
     printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-            key.GetPrivKey().c_str(),
-            key.GetPubKey().c_str(),
+            key.GetKeyString().c_str(),
+            key.GetPubKeyString().c_str(),
             key.GetAddress().c_str());
     return;
 }
@@ -30,8 +30,8 @@ void GenKey(int argc, char const * argv[])
         return;
     }
     printf("Masternode Key: %s\nPublic Key: %s\n",
-            key.GetPrivKey().c_str(),
-            key.GetPubKey().c_str());
+            key.GetKeyString().c_str(),
+            key.GetPubKeyString().c_str());
     return;
 }
 
@@ -56,8 +56,8 @@ void Showkey(int argc, char const * argv[])
         return;
     }
     printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-            key.GetPrivKey().c_str(),
-            key.GetPubKey().c_str(),
+            key.GetKeyString().c_str(),
+            key.GetPubKeyString().c_str(),
             key.GetAddress().c_str());
     return;
 }
