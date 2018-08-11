@@ -3,46 +3,6 @@
 #include "utils.h"
 
 using namespace std;
-class CKeyTool;
-
-void NewKey(int argc, char const * argv[])
-{
-    CKeyTool newkey;
-    if(newkey.NewKey()) {
-        Printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                newkey.GetPrivKey().c_str(),
-                newkey.GetPubKey().c_str(),
-                newkey.GetAddress().c_str());
-        return;
-    }
-    printf("Create New Key failed!\n");
-    return;
-}
-
-void ShowkeyHelp()
-{
-    cout << "Command \"keyshow\" example :" << endl << endl
-        << "keyshow stringPrivkey" << endl
-		<< "keyshow \"L1kF5amYLK6JZuuWyHTEk7dArcTu5nucFrGC9bUxmHezd8fdY183\"" << endl;
-}
-void Showkey(int argc, char const * argv[])
-{
-    if(argc < 3) {
-        ShowkeyHelp();
-        return;
-    }
-    string strpriv = argv[2];
-    CKeyTool key;
-    if(key.InitKey(strpriv)) {
-        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                key.GetPrivKey().c_str(),
-                key.GetPubKey().c_str(),
-                key.GetAddress().c_str());
-        return;
-    }
-    printf("String(%s) is not a valid private key!\n", strpriv.c_str());
-    return;
-}
 
 class CKeyTool
 {
@@ -61,12 +21,12 @@ public:
 
     CKeyTool() : isInit_(false) {}
 
-    bool NewKey()
+    bool NewKey(bool bCompress)
     {
         isInit_ = false;
-        key_.MakeNewKey(true);
+        key_.MakeNewKey(bCompress);
         pubkey_ = key_.GetPubKey();
-        if(secret.VerifyPubKey(pubkey)) {
+        if(key_.VerifyPubKey(pubkey_)) {
             address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
             isInit_ = true;
         }
@@ -101,3 +61,57 @@ public:
         }
     }
 };
+
+void NewKey(int argc, char const * argv[])
+{
+    CKeyTool newkey;
+    if(newkey.NewKey(true)) {
+        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+                newkey.GetPrivKey().c_str(),
+                newkey.GetPubKey().c_str(),
+                newkey.GetAddress().c_str());
+        return;
+    }
+    printf("Create New Key failed!\n");
+    return;
+}
+
+void GenKey(int argc, char const * argv[])
+{
+    CKeyTool newkey;
+    if(newkey.NewKey(false)) {
+        printf("MasterNode Key: %s\nPublic Key: %s\nAddress : %s\n",
+                newkey.GetPrivKey().c_str(),
+                newkey.GetPubKey().c_str(),
+                newkey.GetAddress().c_str());
+        return;
+    }
+    printf("Create New Key failed!\n");
+    return;                                                                                                                                                                                                                                                                   
+}
+
+void ShowkeyHelp()
+{
+    cout << "Command \"keyshow\" example :" << endl << endl
+        << "keyshow stringPrivkey" << endl
+		<< "keyshow \"L1kF5amYLK6JZuuWyHTEk7dArcTu5nucFrGC9bUxmHezd8fdY183\"" << endl;
+}
+void Showkey(int argc, char const * argv[])
+{
+    if(argc < 3) {
+        ShowkeyHelp();
+        return;
+    }
+    string strpriv = argv[2];
+    CKeyTool key;
+    if(key.InitKey(strpriv)) {
+        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+                key.GetPrivKey().c_str(),
+                key.GetPubKey().c_str(),
+                key.GetAddress().c_str());
+        return;
+    }
+    printf("String(%s) is not a valid private key!\n", strpriv.c_str());
+    return;
+}
+
