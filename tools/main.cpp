@@ -4,6 +4,7 @@
 
 
 #include "msgtool.h"
+#include "keytool.h"
 
 using namespace std;
 
@@ -22,6 +23,8 @@ void RegisterCmd()
 {
     mapCommand.insert(make_pair("asklicense", &AskLicense));
     mapCommand.insert(make_pair("askkeyversion", &AskKeyVersion));
+    mapCommand.insert(make_pair("keynew", &NewKey));
+    mapCommand.insert(make_pair("keyshow", &Showkey));
 }
 
 static boost::scoped_ptr<ECCVerifyHandle> global_VerifyHandle;
