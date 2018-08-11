@@ -4,89 +4,35 @@
 
 using namespace std;
 
-class CKeyTool
-{
-private:
-    CKey key_;
-    CPubKey pubkey_;
-    string address_;
-    bool isInit_;
-public:
-    CKeyTool(CKey secret) :
-    key_(secret),
-    pubkey_(secret.GetPubKey()),
-    address_(CBitcoinAddress(pubkey_.GetID()).ToString()),
-    isInit_(true)
-    {}
-
-    CKeyTool() : isInit_(false) {}
-
-    bool NewKey(bool bCompress)
-    {
-        isInit_ = false;
-        key_.MakeNewKey(bCompress);
-        pubkey_ = key_.GetPubKey();
-        if(key_.VerifyPubKey(pubkey_)) {
-            address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
-            isInit_ = true;
-        }
-        return isInit_;
-    }
-
-    bool InitKey(string strPrivkey)
-    {
-        if(!privSendSigner.GetKeysFromSecret(strPrivkey, key_, pubkey_))
-            return false;
-        address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
-        isInit_ = true;
-        return true;
-    }
-
-    string GetPrivKey() { return isInit_ ? CBitcoinSecret(key_).ToString() : ""; }
-    string GetPubKey() { return isInit_ ? HexStr(pubkey_) : ""; }
-    string GetAddress() { return isInit_ ? address_ : ""; }
-
-    bool SignCompact(string strMsg, vector<unsigned char>& vchSigRet)
-    {
-        return isInit_ ? privSendSigner.SignMessage(strMsg, vchSigRet, key_) : false;
-    }
-
-    bool VerifyCompact(const vector<unsigned char>& vchSig, string strMsg, string& strErrRet)
-    {
-        if(isInit_)
-            return privSendSigner.VerifyMessage(pubkey_, vchSig, strMsg, strErrRet);
-        else {
-            strErrRet = "No valid key to use!\n";
-            return false;
-        }
-    }
-};
-
 void NewKey(int argc, char const * argv[])
 {
-    CKeyTool newkey;
-    if(newkey.NewKey(true)) {
-        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                newkey.GetPrivKey().c_str(),
-                newkey.GetPubKey().c_str(),
-                newkey.GetAddress().c_str());
+    try {
+        CKeyTool key(true);
+    }
+    catch(int) {
+        printf("Create New Key failed!\n");
         return;
     }
-    printf("Create New Key failed!\n");
+    printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+            key.GetPrivKey().c_str(),
+            key.GetPubKey().c_str(),
+            key.GetAddress().c_str());
     return;
 }
 
 void GenKey(int argc, char const * argv[])
 {
-    CKeyTool newkey;
-    if(newkey.NewKey(false)) {
-        printf("MasterNode Key: %s\nPublic Key: %s\n",
-                newkey.GetPrivKey().c_str(),
-                newkey.GetPubKey().c_str());
+    try {
+        CKeyTool key(false);
+    }
+    catch(int) {
+        printf("Create new masternode Key failed!\n");
         return;
     }
-    printf("Create New Key failed!\n");
-    return;                                                                                                                                                                                                                                                                   
+    printf("Masternode Key: %s\nPublic Key: %s\n",
+            key.GetPrivKey().c_str(),
+            key.GetPubKey().c_str());
+    return;
 }
 
 void ShowkeyHelp()
@@ -102,15 +48,17 @@ void Showkey(int argc, char const * argv[])
         return;
     }
     string strpriv = argv[2];
-    CKeyTool key;
-    if(key.InitKey(strpriv)) {
-        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                key.GetPrivKey().c_str(),
-                key.GetPubKey().c_str(),
-                key.GetAddress().c_str());
+    try {
+        CKeyTool key(strpriv);
+    }
+    catch(int) {
+        printf("String(%s) is not a valid private key!\n", strpriv.c_str());
         return;
     }
-    printf("String(%s) is not a valid private key!\n", strpriv.c_str());
+    printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+            key.GetPrivKey().c_str(),
+            key.GetPubKey().c_str(),
+            key.GetAddress().c_str());
     return;
 }
 
