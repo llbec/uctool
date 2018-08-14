@@ -2,28 +2,26 @@
 #define UTCENTER_ULORD_H
 #include "base58.h"
 
-class CKeyTool
+class CKeyExtension : public CBase58Data
 {
 private:
-    CKey key_;
     CPubKey pubkey_;
     std::string address_;
+    bool SetKey(CKey key);
+    std::string Encode();
 public:
-    CKeyTool(CKey secret);
-    CKeyTool(bool bCompress);
-    CKeyTool(std::string strPrivkey);
-	CKeyTool(bool flag, std::string strPrivkey);
-
-    std::string GetKeyString() { return CBitcoinSecret(key_).ToString(); }
-    CKey GetKey() { return key_; }
-    std::string GetPubKeyString() { return HexStr(pubkey_); }
+    CKeyExtension(CKey key);
+    CKeyExtension(bool bCompress);
+    CKeyExtension(std::string strPrivkey);
+	CKeyExtension(bool flag, std::string strPrivkey);
+    CKey GetKey();
+    bool IsValid();
     CPubKey GetPubKey() { return pubkey_; }
+    std::string GetPubKeyString() { return HexStr(pubkey_); }
     std::string GetAddress() { return address_; }
-
     bool SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet);
     bool VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet);
     bool Match(std::string strPub);
-    std::string Encode();
 };
 
 #endif // UTCENTER_ULORD_H

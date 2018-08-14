@@ -4,85 +4,106 @@
 using namespace std;
 const unsigned char CODE_WORD = 170;
 
-CKeyTool::CKeyTool(CKey secret) :
-key_(secret),
-pubkey_(secret.GetPubKey()),
-address_(CBitcoinAddress(pubkey_.GetID()).ToString())
-{}
-
-CKeyTool::CKeyTool(bool bCompress)
+bool CKeyExtension::SetKey(CKey key)
 {
-    key_.MakeNewKey(bCompress);
-    pubkey_ = key_.GetPubKey();
-    if(!key_.VerifyPubKey(pubkey_)) {
-        throw -1;
-    }
-    address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
-}
-
-CKeyTool::CKeyTool(std::string strPrivkey)
-{
-    if(!privSendSigner.GetKeysFromSecret(strPrivkey, key_, pubkey_))
-        throw -1;
-    address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
-}
-
-CKeyTool::CKeyTool(bool flag, std::string strPrivkey)
-{
-    CBitcoinSecret vchSecret;
-
-    if(!vchSecret.SetString(strPrivkey))
-        throw -1;
-    CKey codekey = vchSecret.GetKey();
-    unsigned char vch[32];
-    const unsigned char * pKey = codekey.begin();
-    memcpy(vch, pKey, 32);
-    /*decode here*/
-    for(int i = 0; i < 32; i++)
-    {
-        vch[i] = vch[i] ^ CODE_WORD;
-    }
+    if(!key.IsValid())
+        return false;
     
-    key_.Set(&vch[0], &vch[31], codekey.IsCompressed());
-    if(!key_.IsValid()) {
+    SetData(Params().Base58Prefix(CChainParams::SECRET_KEY), vchSecret.begin(), vchSecret.size());
+    if(key.IsCompressed())
+        vchData.push_back(1);
+    pubkey_ = key.GetPubKey();
+    address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
+    return true;
+}
+
+std::string CKeyExtension::Encode()
+{
+    std::vector<unsigned char> vch = vchVersion;
+    vch.insert(vch.end(), vchData.begin(), vchData.end());
+    for(auto & v : vch)
+        v = v ^ CODE_WORD;
+    return EncodeBase58Check(vch);
+}
+
+CKey CKeyExtension::GetKey()
+{
+    CKey ret;
+    if(vchData.size() < 32)
+        throw -1
+    ret.Set(vchData.begin(), vchData.begin() + 32, vchData.size() > 32 && vchData[32] == 1);
+    return ret;
+}
+
+bool CKeyExtension::IsValid()
+{
+    bool fExpectedFormat = vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1);
+    bool fCorrectVersion = vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY);
+    return fExpectedFormat && fCorrectVersion;
+}
+
+CKeyExtension::CKeyExtension(CKey key)
+{
+    if(!SetKey(key))
+        throw -1;
+}
+
+CKeyExtension::CKeyExtension(bool bCompress)
+{
+    CKey newkey;
+    newkey.MakeNewKey(bCompress);
+    if(!SetKey(newkey))
+        throw -1;
+    if(!newkey.VerifyPubKey(pubkey_)) {
         throw -1;
     }
-    // init others
-    pubkey_ = key_.GetPubKey();
+}
+
+CKeyExtension::CKeyExtension(std::string strPrivkey)
+{
+    if(!SetString(strPrivkey) || !IsValid())
+        throw -1;
+    
+    pubkey_ = GetKey().GetPubKey();
+    address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
+
+}
+
+CKeyExtension::CKeyExtension(unsigned int nVersionBytes, std::string strPrivkey)
+{
+    std::vector<unsigned char> vchTemp;
+    bool rc58 = DecodeBase58Check(strPrivkey.c_str(), vchTemp);
+    if ((!rc58) || (vchTemp.size() < nVersionBytes)) {
+        vchData.clear();
+        vchVersion.clear();
+        throw -1;
+    }
+
+    for(auto & v : vchTemp)
+        v = v ^ CODE_WORD;
+
+    vchVersion.assign(vchTemp.begin(), vchTemp.begin() + nVersionBytes);
+    vchData.resize(vchTemp.size() - nVersionBytes);
+    if (!vchData.empty())
+        memcpy(&vchData[0], &vchTemp[nVersionBytes], vchData.size());
+    memory_cleanse(&vchTemp[0], vchTemp.size());
+
+    pubkey_ = GetKey().GetPubKey();
     address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
 }
 
-bool CKeyTool::SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet)
+bool CKeyExtension::SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet)
 {
-    return privSendSigner.SignMessage(strMsg, vchSigRet, key_);
+    return privSendSigner.SignMessage(strMsg, vchSigRet, GetKey());
 }
 
-bool CKeyTool::VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet)
+bool CKeyExtension::VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet)
 {
     return privSendSigner.VerifyMessage(pubkey_, vchSig, strMsg, strErrRet);
 }
 
-bool CKeyTool::Match(std::string strPub)
+bool CKeyExtension::Match(std::string strPub)
 {
     CPubKey pubkey(ParseHex(strPub));
-    return key_.VerifyPubKey(pubkey);
-}
-
-std::string CKeyTool::Encode()
-{
-    unsigned char vch[32];
-    const unsigned char * pKey = key_.begin();
-    memcpy(vch, pKey, 32);
-    /*encode here*/
-    for(int i = 0; i < 32; i++)
-    {
-        vch[i] = vch[i] ^ CODE_WORD;
-    }
-
-    CKey codekey;
-    codekey.Set(&vch[0], &vch[31], key_.IsCompressed());
-    if(!codekey.IsValid()) {
-        throw -1;
-    }
-    return CBitcoinSecret(codekey).ToString();
+    return GetKey().VerifyPubKey(pubkey);
 }

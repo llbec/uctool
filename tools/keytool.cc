@@ -8,9 +8,9 @@ using namespace std;
 void NewKey(int argc, char const * argv[])
 {
     try {
-        CKeyTool key(true);
+        CKeyExtension key(true);
         printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                key.GetKeyString().c_str(),
+                key.ToString().c_str(),
                 key.GetPubKeyString().c_str(),
                 key.GetAddress().c_str());
     }
@@ -24,9 +24,9 @@ void NewKey(int argc, char const * argv[])
 void GenKey(int argc, char const * argv[])
 {
     try {
-        CKeyTool key(false);
+        CKeyExtension key(false);
         printf("Masternode Key: %s\nPublic Key: %s\n",
-                key.GetKeyString().c_str(),
+                key.ToString().c_str(),
                 key.GetPubKeyString().c_str());
     }
     catch(int) {
@@ -50,11 +50,39 @@ void Showkey(int argc, char const * argv[])
     }
     string strpriv = argv[2];
     try {
-        CKeyTool key(strpriv);
+        CKeyExtension key(strpriv);
         printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                key.GetKeyString().c_str(),
+                key.ToString().c_str(),
                 key.GetPubKeyString().c_str(),
                 key.GetAddress().c_str());
+    }
+    catch(int) {
+        printf("String(%s) is not a valid private key!\n", strpriv.c_str());
+        return;
+    }
+    return;
+}
+
+void MatchkeyHelp()
+{
+    cout << "Command \"keymatch\" example :" << endl << endl
+        << "keymatch stringPrivkey stringPubKey" << endl
+		<< "keymatch \"L1kF5amYLK6JZuuWyHTEk7dArcTu5nucFrGC9bUxmHezd8fdY183\" \"03e867486ebaeeadda25f1e47612cdaad3384af49fa1242c5821b424937f8ec1f5\"" << endl;
+}
+void Matchkey(int argc, char const * argv[])
+{
+    if(argc < 4) {
+        MatchkeyHelp();
+        return;
+    }
+    string strpriv = argv[2];
+    string strpub = argv[3];
+    try {
+        CKeyExtension key(strpriv);
+        if(key.Match(strpub))
+            printf("Matched key!\n");
+        else
+            printf("Don't Matched!\n");
     }
     catch(int) {
         printf("String(%s) is not a valid private key!\n", strpriv.c_str());
@@ -77,7 +105,7 @@ void Encodekey(int argc, char const * argv[])
     }
     string strpriv = argv[2];
     try {
-        CKeyTool key(strpriv);
+        CKeyExtension key(strpriv);
         printf("Encode Key: %s\n", key.Encode().c_str());
     }
     catch(int) {
@@ -100,9 +128,9 @@ void Decodekey(int argc, char const * argv[])
     }
     string strpriv = argv[2];
     try {
-        CKeyTool key(true, strpriv);
+        CKeyExtension key(1, strpriv);
         printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
-                key.GetKeyString().c_str(),
+                key.ToString().c_str(),
                 key.GetPubKeyString().c_str(),
                 key.GetAddress().c_str());
     }

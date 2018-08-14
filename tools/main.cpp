@@ -28,6 +28,7 @@ void RegisterCmd()
     mapCommand.insert(make_pair("keyshow", &Showkey));
     mapCommand.insert(make_pair("keydecode", &Decodekey));
     mapCommand.insert(make_pair("keyencode", &Encodekey));
+    mapCommand.insert(make_pair("keymatch", &Matchkey));
 }
 
 static boost::scoped_ptr<ECCVerifyHandle> global_VerifyHandle;
