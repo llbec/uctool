@@ -9,7 +9,7 @@ bool CKeyExtension::SetKey(CKey key)
     if(!key.IsValid())
         return false;
     
-    SetData(Params().Base58Prefix(CChainParams::SECRET_KEY), vchSecret.begin(), vchSecret.size());
+    SetData(Params().Base58Prefix(CChainParams::SECRET_KEY), key.begin(), key.size());
     if(key.IsCompressed())
         vchData.push_back(1);
     pubkey_ = key.GetPubKey();
@@ -30,7 +30,7 @@ CKey CKeyExtension::GetKey()
 {
     CKey ret;
     if(vchData.size() < 32)
-        throw -1
+        throw -1;
     ret.Set(vchData.begin(), vchData.begin() + 32, vchData.size() > 32 && vchData[32] == 1);
     return ret;
 }
@@ -72,7 +72,7 @@ CKeyExtension::CKeyExtension(std::string strPrivkey)
 CKeyExtension::CKeyExtension(unsigned int nVersionBytes, std::string strPrivkey)
 {
     std::vector<unsigned char> vchTemp;
-    bool rc58 = DecodeBase58Check(strPrivkey.c_str(), vchTemp);
+    bool rc58 = DecodeBase58Check(strPrivkey, vchTemp);
     if ((!rc58) || (vchTemp.size() < nVersionBytes)) {
         vchData.clear();
         vchVersion.clear();

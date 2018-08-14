@@ -52,7 +52,7 @@ make install
 
 ### download UlordChain & compiles
 https://github.com/UlordChain/UlordChain.git
-
+ahead of commit: b9c426b70364c50abee23373130f9cbcb64b24ba
 ## Compile:
 
 ### ulordtool

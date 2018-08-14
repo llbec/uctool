@@ -30,3 +30,21 @@ Show the specify private key's public key and address.
 cd ulordtool/build/bin
 ./tools keyshow
 ```
+## keymatch
+Check wether the private key and the public key is matched.
+```
+cd ulordtool/build/bin
+./tools keymatch KykTrtW5czrxg5ArdxzhnmpaxP8UKj5p8ix2RtPp7okuqkHntuic 03cb10b2fa7edbbc7f6ebc28c472aa9025a27823ab421e4e3b831bedcd667f3a67
+```
+## keyencode
+Encode the private key to protect it
+```
+cd ulordtool/build/bin
+./tools keyencode KykTrtW5czrxg5ArdxzhnmpaxP8UKj5p8ix2RtPp7okuqkHntuic
+```
+## keydecode
+Decode the string to private key
+```
+cd ulordtool/build/bin
+./tools keydecode 7LvU469GBZththJzNtdaStRaBq5oPy4ZvPZsj4nKfkqv4SkwQxmx
+```
