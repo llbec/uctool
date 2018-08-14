@@ -63,3 +63,51 @@ void Showkey(int argc, char const * argv[])
     return;
 }
 
+void EncodekeyHelp()
+{
+    cout << "Command \"keyencode\" example :" << endl << endl
+        << "keyencode stringPrivkey" << endl
+		<< "keyencode \"L1kF5amYLK6JZuuWyHTEk7dArcTu5nucFrGC9bUxmHezd8fdY183\"" << endl;
+}
+void Encodekey(int argc, char const * argv[])
+{
+    if(argc < 3) {
+        EncodekeyHelp();
+        return;
+    }
+    string strpriv = argv[2];
+    try {
+        CKeyTool key(strpriv);
+        printf("Encode Key: %s\n", key.Encode().c_str());
+    }
+    catch(int) {
+        printf("String(%s) is not a valid private key!\n", strpriv.c_str());
+    }
+    return;
+}
+
+void DecodekeyHelp()
+{
+    cout << "Command \"keydecode\" example :" << endl << endl
+        << "keydecode stringPrivkey" << endl
+		<< "keydecode \"L1kF5amYLK6JZuuWyHTEk7dArcTu5nucFrGC9bUxmHezd8fdY183\"" << endl;
+}
+void Decodekey(int argc, char const * argv[])
+{
+    if(argc < 3) {
+        DecodekeyHelp();
+        return;
+    }
+    string strpriv = argv[2];
+    try {
+        CKeyTool key(true, strpriv);
+        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+                key.GetKeyString().c_str(),
+                key.GetPubKeyString().c_str(),
+                key.GetAddress().c_str());
+    }
+    catch(int) {
+        printf("String(%s) is not a valid private key!\n", strpriv.c_str());
+    }
+    return;
+}
