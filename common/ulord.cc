@@ -36,14 +36,14 @@ CKeyTool::CKeyTool(bool flag, std::string strPrivkey)
     CKey codekey = vchSecret.GetKey();
     unsigned char vch[32];
     const unsigned char * pKey = codekey.begin();
-    memcpy(vch, pkey, 32);
+    memcpy(vch, pKey, 32);
     /*decode here*/
     for(int i = 0; i < 32; i++)
     {
         vch[i] = vch[i] ^ CODE_WORD;
     }
     
-    key_.set(vch[0], vch[31], codekey.IsCompressed());
+    key_.Set(&vch[0], &vch[31], codekey.IsCompressed());
     if(!key_.IsValid()) {
         throw -1;
     }
@@ -72,7 +72,7 @@ std::string CKeyTool::Encode()
 {
     unsigned char vch[32];
     const unsigned char * pKey = key_.begin();
-    memcpy(vch, pkey, 32);
+    memcpy(vch, pKey, 32);
     /*encode here*/
     for(int i = 0; i < 32; i++)
     {
@@ -80,9 +80,9 @@ std::string CKeyTool::Encode()
     }
 
     CKey codekey;
-    codekey.set(vch[0], vch[31], key_.IsCompressed());
+    codekey.Set(&vch[0], &vch[31], key_.IsCompressed());
     if(!codekey.IsValid()) {
         throw -1;
     }
-    return CBitcoinSecret(key_).ToString();
+    return CBitcoinSecret(codekey).ToString();
 }

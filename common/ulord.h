@@ -12,6 +12,7 @@ public:
     CKeyTool(CKey secret);
     CKeyTool(bool bCompress);
     CKeyTool(std::string strPrivkey);
+	CKeyTool(bool flag, std::string strPrivkey);
 
     std::string GetKeyString() { return CBitcoinSecret(key_).ToString(); }
     CKey GetKey() { return key_; }
