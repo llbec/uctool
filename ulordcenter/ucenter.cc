@@ -95,8 +95,8 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         oa<<mstres;
         for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
         {
-            CcenterKeyData keyPair(it->first, CBitcoinSecret(it->second).ToString());
-            strinfo += Strings::Format("\t<%d:%s>\n", it->first, CBitcoinSecret(it->second).ToString());
+            CcenterKeyData keyPair(it->first, (it->second).ToString());
+            strinfo += Strings::Format("\t<%d:%s>\n", it->first, (it->second).ToString());
             oa << keyPair;
         }
     } else {
@@ -226,16 +226,16 @@ bool UlordServer::InitUCenterKey()
             break;
         }
 
-        CKey privkey;
-        CPubKey pubkey;
-        if(!privSendSigner.GetKeysFromSecret(strKey, privkey, pubkey)) {
+        try {
+            CKeyExtension privkey(1, strKey);
+            mapUCenterkey_.insert(pair_int_key_t(keyVersion, privkey));
+            
+            LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strKey << ">";
+            keyVersion++;
+        } catch(int) {
             printf("Invalid ulord center private key in the configuration! %s\n", strKey.c_str());
             return false;
         }
-        mapUCenterkey_.insert(pair_int_key_t(keyVersion, privkey));
-        //keyVersion_ = keyVersion;
-        LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strKey << ">";
-        keyVersion++;
     }
     if(mapUCenterkey_.size() == 0) {
         printf("You must specify a Ulord Center privkey in the configuration.! example privkey1=123qwe\n");

@@ -88,6 +88,9 @@ CKeyExtension::CKeyExtension(unsigned int nVersionBytes, std::string strPrivkey)
         memcpy(&vchData[0], &vchTemp[nVersionBytes], vchData.size());
     memory_cleanse(&vchTemp[0], vchTemp.size());
 
+    if(!IsValid())
+        throw -1;
+
     pubkey_ = GetKey().GetPubKey();
     address_ = CBitcoinAddress(pubkey_.GetID()).ToString();
 }
