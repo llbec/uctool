@@ -100,6 +100,11 @@ bool CKeyExtension::SignCompact(std::string strMsg, std::vector<unsigned char>& 
     return privSendSigner.SignMessage(strMsg, vchSigRet, GetKey());
 }
 
+bool CKeyExtension::SignCompact(const uint256 &hash, std::vector<unsigned char>& vchSigRet)
+{
+    return GetKey().SignCompact(hash, vchSigRet);
+}
+
 bool CKeyExtension::VerifyCompact(const std::vector<unsigned char>& vchSig, std::string strMsg, std::string & strErrRet)
 {
     return privSendSigner.VerifyMessage(pubkey_, vchSig, strMsg, strErrRet);
