@@ -4,7 +4,6 @@
 #ifdef MYSQL_ENABLE
 #include "MySQLConnection.h"
 #include "masternodeman.h"
-#include "ulord.h"
 
 /*
 1    `id` BIGINT (20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -55,8 +54,8 @@ private:
         TB_PERIOD,
         TB_EXT
     };
-    typedef std::map <int, CKeyExtension> map_int_key_t;
-    typedef std::pair <int, CKeyExtension> pair_int_key_t;
+    typedef std::map <int, CKey> map_int_key_t;
+    typedef std::pair <int, CKey> pair_int_key_t;
     typedef typename map_int_key_t::iterator map_int_key_it;
     typedef typename map_int_key_t::const_iterator map_int_key_cit;
 

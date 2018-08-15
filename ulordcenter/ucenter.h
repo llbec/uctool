@@ -9,7 +9,6 @@
 
 #include "MySQLConnection.h"
 #include "masternodeman.h"
-#include "ulord.h"
 
 #include "codec.h"
 
@@ -21,8 +20,8 @@ class UlordServer : boost::noncopyable
 public:
     typedef boost::weak_ptr<TcpConnection> WeakTcpConnectionPtr;
     typedef std::list<WeakTcpConnectionPtr> WeakConnectionList;
-    typedef std::map <int, CKeyExtension> map_int_key_t;
-    typedef std::pair <int, CKeyExtension> pair_int_key_t;
+    typedef std::map <int, CKey> map_int_key_t;
+    typedef std::pair <int, CKey> pair_int_key_t;
     typedef typename map_int_key_t::iterator map_int_key_it;
     typedef typename map_int_key_t::const_iterator map_int_key_cit;
 private:

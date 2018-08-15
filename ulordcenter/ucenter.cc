@@ -1,6 +1,7 @@
 #ifdef MYSQL_ENABLE
 #include "ucenter.h"
 #include "utils.h"
+#include "ulord.h"
 
 #include "privsend.h"
 
@@ -95,8 +96,8 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         oa<<mstres;
         for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
         {
-            CcenterKeyData keyPair(it->first, (it->second).ToString());
-            strinfo += Strings::Format("\t<%d:%s>\n", it->first, (it->second).ToString());
+            CcenterKeyData keyPair(it->first, CBitcoinSecret(it->second).ToString());
+            strinfo += Strings::Format("\t<%d:%s>\n", it->first, CBitcoinSecret(it->second).ToString());
             oa << keyPair;
         }
     } else {
@@ -228,7 +229,7 @@ bool UlordServer::InitUCenterKey()
 
         try {
             CKeyExtension privkey(1, strKey);
-            mapUCenterkey_.insert(pair_int_key_t(keyVersion, privkey));
+            mapUCenterkey_.insert(pair_int_key_t(keyVersion, privkey.GetKey()));
             
             LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strKey << ">";
             keyVersion++;

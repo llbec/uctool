@@ -1,6 +1,7 @@
 #ifdef MYSQL_ENABLE
 #include "dbwatcher.h"
 #include "utils.h"
+#include "ulord.h"
 
 #include "util.h"
 #include "privsend.h"
@@ -113,7 +114,7 @@ bool DBWatcher::SignMNLicense(CMstNodeData & mn)
     mn._licversion = keyVersion_;
 
     if(!mapWatcherkey_[keyVersion_].SignCompact(mn.GetLicenseWord(), vchSig)){
-        LOG(INFO) << "sign license failed, privkey = " << mapWatcherkey_[keyVersion_].ToString() << "masternode<" << mn._txid << ":" << mn._voutid << ">";
+        LOG(INFO) << "sign license failed, privkey = " << HexStr(mapWatcherkey_[keyVersion_]) << "masternode<" << mn._txid << ":" << mn._voutid << ">";
         return false;
     }
     mn._licence = EncodeBase64(&vchSig[0], vchSig.size());
@@ -218,7 +219,7 @@ bool DBWatcher::InitWatcherKey()
 
         try {
             CKeyExtension privkey(1,strWatcherKey);
-            mapWatcherkey_.insert(pair_int_key_t(keyVersion, privkey));
+            mapWatcherkey_.insert(pair_int_key_t(keyVersion, privkey.GetKey()));
             keyVersion_ = keyVersion;
             LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strWatcherKey << ">";
             keyVersion++;
