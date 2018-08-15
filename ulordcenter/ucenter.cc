@@ -231,7 +231,7 @@ bool UlordServer::InitUCenterKey()
             CKeyExtension privkey(1, strKey);
             mapUCenterkey_.insert(pair_int_key_t(keyVersion, privkey.GetKey()));
             
-            LOG(INFO) << "Load ucenter pubkey <" << keyVersion << ":" << strKey << ">";
+            LOG(INFO) << "Load ucenter key <" << keyVersion << ":" << strKey << ">";
             keyVersion++;
         } catch(int) {
             printf("Invalid ulord center private key in the configuration! %s\n", strKey.c_str());
