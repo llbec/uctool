@@ -2,10 +2,13 @@
 licensetool have two functions. One is periodically scan the database and update its certificate information. And the other is clear all the certificate information of the database.
 ## Function 1 - Update Database
 ### Configure  
-	In configure path ~/.uttools, edit file ***ulordcenter.conf***, add a private key.
+	In configure path ~/.uttools, edit file ***ulordcenter.conf***, add a private key(Encode by the tools).
 ```
+#Encode private key
+./tools keyencode L1owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Ubaqn
+Encode Key: 7EWH6AN1ScJ2AsMxWVWM6F7npfA69D4ZHCbgLguh2s1fpRZ89RTs
 #Example:
-privkey1=L1owsF7QYphRVdi8UpajX5zLiDZUbZ6oaB4VtVwUgpE7vG7Ubaqn
+privkey1=7EWH6AN1ScJ2AsMxWVWM6F7npfA69D4ZHCbgLguh2s1fpRZ89RTs
 ```
 ### Run  
 	Entry the project path,and run the program ***licensetool***.
