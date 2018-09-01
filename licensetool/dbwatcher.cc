@@ -48,7 +48,8 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
         mstnode._voutid     = atoi(row[TB_VOUTID]);
         mstnode._privkey    = row[TB_PRIVKEY];
         mstnode._status     = atoi(row[TB_STATUS]);
-        mstnode._licperiod  = atoi(row[TB_LICPERIOD]);
+        if(row[TB_LICPERIOD] != NULL)
+            mstnode._licperiod  = atoi(row[TB_LICPERIOD]);
         if(row[TB_LICENSE] != NULL)
             mstnode._licence    = row[TB_LICENSE];
         if(row[TB_PERIOD] != NULL)
