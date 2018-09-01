@@ -190,7 +190,8 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
         if(row[2] != NULL)
             mstnode._privkey = row[2];
         mstnode._status = atoi(row[3]);
-        mstnode._licperiod = atoi(row[4]);
+        if(row[4] != NULL)
+            mstnode._licperiod = atoi(row[4]);
         if(row[5] != NULL)
             mstnode._licence = row[5];
         if(row[6] != NULL)
