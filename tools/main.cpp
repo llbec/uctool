@@ -30,8 +30,10 @@ void RegisterCmd()
     mapCommand.insert(make_pair("keydecode", &Decodekey));
     mapCommand.insert(make_pair("keyencode", &Encodekey));
     mapCommand.insert(make_pair("keymatch", &Matchkey));
+#ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
+#endif // MYSQL_ENABLE
 }
 
 static boost::scoped_ptr<ECCVerifyHandle> global_VerifyHandle;
