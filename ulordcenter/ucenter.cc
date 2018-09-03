@@ -62,9 +62,15 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
     std::string strinfo;
     std::vector<CMstNodeData> vecnode;
     mstnodequest  mstquest;
-    std::istringstream is(message);  
-    boost::archive::binary_iarchive ia(is);  
-    ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
+    try {
+        std::istringstream is(message);  
+        boost::archive::binary_iarchive ia(is);  
+        ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
+    }
+    catch (const Exception& ex) {
+        LOG(ERROR) << "receive message (" << message << ") serialize exception:" << ex.what();
+        return;
+    }
     if(mstquest._questtype == MST_QUEST_ONE) {
         CMstNodeData msnode;
         if(!SelectMNData(mstquest._txid, mstquest._voutid, msnode))
@@ -157,9 +163,18 @@ void UlordServer::dumpConnectionList() const
 
 bool UlordServer::IsDBOnline()
 {
-    for (size_t nPings = 0; nPings < 3; nPings++) {
-        if (db_.ping())
-            return true;
+    try
+    {
+        for (size_t nPings = 0; nPings < 3; nPings++)
+        {
+            if (db_.ping())
+                return true;
+        }
+    }
+    catch (const Exception& ex)
+    {
+        LOG(ERROR) << "ulord center db Ping " << ex.what();
+        return false;
     }
     LOG(INFO) << "ulord center db is offline!";
     return false;
@@ -174,7 +189,13 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
 
     if(!IsDBOnline())
         return false;
-    db_.query(sql, res);
+    try {
+        db_.query(sql, res);
+    }
+    catch (const Exception& ex) {
+        LOG(ERROR) << "UlordServer::SelectMNData:masternode <" << txid << ":" << voutid << ">. query db exception " << ex.what();
+        return false;
+    }
     if(res.numRows() == 0) {
         LOG(INFO) << "UlordServer::SelectMNData:get none info for masternode <" << txid << ":" << voutid << ">";
         return false;
