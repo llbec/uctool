@@ -67,7 +67,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         boost::archive::binary_iarchive ia(is);  
         ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
     }
-    catch (const Exception& ex) {
+    catch (const std::exception& ex) {
         LOG(ERROR) << "receive message (" << message << ") serialize exception:" << ex.what();
         return;
     }
@@ -171,7 +171,7 @@ bool UlordServer::IsDBOnline()
                 return true;
         }
     }
-    catch (const Exception& ex)
+    catch (const std::exception& ex)
     {
         LOG(ERROR) << "ulord center db Ping " << ex.what();
         return false;
@@ -192,7 +192,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
     try {
         db_.query(sql, res);
     }
-    catch (const Exception& ex) {
+    catch (const std::exception& ex) {
         LOG(ERROR) << "UlordServer::SelectMNData:masternode <" << txid << ":" << voutid << ">. query db exception " << ex.what();
         return false;
     }
