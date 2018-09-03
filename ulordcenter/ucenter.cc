@@ -68,7 +68,7 @@ void UlordServer::onStringMessage(const TcpConnectionPtr & tcpcli, const std::st
         ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
     }
     catch (const std::exception& ex) {
-        LOG(ERROR) << "receive message (" << message << ") serialize exception:" << ex.what();
+        LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
         return;
     }
     if(mstquest._questtype == MST_QUEST_ONE) {
