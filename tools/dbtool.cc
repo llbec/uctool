@@ -45,8 +45,8 @@ bool Cmndata::Check(std::string& strRet)
 {
     bool bRet = true;
     int64_t tnow = GetTime();
-    strRet = Strings::Format("MasterNode<%s-%d>,privkey<%s>,ipaddress<%s>,status<%ld:%d-%ld>,license<%s-%ld>",
-                                _txid, _voutid, _privkey, _ipaddr, tnow, _status, _nodeperiod, _licence, _licperiod);
+    strRet = Strings::Format("MasterNode<%s-%d>,privkey<%s>,ipaddress<%s>,status<%ld:%d-%ld>,license<%s  |- %ld>",
+                                _txid.c_str(), _voutid, _privkey.c_str(), _ipaddr.c_str(), tnow, _status, _nodeperiod, _licence.c_str(), _licperiod);
     try {
         CKeyExtension key(_privkey);
     }
@@ -62,7 +62,7 @@ bool Cmndata::Check(std::string& strRet)
 }
 
 CDbHandler::CDbHandler() :
-db_(GetArg("-dbhost", "127.0.0.1"), GetArg("-dbport", 3306), GetArg("-dbuser", "root"),GetArg("-dbpwd", "123456"),GetArg("-dbname", "mysql")),
+db_(MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"), atoi(GetArg("-dbport", "3306")), GetArg("-dbuser", "root"),GetArg("-dbpwd", "123456"),GetArg("-dbname", "mysql"))),
 tablename_(GetArg("-dbtable","udevforums_major_node_bind"))
 {
 }
@@ -96,9 +96,9 @@ bool CDbHandler::SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>&
     {
         if (b1st == true) {
             b1st = false;
-            Strings::Append(sql, " %s = '%s'", i.first, i.second)
+            Strings::Append(sql, " WHERE %s = '%s'", i.first.c_str(), i.second.c_str());
         } else {
-            Strings::Append(sql, " And %s = '%s'", i.first, i.second)
+            Strings::Append(sql, " And %s = '%s'", i.first.c_str(), i.second.c_str());
         }
     }
 
@@ -108,11 +108,15 @@ bool CDbHandler::SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>&
         db_.query(sql, res);
     }
     catch (const exception& ex) {
-        LOG(ERROR) << "sql word <" << sql << ">. query db exception " << ex.what();
+        cout << "sql word <" << sql << ">. query db exception " << ex.what() << endl;
         return false;
     }
 
     vecResult.clear();
+	if(res.numRows() == 0) {
+		cout << "sql word <" << sql << ">, select 0 entry" << endl;
+		return false;
+	}
     char **row = res.nextRow();
     while(row != nullptr)
     {
@@ -126,7 +130,7 @@ bool CDbHandler::SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>&
         row[++i] != NULL ? mstnode._licperiod = atoi(row[i]) : mstnode._licperiod = -1;
         row[++i] != NULL ? mstnode._licence = row[i] : mstnode._licence = "NULL";
         row[++i] != NULL ? mstnode._nodeperiod = atoi(row[i]) : mstnode._nodeperiod = -1;
-        vecResult.insert(mstnode);
+        vecResult.push_back(mstnode);
         row = res.nextRow();
     }
     return true;
@@ -141,16 +145,16 @@ void CheckNodeHelp()
 void DBCheckNode(int argc, char const * argv[])
 {
     if(argc < 4) {
-        CheckNodeHelp()
+        CheckNodeHelp();
         return;
     }
     int i = 2;
     CDbHandler::map_col_val_t mapCheck;
     vector<Cmndata> vecRet;
-    CDbHandler db();
+    CDbHandler db;
     while(i+1 < argc)
     {
-        mapCheck.insert(make_pair(argv[i]), argv[i + 1]);
+        mapCheck.insert(make_pair(argv[i], argv[i + 1]));
         i += 2;
     }
     if(!db.SelectData(mapCheck, vecRet)) {
@@ -171,13 +175,13 @@ void DBCheckAll(int argc, char const * argv[])
 {
     CDbHandler::map_col_val_t mapCheck;
     vector<Cmndata> vecRet;
-    CDbHandler db();
+    CDbHandler db;
     mapCheck.clear();
     if(!db.SelectData(mapCheck, vecRet)) {
         cout << "Read DB failed!" << endl;
         return;
     }
-    cout << "Read " << vecRet.size() << " entries:" << endl;
+    cout << "Read " << vecRet.size() << " entries, check failed:" << endl;
     for(auto mn : vecRet)
     {
         string sRet;

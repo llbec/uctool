@@ -18,19 +18,20 @@ public:
     Cmndata & operator=(Cmndata& b);
     bool IsNull();
     bool Check(std::string& strRet);
-}
+};
 
 class CDbHandler {
 private:
+	MySQLConnection db_;
     std::string tablename_;
-    MySQLConnection db_;
 public:
     typedef std::map <std::string, std::string> map_col_val_t;
     typedef std::pair <std::string, std::string> pair_col_val_t;
     typedef typename map_col_val_t::iterator map_col_val_it;
     typedef typename map_col_val_t::const_iterator map_col_val_cit;
     CDbHandler();
+	bool IsDBOnline();
     bool SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>& vecResult);
-}
+};
 #endif // MYSQL_ENABLE
 #endif // UTCENTER_DBCLASS_H
