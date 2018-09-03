@@ -47,6 +47,8 @@ bool Cmndata::Check(std::string& strRet)
     int64_t tnow = GetTime();
     strRet = Strings::Format("MasterNode<%s-%d>,privkey<%s>,ipaddress<%s>,status<%ld:%d-%ld>,license<%s  |- %ld>",
                                 _txid.c_str(), _voutid, _privkey.c_str(), _ipaddr.c_str(), tnow, _status, _nodeperiod, _licence.c_str(), _licperiod);
+    if(_status != 1)
+        return true;
     try {
         CKeyExtension key(_privkey);
     }
