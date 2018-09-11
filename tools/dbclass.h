@@ -9,6 +9,7 @@ public:
     std::string  _txid;
     int          _voutid;
     std::string  _privkey;
+    std::string  _name;
     std::string  _ipaddr;
     int          _status;
     int64_t      _licperiod;

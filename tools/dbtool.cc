@@ -13,6 +13,7 @@ Cmndata::Cmndata():
 _txid(""),
 _voutid(0),
 _privkey(""),
+_name(""),
 _ipaddr(""),
 _status(0),
 _licperiod(0),
@@ -25,6 +26,7 @@ Cmndata & Cmndata::operator=(Cmndata& b)
     _txid       = b._txid;
     _voutid     = b._voutid;
     _privkey    = b._privkey;
+    _name       = b._name;
     _ipaddr     = b._ipaddr;
     _status     = b._status;
     _licperiod  = b._licperiod;
@@ -45,8 +47,8 @@ bool Cmndata::Check(std::string& strRet)
 {
     bool bRet = true;
     int64_t tnow = GetTime();
-    strRet = Strings::Format("MasterNode<%s-%d>,privkey<%s>,ipaddress<%s>,status<%ld:%d-%ld>,license<%s  |- %ld>",
-                                _txid.c_str(), _voutid, _privkey.c_str(), _ipaddr.c_str(), tnow, _status, _nodeperiod, _licence.c_str(), _licperiod);
+    strRet = Strings::Format("MasterNode %s@%ld<%s-%d>,privkey<%s>,ipaddress<%s>,status<%d-%ld>,license<%s  || %ld>",
+                                _name.c_str(), tnow, _txid.c_str(), _voutid, _privkey.c_str(), _ipaddr.c_str(), _status, _nodeperiod, _licence.c_str(), _licperiod);
     if(_status != 1)
         return true;
     try {
@@ -92,7 +94,7 @@ bool CDbHandler::SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>&
 {
     bool b1st = true;
     MySQLResult res;
-    std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, ip_address, status, validdate, certificate, node_period FROM %s",
+    std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, major_node_nickname, ip_address, status, validdate, certificate, node_period FROM %s",
                                     tablename_.c_str());
     for(auto i : mapWhere)
     {
@@ -127,6 +129,7 @@ bool CDbHandler::SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>&
         row[i] != NULL ? mstnode._txid = row[i] : mstnode._txid = "NULL";
         row[++i] != NULL ? mstnode._voutid = atoi(row[i]) : mstnode._voutid = -1;
         row[++i] != NULL ? mstnode._privkey = row[i] : mstnode._privkey = "NULL";
+        row[++i] != NULL ? mstnode._name = row[i] : mstnode._name = "NULL";
         row[++i] != NULL ? mstnode._ipaddr = row[i] : mstnode._ipaddr = "NULL";
         row[++i] != NULL ? mstnode._status = atoi(row[i]) : mstnode._status = -1;
         row[++i] != NULL ? mstnode._licperiod = atoi(row[i]) : mstnode._licperiod = -1;
