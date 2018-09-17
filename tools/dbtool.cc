@@ -145,7 +145,8 @@ void CheckNodeHelp()
 {
     cout << "Command \"dbcheck\" example :" << endl << endl
         << "dbcheck column value ..." << endl
-		<< "dbcheck \"trade_txid\" \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\""<< endl;
+		<< "dbcheck \"trade_txid\" \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\""<< endl
+        << "major_node_nickname trade_txid ip_address special_code status" << endl;
 }
 void DBCheckNode(int argc, char const * argv[])
 {
