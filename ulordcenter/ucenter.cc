@@ -165,7 +165,7 @@ bool UlordServer::IsDBOnline()
 {
     try
     {
-        MySQLConnection db(poolDB_);
+        MySQLConnection db(dbinfo_);
         for (size_t nPings = 0; nPings < 3; nPings++)
         {
             if (db.ping())
@@ -189,7 +189,7 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
                                     tablename_.c_str(), txid.c_str(), voutid);
 
     try {
-        MySQLConnection db(poolDB_);
+        MySQLConnection db(dbinfo_);
         for (size_t i = 0; i < 3; i++)
         {
             if (db.ping())
