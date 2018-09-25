@@ -18,13 +18,14 @@ public:
     Cmndata();
     Cmndata & operator=(Cmndata& b);
     bool IsNull();
-    bool Check(std::string& strRet);
+    bool Check(std::string& strRet, int64_t needUpdatePeriod);
 };
 
 class CDbHandler {
 private:
 	MySQLConnection db_;
     std::string tablename_;
+    const int64_t needUpdatePeriod_;
 public:
     typedef std::map <std::string, std::string> map_col_val_t;
     typedef std::pair <std::string, std::string> pair_col_val_t;

@@ -43,7 +43,7 @@ bool Cmndata::IsNull()
     return true;
 }
 
-bool Cmndata::Check(std::string& strRet)
+bool Cmndata::Check(std::string& strRet, int64_t needUpdatePeriod)
 {
     bool bRet = true;
     int64_t tnow = GetTime();
@@ -58,7 +58,7 @@ bool Cmndata::Check(std::string& strRet)
         Strings::Append(strRet, ", privkey is invalid");
         bRet = false;
     }
-    if(_nodeperiod < tnow) {
+    if(_nodeperiod + needUpdatePeriod < tnow) {
         bRet = false;
         Strings::Append(strRet, ", node period is expired");
     }
@@ -67,7 +67,8 @@ bool Cmndata::Check(std::string& strRet)
 
 CDbHandler::CDbHandler() :
 db_(MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"), atoi(GetArg("-dbport", "3306")), GetArg("-dbuser", "root"),GetArg("-dbpwd", "123456"),GetArg("-dbname", "mysql"))),
-tablename_(GetArg("-dbtable","udevforums_major_node_bind"))
+tablename_(GetArg("-dbtable","udevforums_major_node_bind")),
+needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
 {
 }
 
@@ -171,7 +172,7 @@ void DBCheckNode(int argc, char const * argv[])
     for(auto mn : vecRet)
     {
         string sRet;
-        mn.Check(sRet);
+        mn.Check(sRet, needUpdatePeriod_);
         cout << sRet << endl;
     }
     return;
