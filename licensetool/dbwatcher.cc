@@ -53,12 +53,12 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
         }
         if(db.query(sql, res) == false) {
             LOG(INFO) << "DBWatcher::SelectMNData:query failed!";
-            return false;
+            return;
         }
     }
     catch (const std::exception& ex) {
         LOG(ERROR) << "DBWatcher::SelectMNData: db exception " << ex.what();
-        return false;
+        return;
     }
     LOG(INFO) << "DBWatcher::SelectMNData:Read DB and select <" << res.numRows() << " masternodes";
     if(res.numRows() == 0)
@@ -206,12 +206,12 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
         }
         if(db.query(sql, res) == false) {
             LOG(INFO) << "UlordServer::SelectNeedUpdateMNData:query failed";
-            return false;
+            return;
         }
     }
     catch (const std::exception& ex) {
         LOG(ERROR) << "UlordServer::SelectNeedUpdateMNData:masternode db exception " << ex.what();
-        return false;
+        return;
     }
     LOG(INFO) << "DBWatcher::SelectNeedUpdateMNData:Read DB and select " << res.numRows() << " masternodes";
     if(res.numRows() == 0)
