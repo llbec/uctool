@@ -21,7 +21,7 @@ idleSeconds_(idleSeconds),
 server_(loop, listenAddr, "UlordServer"),
 codec_(boost::bind(&UlordServer::onStringMessage, this, _1, _2, _3)),
 licversion_(GetArg("-licversion",1)),
-db_(ptrDBInfo)
+dbinfo_(ptrDBInfo)
 {
     server_.setConnectionCallback(boost::bind(&UlordServer::onConnection, this, _1));
     server_.setMessageCallback(boost::bind(&LengthHeaderCodec::onMessage, &codec_, _1, _2, _3));
@@ -165,9 +165,10 @@ bool UlordServer::IsDBOnline()
 {
     try
     {
+        MySQLConnection db(poolDB_);
         for (size_t nPings = 0; nPings < 3; nPings++)
         {
-            if (db_.ping())
+            if (db.ping())
                 return true;
         }
     }
@@ -187,13 +188,19 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
     std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, certificate, node_period FROM %s WHERE trade_txid = '%s' AND trade_vout_no = %d AND status = 1",
                                     tablename_.c_str(), txid.c_str(), voutid);
 
-    if(!IsDBOnline())
-        return false;
     try {
-        db_.query(sql, res);
+        MySQLConnection db(poolDB_);
+        for (size_t i = 0; i < 3; i++)
+        {
+            if (db.ping())
+                break;
+            else
+                sleep(3);
+        }
+        db.query(sql, res);
     }
     catch (const std::exception& ex) {
-        LOG(ERROR) << "UlordServer::SelectMNData:masternode <" << txid << ":" << voutid << ">. query db exception " << ex.what();
+        LOG(ERROR) << "UlordServer::SelectMNData:masternode <" << txid << ":" << voutid << ">. mysql exception " << ex.what();
         return false;
     }
     if(res.numRows() == 0) {
