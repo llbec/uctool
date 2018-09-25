@@ -64,7 +64,7 @@ private:
     const int64_t licPeriodLimit_;
     const int64_t needUpdatePeriod_;
     const int64_t runInterval_;
-    MySQLConnection db_;
+    MysqlConnectInfo dbinfo_;
     map_int_key_t mapWatcherkey_;
     int keyVersion_;
 public:

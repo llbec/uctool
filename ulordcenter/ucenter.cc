@@ -197,7 +197,10 @@ bool UlordServer::SelectMNData(std::string txid, unsigned int voutid, CMstNodeDa
             else
                 sleep(3);
         }
-        db.query(sql, res);
+        if(db.query(sql, res) == false) {
+            LOG(INFO) << "UlordServer::SelectMNData:query failed for masternode <" << txid << ":" << voutid << ">";
+            return false;
+        }
     }
     catch (const std::exception& ex) {
         LOG(ERROR) << "UlordServer::SelectMNData:masternode <" << txid << ":" << voutid << ">. mysql exception " << ex.what();

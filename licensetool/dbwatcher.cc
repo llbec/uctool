@@ -13,16 +13,26 @@ licversion_(GetArg("-licversion",1)),
 licPeriodLimit_(GetArg("-periodunit",86400)*GetArg("-periodlimit",30)),
 needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
 runInterval_(GetArg("-runinterval",60)),
-db_(ptrDBInfo)
+dbinfo_(ptrDBInfo)
 {
     tablename_ = GetArg("-dbtable","udevforums_major_node_bind");
 }
 
 bool DBWatcher::IsDBOnline()
 {
-    for (size_t nPings = 0; nPings < 3; nPings++) {
-        if (db_.ping())
-            return true;
+    try
+    {
+        MySQLConnection db(dbinfo_);
+        for (size_t nPings = 0; nPings < 3; nPings++)
+        {
+            if (db.ping())
+                return true;
+        }
+    }
+    catch (const std::exception& ex)
+    {
+        LOG(ERROR) << "DBWatcher db Ping " << ex.what();
+        return false;
     }
     LOG(INFO) << "DBWatcher db is offline!";
     return false;
@@ -32,9 +42,24 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
 {
     MySQLResult res;
     std::string sql = Strings::Format("SELECT * FROM %s", tablename_.c_str());
-    if(!IsDBOnline())
-        return;
-    db_.query(sql, res);
+    try {
+        MySQLConnection db(dbinfo_);
+        for (size_t i = 0; i < 3; i++)
+        {
+            if (db.ping())
+                break;
+            else
+                sleep(3);
+        }
+        if(db.query(sql, res) == false) {
+            LOG(INFO) << "DBWatcher::SelectMNData:query failed!";
+            return false;
+        }
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "DBWatcher::SelectMNData: db exception " << ex.what();
+        return false;
+    }
     LOG(INFO) << "DBWatcher::SelectMNData:Read DB and select <" << res.numRows() << " masternodes";
     if(res.numRows() == 0)
         return;
@@ -74,8 +99,6 @@ void DBWatcher::SelectMNData(std::vector<CMstNodeData> & vecnode)
 
 bool DBWatcher::UpdateMNData(const CMstNodeData & mn)
 {
-    if(!IsDBOnline())
-        return false;
     string sql = Strings::Format("UPDATE %s SET validdate = %ld, certificate = '%s' WHERE trade_txid='%s' AND trade_vout_no=%d",
                                     tablename_.c_str(),
                                     mn._licperiod,
@@ -83,19 +106,45 @@ bool DBWatcher::UpdateMNData(const CMstNodeData & mn)
                                     mn._txid.c_str(),
                                     mn._voutid);
 
-    return db_.execute(sql);
+    try {
+        MySQLConnection db(dbinfo_);
+        for (size_t i = 0; i < 3; i++)
+        {
+            if (db.ping())
+                break;
+            else
+                sleep(3);
+        }
+        return db.execute(sql);
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "DBWatcher::UpdateMNData:db exception " << ex.what();
+        return false;
+    }
 }
 
 bool DBWatcher::ClearMNData(const CMstNodeData & mn)
 {
-    if(!IsDBOnline())
-        return false;
     string sql = Strings::Format("UPDATE %s SET validflag = 0, validdate = 0, certificate = NULL WHERE trade_txid='%s' AND trade_vout_no=%d",
                                     tablename_.c_str(),
                                     mn._txid.c_str(),
                                     mn._voutid);
 
-    return db_.execute(sql);
+    try {
+        MySQLConnection db(dbinfo_);
+        for (size_t i = 0; i < 3; i++)
+        {
+            if (db.ping())
+                break;
+            else
+                sleep(3);
+        }
+        return db.execute(sql);
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "DBWatcher::ClearMNData:db exception " << ex.what();
+        return false;
+    }
 }
 
 bool DBWatcher::SignMNLicense(CMstNodeData & mn)
@@ -146,9 +195,24 @@ void DBWatcher::SelectNeedUpdateMNData(std::vector<CMstNodeData> & vecnode)
     string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, status, validdate, node_period FROM %s WHERE node_period > %ld AND validdate < %ld AND status = 1",
                                     tablename_.c_str(), tnow, tlimit);
 
-    if(!IsDBOnline())
-        return;
-    db_.query(sql, res);
+    try {
+        MySQLConnection db(dbinfo_);
+        for (size_t i = 0; i < 3; i++)
+        {
+            if (db.ping())
+                break;
+            else
+                sleep(3);
+        }
+        if(db.query(sql, res) == false) {
+            LOG(INFO) << "UlordServer::SelectNeedUpdateMNData:query failed";
+            return false;
+        }
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "UlordServer::SelectNeedUpdateMNData:masternode db exception " << ex.what();
+        return false;
+    }
     LOG(INFO) << "DBWatcher::SelectNeedUpdateMNData:Read DB and select " << res.numRows() << " masternodes";
     if(res.numRows() == 0)
         return;
