@@ -68,7 +68,7 @@ bool Cmndata::Check(std::string& strRet, int64_t needUpdatePeriod)
 CDbHandler::CDbHandler() :
 db_(MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"), atoi(GetArg("-dbport", "3306")), GetArg("-dbuser", "root"),GetArg("-dbpwd", "123456"),GetArg("-dbname", "mysql"))),
 tablename_(GetArg("-dbtable","udevforums_major_node_bind")),
-needUpdatePeriod_(GetArg("-periodunit",86400)*GetArg("-needupdate",3)),
+_needUpdatePeriod(GetArg("-periodunit",86400)*GetArg("-needupdate",3))
 {
 }
 
@@ -172,7 +172,7 @@ void DBCheckNode(int argc, char const * argv[])
     for(auto mn : vecRet)
     {
         string sRet;
-        mn.Check(sRet, needUpdatePeriod_);
+        mn.Check(sRet, db._needUpdatePeriod);
         cout << sRet << endl;
     }
     return;
@@ -192,7 +192,7 @@ void DBCheckAll(int argc, char const * argv[])
     for(auto mn : vecRet)
     {
         string sRet;
-        if(!mn.Check(sRet)) {
+        if(!mn.Check(sRet, db._needUpdatePeriod)) {
             cout << sRet << endl;
         }
     }

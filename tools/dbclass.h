@@ -25,8 +25,8 @@ class CDbHandler {
 private:
 	MySQLConnection db_;
     std::string tablename_;
-    const int64_t needUpdatePeriod_;
 public:
+    const int64_t _needUpdatePeriod;
     typedef std::map <std::string, std::string> map_col_val_t;
     typedef std::pair <std::string, std::string> pair_col_val_t;
     typedef typename map_col_val_t::iterator map_col_val_it;
