@@ -30,8 +30,6 @@ void RegisterCmd()
     mapCommand.insert(make_pair("keydecode", &Decodekey));
     mapCommand.insert(make_pair("keyencode", &Encodekey));
     mapCommand.insert(make_pair("keymatch", &Matchkey));
-    mapCommand.insert(make_pair("msgserialize", &MsgSerialize));
-    mapCommand.insert(make_pair("msgdeserialize", &MsgDeserialize));
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
