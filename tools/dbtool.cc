@@ -1,15 +1,16 @@
 #ifdef MYSQL_ENABLE
 #include "dbtool.h"
-#include "dbclass.h"
+//#include "dbclass.h"
+#include "ulordDB.h"
 
 #include "ulord.h"
 
-#include "util.h"
-#include "masternodeman.h"
+//#include "util.h"
+//#include "masternodeman.h"
 
 using namespace std;
 
-Cmndata::Cmndata():
+/*Cmndata::Cmndata():
 _txid(""),
 _voutid(0),
 _privkey(""),
@@ -140,14 +141,14 @@ bool CDbHandler::SelectData(const map_col_val_t& mapWhere, std::vector<Cmndata>&
         row = res.nextRow();
     }
     return true;
-}
+}*/
 
 void CheckNodeHelp()
 {
     cout << "Command \"dbcheck\" example :" << endl << endl
         << "dbcheck column value ..." << endl
 		<< "dbcheck \"trade_txid\" \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\""<< endl
-        << "major_node_nickname trade_txid ip_address special_code status" << endl;
+        << "major_node_nickname trade_txid ip_address special_code status cert_version" << endl;
 }
 void DBCheckNode(int argc, char const * argv[])
 {
@@ -156,15 +157,15 @@ void DBCheckNode(int argc, char const * argv[])
         return;
     }
     int i = 2;
-    CDbHandler::map_col_val_t mapCheck;
-    vector<Cmndata> vecRet;
-    CDbHandler db;
+    CUlordDb::map_col_val_t mapCheck;
+    vector<CMstNodeData> vecRet;
+    CUlordDb db;
     while(i+1 < argc)
     {
         mapCheck.insert(make_pair(argv[i], argv[i + 1]));
         i += 2;
     }
-    if(!db.SelectData(mapCheck, vecRet)) {
+    if(!db.SelectMNode(mapCheck, vecRet)) {
         cout << "Read DB failed!" << endl;
         return;
     }
@@ -180,11 +181,11 @@ void DBCheckNode(int argc, char const * argv[])
 
 void DBCheckAll(int argc, char const * argv[])
 {
-    CDbHandler::map_col_val_t mapCheck;
+    CUlordDb::map_col_val_t mapCheck;
     vector<Cmndata> vecRet;
-    CDbHandler db;
+    CUlordDb db;
     mapCheck.clear();
-    if(!db.SelectData(mapCheck, vecRet)) {
+    if(!db.SelectMNode(mapCheck, vecRet)) {
         cout << "Read DB failed!" << endl;
         return;
     }
