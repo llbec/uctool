@@ -165,9 +165,9 @@ bool MSTRequest(mstnodequest & tAsk, std::string & strResult)
 
 void HelpSerialize()
 {
-    cout << "Command \"serialize\" example :" << endl << endl
-        << "serialize msg-type data ..." << endl
-		<< "serialize questone \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
+    cout << "Command \"msgserialize\" example :" << endl << endl
+        << "msgserialize msg-type data ..." << endl
+		<< "msgserialize questone \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
 }
 void MsgSerialize(int argc, char const * argv[])
 {
@@ -194,4 +194,35 @@ void MsgSerialize(int argc, char const * argv[])
         cout << "Hex : " << HexStr(strReq, strReq.size()) << endl;
     }
     return;
+}
+
+void HelpDeserialize()
+{
+    cout << "Command \"msgdeserialize\" example :" << endl << endl
+        << "msgdeserialize msg-type msg-data ..." << endl
+		<< "msgdeserialize questone \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\""<< endl;
+}
+void MsgDeserialize(int argc, char const * argv[])
+{
+    if(argc != 4) {
+        HelpDeserialize();
+        return;
+    }
+    string type = argv[2];
+    string data = argv[3];
+
+    if(type == "questone") {
+        mstnodequest mstquest;
+        try {
+            std::istringstream is(data);  
+            boost::archive::binary_iarchive ia(is);  
+            ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
+        }
+        catch (const std::exception& ex) {
+            cout << "deserialize message exception:" << ex.what();
+            return;
+        }
+        cout << "Deserialize: masternode <" << mstquest._txid << " - " << mstquest._voutid << ">@" << mstquest._timeStamps << endl
+            << "version: " << mstquest._msgversion << " type: " << mstquest._questtype << endl;
+    }
 }
