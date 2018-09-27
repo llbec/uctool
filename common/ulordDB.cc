@@ -1,7 +1,15 @@
 //#ifdef MYSQL_ENABLE
 #include "ulordDB.h"
-
+#include "ulord.h"
 #include "util.h"
+
+bool CMNode::IsNull()
+{
+    if(_txid == "NULL" || _privkey == "NULL" || _ipaddr == "NULL" || _licence == "NULL" ||
+       _status == -1 || _licperiod == -1 || _nodeperiod == -1 || _licversion == 0)
+        return false;
+    return true;
+}
 
 bool CMNode::Check(std::string& strRet, int64_t needUpdatePeriod)
 {
@@ -31,7 +39,7 @@ dbinfo_(MysqlConnectInfo(GetArg("-dbhost", "127.0.0.1"), atoi(GetArg("-dbport", 
 _needUpdatePeriod(GetArg("-periodunit",86400)*GetArg("-needupdate",3))
 {}
 
-bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMstNodeData>& vecRet)
+bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& vecRet)
 {
     bool b1st = true;
     MySQLResult res;
@@ -54,8 +62,10 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMstNodeD
         {
             if (db.ping())
                 break;
-            else
-                i == 2 ? []{ LOG(INFO) << "CUlordDb::SelectDb:db ping failed!"; return false; } : sleep(3);
+            else {
+                if(i == 2) ([]{ LOG(INFO) << "CUlordDb::SelectDb:db ping failed!"; return false; });
+		else sleep(3);
+	    }
         }
         if(db.query(sql, res) == false) {
             LOG(INFO) << "CUlordDb::SelectDb:query failed!";
@@ -74,14 +84,14 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMstNodeD
         CMNode mstnode;
         int i = 0;
         row[i] != NULL ? mstnode._txid = row[i] : mstnode._txid = "NULL";
-        row[++i] != NULL ? mstnode._voutid = atoi(row[i]) : mstnode._voutid = -1;
+        row[++i] != NULL ? mstnode._voutid = atoi(row[i]) : mstnode._voutid = 0;
         row[++i] != NULL ? mstnode._privkey = row[i] : mstnode._privkey = "NULL";
         row[++i] != NULL ? mstnode._name = row[i] : mstnode._name = "NULL";
         row[++i] != NULL ? mstnode._ipaddr = row[i] : mstnode._ipaddr = "NULL";
         row[++i] != NULL ? mstnode._status = atoi(row[i]) : mstnode._status = -1;
         row[++i] != NULL ? mstnode._licperiod = atoi(row[i]) : mstnode._licperiod = -1;
         row[++i] != NULL ? mstnode._licence = row[i] : mstnode._licence = "NULL";
-        row[++i] != NULL ? mstnode._licversion = row[i] : mstnode._licversion = 0;
+        row[++i] != NULL ? mstnode._licversion = atoi(row[i]) : mstnode._licversion = 0;
         row[++i] != NULL ? mstnode._nodeperiod = atoi(row[i]) : mstnode._nodeperiod = -1;
         vecRet.push_back(mstnode);
         row = res.nextRow();
@@ -89,7 +99,7 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMstNodeD
     return true;
 }
 
-bool CUlordDb::UpdateLicenses(const std::vector<CMstNodeData>& vecMNode)
+bool CUlordDb::UpdateLicenses(const std::vector<CMNode>& vecMNode)
 {
     try {
         MySQLConnection db(dbinfo_);
@@ -97,8 +107,10 @@ bool CUlordDb::UpdateLicenses(const std::vector<CMstNodeData>& vecMNode)
         {
             if (db.ping())
                 break;
-            else
-                i == 2 ? []{ LOG(INFO) << "CUlordDb::UpdateLicenses:db ping failed!"; return false; } : sleep(3);
+            else {
+                if(i == 2) []{ LOG(INFO) << "CUlordDb::UpdateLicenses:db ping failed!"; return false; };
+	        else sleep(3);
+            }
         }
         for(auto mn : vecMNode)
         {
@@ -109,7 +121,7 @@ bool CUlordDb::UpdateLicenses(const std::vector<CMstNodeData>& vecMNode)
                                         mn._licversion,
                                         mn._txid.c_str(),
                                         mn._voutid);
-            db.execute(sql) ? : LOG(INFO) << "CUlordDb::UpdateLicenses:db execute failed @ node<" << mn._txid << " : " << mn._voutid << ">";
+            if(!db.execute(sql)) LOG(INFO) << "CUlordDb::UpdateLicenses:db execute failed @ node<" << mn._txid << " : " << mn._voutid << ">";
         }
         return true;
     }

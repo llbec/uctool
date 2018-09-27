@@ -11,6 +11,7 @@ class CMNode : public CMstNodeData {
 public:
     std::string  _name;
     std::string  _ipaddr;
+    bool IsNull();
     bool Check(std::string& strRet, int64_t needUpdatePeriod);
 };
 
