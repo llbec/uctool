@@ -219,7 +219,7 @@ void MsgDeserialize(int argc, char const * argv[])
             ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
         }
         catch (const std::exception& ex) {
-            cout << "deserialize message exception:" << ex.what();
+            cout << "deserialize message exception:" << ex.what() << endl;
             return;
         }
         cout << "Deserialize: masternode <" << mstquest._txid << " - " << mstquest._voutid << ">@" << mstquest._timeStamps << endl
