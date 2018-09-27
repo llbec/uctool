@@ -169,7 +169,7 @@ void HelpSerialize()
         << "serialize msg-type data ..." << endl
 		<< "serialize questone \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
 }
-void Serialize(int argc, char const * argv[])
+void MsgSerialize(int argc, char const * argv[])
 {
     if(argc < 4) {
         HelpSerialize();
