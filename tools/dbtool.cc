@@ -158,7 +158,7 @@ void DBCheckNode(int argc, char const * argv[])
     }
     int i = 2;
     CUlordDb::map_col_val_t mapCheck;
-    vector<CMstNodeData> vecRet;
+    vector<CMNode> vecRet;
     CUlordDb db;
     while(i+1 < argc)
     {
@@ -182,7 +182,7 @@ void DBCheckNode(int argc, char const * argv[])
 void DBCheckAll(int argc, char const * argv[])
 {
     CUlordDb::map_col_val_t mapCheck;
-    vector<Cmndata> vecRet;
+    vector<CMNode> vecRet;
     CUlordDb db;
     mapCheck.clear();
     if(!db.SelectMNode(mapCheck, vecRet)) {
