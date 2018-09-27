@@ -1,7 +1,7 @@
 #ifndef ULORD_DB_H
 #define ULORD_DB_H
 
-//#ifdef MYSQL_ENABLE
+#ifdef MYSQL_ENABLE
 #include "utils.h"
 #include "MySQLConnection.h"
 
@@ -30,6 +30,6 @@ public:
     bool UpdateLicenses(const std::vector<CMNode>& vecMNode);
 };
 
-//#endif // MYSQL_ENABLE
+#endif // MYSQL_ENABLE
 
 #endif // ULORD_DB_H

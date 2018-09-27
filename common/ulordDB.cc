@@ -1,4 +1,4 @@
-//#ifdef MYSQL_ENABLE
+#ifdef MYSQL_ENABLE
 #include "ulordDB.h"
 #include "ulord.h"
 #include "util.h"
@@ -130,4 +130,4 @@ bool CUlordDb::UpdateLicenses(const std::vector<CMNode>& vecMNode)
         return false;
     }
 }
-//#endif // MYSQL_ENABLE
+#endif // MYSQL_ENABLE
