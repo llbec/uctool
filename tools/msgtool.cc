@@ -191,6 +191,7 @@ void MsgSerialize(int argc, char const * argv[])
         oa << mstquest;
         string strReq = os.str();
         cout << "Serialize result : " << strReq << endl;
+        cout << "Hex : " << HexStr(strReq, strReq.size()) << endl;
     }
     return;
 }
