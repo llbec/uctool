@@ -28,6 +28,7 @@ public:
     CUlordDb();
     bool SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& vecRet);
     bool UpdateLicenses(const std::vector<CMNode>& vecMNode);
+    bool IsDBOnline(MySQLConnection* ptrDB);
 };
 
 #endif // MYSQL_ENABLE

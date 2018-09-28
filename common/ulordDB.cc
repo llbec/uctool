@@ -58,14 +58,10 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& 
 
     try {
         MySQLConnection db(dbinfo_);
-        for (size_t i = 0; i < 3; i++)
-        {
-            if (db.ping())
-                break;
-            else {
-                if(i == 2) ([]{ LOG(INFO) << "CUlordDb::SelectDb:db ping failed!"; return false; });
-		else sleep(3);
-	    }
+        if(!IsDBOnline(&db)) {
+            LOG(INFO) << "CUlordDb::SelectMNode:db ping failed!";
+            return false;
+        }
         }
         if(db.query(sql, res) == false) {
             LOG(INFO) << "CUlordDb::SelectDb:query failed!";
@@ -103,14 +99,9 @@ bool CUlordDb::UpdateLicenses(const std::vector<CMNode>& vecMNode)
 {
     try {
         MySQLConnection db(dbinfo_);
-        for (size_t i = 0; i < 3; i++)
-        {
-            if (db.ping())
-                break;
-            else {
-                if(i == 2) []{ LOG(INFO) << "CUlordDb::UpdateLicenses:db ping failed!"; return false; };
-	        else sleep(3);
-            }
+        if(!IsDBOnline(&db)) {
+            LOG(INFO) << "CUlordDb::UpdateLicenses:db ping failed!";
+            return false;
         }
         for(auto mn : vecMNode)
         {
@@ -129,5 +120,26 @@ bool CUlordDb::UpdateLicenses(const std::vector<CMNode>& vecMNode)
         LOG(ERROR) << "CUlordDb::UpdateLicenses:db exception " << ex.what();
         return false;
     }
+}
+
+bool CUlordDb::IsDBOnline(MySQLConnection* ptrDB)
+{
+    bool bRet = true;
+    try {
+        if(ptrDB == NULL) {
+            LOG(ERROR) << "CUlordDb::IsDBOnline:ptr is NULL"
+            return false;
+        }
+        for (size_t i = 0; i < 3; i++)
+        {
+            if (ptrDB->ping())
+                break;
+            i == 2 ? bRet = false : sleep(3);
+	    }
+    } catch (const std::exception& ex) {
+        LOG(ERROR) << "CUlordDb::IsDBOnline:ping exception " << ex.what();
+        return false;
+    }
+    return bRet;
 }
 #endif // MYSQL_ENABLE
