@@ -62,7 +62,6 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& 
             LOG(INFO) << "CUlordDb::SelectMNode:db ping failed!";
             return false;
         }
-        }
         if(db.query(sql, res) == false) {
             LOG(INFO) << "CUlordDb::SelectDb:query failed!";
             return false;
