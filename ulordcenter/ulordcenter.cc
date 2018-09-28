@@ -1,4 +1,4 @@
-//#ifdef MYSQL_ENABLE
+#ifdef MYSQL_ENABLE
 #include "ulordcenter.h"
 
 using namespace std;
@@ -190,18 +190,29 @@ void CUCenter::dumpConnectionList() const
 
 bool CUCenter::SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn)
 {
-    /*LOCK(cs_);
+    LOCK(cs_);
     CMNCoin mnCoin(txid, voutid);
     int64_t tnow = GetTime();
     if(mapMNodeList_.count(mnCoin) != 0) {
-        if(mapMNodeList_[mnCoin]._licperiods > tnow + db_._needUpdatePeriod) {
+        if(mapMNodeList_[mnCoin]._licperiods >= tnow + db_._needUpdatePeriod) {
             mn = *(mapMNodeList_[mnCoin].GetData());
             return true;
         }
     }
     /*update mn list from db*/
-    //CUlordDb::map_col_val_t mapCheck;
-    //<CMNode> vecRet;
+    vector<string> vecFilter;
+    vector<CMNode> vecRet;
+    vecFilter.push_back("status=1");
+    vecFilter.push_back(Strings::Format("validdate<%ld", tnow + db_._needUpdatePeriod));
+    if(db_.SelectMNode(vecFilter, vecRet)) {
+        for(auto mn:vecRet)
+            [](CMNCoin& tx, CMNode& mn){ mapMNodeList_.count(tx) != 0 ? mapMNodeList_[tx] = mn : mapMNodeList_.insert(make_pair(tx, mn)); }(CMNCoin(mn._txid, mn._voutid), mn);
+    }
+
+    if(mapMNodeList_.count(mnCoin) != 0) {
+        mn = *(mapMNodeList_[mnCoin].GetData());
+        return true;
+    }
     return false;
 }
-//#endif // MYSQL_ENABLE
+#endif // MYSQL_ENABLE

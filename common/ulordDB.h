@@ -15,7 +15,7 @@ public:
     bool Check(std::string& strRet, int64_t needUpdatePeriod);
     CMstNodeData * GetData() { return (CMstNodeData *)this; }
     std::string ToString() {
-        return Strings::Format("MasterNode %s<%s-%d>,privkey<%s>,ipaddress<%s>,status<%d>,license<%s>@[%ld,%ld]@%d",
+        return Strings::Format("MasterNode %s<%s-%d>,privkey<%s>,ipaddress<%s>,status<%d>,license< %s >@[%ld,%ld]@%d",
                                 _name.c_str(),
                                 _txid.c_str(),
                                 _voutid,

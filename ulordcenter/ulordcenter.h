@@ -1,7 +1,7 @@
 #ifndef ULORDCENTER_H
 #define ULORDCENTER_H
 
-//#ifdef MYSQL_ENABLE
+#ifdef MYSQL_ENABLE
 #include <muduo/base/Logging.h>
 #include <muduo/base/Mutex.h>
 #include <muduo/net/EventLoop.h>
@@ -55,6 +55,6 @@ private:
     void dumpConnectionList() const;
     bool SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn);
 };
-//#endif // MYSQL_ENABLE
+#endif // MYSQL_ENABLE
 
 #endif // ULORDCENTER_H
