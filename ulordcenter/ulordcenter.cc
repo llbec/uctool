@@ -1,18 +1,19 @@
 #ifdef MYSQL_ENABLE
 #include "ulordcenter.h"
+#include "ulord.h"
 
 using namespace std;
 
 CUCenter::CUCenter(EventLoop* loop) :
 idleSeconds_(GetArg("-idleseconds", 60)),
 server_(loop, InetAddress(static_cast<uint16_t>(GetArg("-tcpport", 5009))), "UCenterServer"),
-codec_(boost::bind(&UlordServer::onStringMessage, this, _1, _2, _3)),
+codec_(boost::bind(&CUCenter::onStringMessage, this, _1, _2, _3)),
 licversion_(GetArg("-licversion",1)),
 db_()
 {
-    server_.setConnectionCallback(boost::bind(&UlordServer::onConnection, this, _1));
+    server_.setConnectionCallback(boost::bind(&CUCenter::onConnection, this, _1));
     server_.setMessageCallback(boost::bind(&LengthHeaderCodec::onMessage, &codec_, _1, _2, _3));
-    loop->runEvery(1.0, boost::bind(&UlordServer::onTimer, this));
+    loop->runEvery(1.0, boost::bind(&CUCenter::onTimer, this));
 }
 
 bool CUCenter::InitUCenterKey()
@@ -49,7 +50,7 @@ bool CUCenter::InitUCenterKey()
     /*init masternode list*/
     mapMNodeList_.clear();
     CUlordDb::map_col_val_t mapSelect;
-    mapSelect.insert(make_pair("status", 1));
+    mapSelect.insert(make_pair("status", to_string(1)));
     vector<CMNode> vecRet;
     if(db_.SelectMNode(mapSelect, vecRet)) {
         for(auto mn:vecRet) mapMNodeList_.insert(make_pair(CMNCoin(mn._txid, mn._voutid), mn));
@@ -194,19 +195,23 @@ bool CUCenter::SelectMNData(std::string txid, unsigned int voutid, CMstNodeData 
     CMNCoin mnCoin(txid, voutid);
     int64_t tnow = GetTime();
     if(mapMNodeList_.count(mnCoin) != 0) {
-        if(mapMNodeList_[mnCoin]._licperiods >= tnow + db_._needUpdatePeriod) {
+        if(mapMNodeList_[mnCoin]._licperiod >= tnow + db_._needUpdatePeriod) {
             mn = *(mapMNodeList_[mnCoin].GetData());
             return true;
         }
     }
     /*update mn list from db*/
-    vector<string> vecFilter;
+    vector<std::string> vecFilter;
     vector<CMNode> vecRet;
     vecFilter.push_back("status=1");
     vecFilter.push_back(Strings::Format("validdate<%ld", tnow + db_._needUpdatePeriod));
     if(db_.SelectMNode(vecFilter, vecRet)) {
         for(auto mn:vecRet)
-            [](CMNCoin& tx, CMNode& mn){ mapMNodeList_.count(tx) != 0 ? mapMNodeList_[tx] = mn : mapMNodeList_.insert(make_pair(tx, mn)); }(CMNCoin(mn._txid, mn._voutid), mn);
+        {
+            CMNCoin tx(mn._txid, mn._voutid);
+            if(mapMNodeList_.count(tx) != 0) mapMNodeList_[tx] = mn;
+            else mapMNodeList_.insert(make_pair(tx, mn));
+        }
     }
 
     if(mapMNodeList_.count(mnCoin) != 0) {

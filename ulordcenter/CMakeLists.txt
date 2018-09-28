@@ -39,8 +39,8 @@ if(NOT CENTOS)
   list(APPEND IMPORTLIB miniupnpc)
 endif()
 
-file(GLOB UCENTER_HEADERS "ucenter.h" )
-file(GLOB UCDENTER_SRC "ucenter.cc"  "ucentermain.cc")
+file(GLOB UCENTER_HEADERS "ulordcenter.h" )
+file(GLOB UCDENTER_SRC "ulordcenter.cc"  "ucentermain.cc")
 add_executable(ulordcenter ${UCDENTER_SRC} ${UCENTER_HEADERS})
 target_link_libraries(ulordcenter ulordtool ${IMPORTLIB})
 
