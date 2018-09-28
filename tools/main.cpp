@@ -33,6 +33,7 @@ void RegisterCmd()
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
+    mapCommand.insert(make_pair("dbselect", &DBSelect));
 #endif // MYSQL_ENABLE
 }
 

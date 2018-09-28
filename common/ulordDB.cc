@@ -15,8 +15,7 @@ bool CMNode::Check(std::string& strRet, int64_t needUpdatePeriod)
 {
     bool bRet = true;
     int64_t tnow = GetTime();
-    strRet = Strings::Format("MasterNode %s@%ld<%s-%d>,privkey<%s>,ipaddress<%s>,status<%d-%ld>,license<%s>@%ld@%d",
-                                _name.c_str(), tnow, _txid.c_str(), _voutid, _privkey.c_str(), _ipaddr.c_str(), _status, _nodeperiod, _licence.c_str(), _licperiod, _licversion);
+    strRet = ToString();
     if(_status != 1)
         return true;
     try {
@@ -26,9 +25,13 @@ bool CMNode::Check(std::string& strRet, int64_t needUpdatePeriod)
         Strings::Append(strRet, ", privkey is invalid");
         bRet = false;
     }
-    if(_nodeperiod + needUpdatePeriod < tnow) {
+    if(_nodeperiod < tnow) {
         bRet = false;
         Strings::Append(strRet, ", node period is expired");
+    }
+    if(_licperiod < tnow + needUpdatePeriod) {
+        bRet = false;
+        Strings::Append(strRet, ", license need update");
     }
     return bRet && IsNull();
 }
@@ -53,6 +56,61 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& 
             Strings::Append(sql, " WHERE %s = '%s'", i.first.c_str(), i.second.c_str());
         } else {
             Strings::Append(sql, " And %s = '%s'", i.first.c_str(), i.second.c_str());
+        }
+    }
+
+    try {
+        MySQLConnection db(dbinfo_);
+        if(!IsDBOnline(&db)) {
+            LOG(INFO) << "CUlordDb::SelectMNode:db ping failed!";
+            return false;
+        }
+        if(db.query(sql, res) == false) {
+            LOG(INFO) << "CUlordDb::SelectDb:query failed!";
+            return false;
+        }
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "CUlordDb::SelectDb:query exception " << ex.what();
+        return false;
+    }
+    vecRet.clear();
+	if(res.numRows() == 0) return true;
+    char **row = res.nextRow();
+    while(row != nullptr)
+    {
+        CMNode mstnode;
+        int i = 0;
+        row[i] != NULL ? mstnode._txid = row[i] : mstnode._txid = "NULL";
+        row[++i] != NULL ? mstnode._voutid = atoi(row[i]) : mstnode._voutid = 0;
+        row[++i] != NULL ? mstnode._privkey = row[i] : mstnode._privkey = "NULL";
+        row[++i] != NULL ? mstnode._name = row[i] : mstnode._name = "NULL";
+        row[++i] != NULL ? mstnode._ipaddr = row[i] : mstnode._ipaddr = "NULL";
+        row[++i] != NULL ? mstnode._status = atoi(row[i]) : mstnode._status = -1;
+        row[++i] != NULL ? mstnode._licperiod = atoi(row[i]) : mstnode._licperiod = -1;
+        row[++i] != NULL ? mstnode._licence = row[i] : mstnode._licence = "NULL";
+        row[++i] != NULL ? mstnode._licversion = atoi(row[i]) : mstnode._licversion = 0;
+        row[++i] != NULL ? mstnode._nodeperiod = atoi(row[i]) : mstnode._nodeperiod = -1;
+        vecRet.push_back(mstnode);
+        row = res.nextRow();
+    }
+    return true;
+}
+
+bool CUlordDb::SelectMNode(const std::vector<std::string>& vecfilter, std::vector<CMNode>& vecRet)
+{
+    bool b1st = true;
+    MySQLResult res;
+    std::string sql = Strings::Format("SELECT trade_txid, trade_vout_no, special_code, major_node_nickname, ip_address, status, validdate, certificate, cert_version, node_period FROM %s",
+                                    tablename_.c_str());
+
+    for(auto i : vecfilter)
+    {
+        if (b1st == true) {
+            b1st = false;
+            Strings::Append(sql, " WHERE %s", i.c_str());
+        } else {
+            Strings::Append(sql, " And %s", i.c_str());
         }
     }
 

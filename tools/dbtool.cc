@@ -67,4 +67,32 @@ void DBCheckAll(int argc, char const * argv[])
     cout << "Read " << vecRet.size() << " entries, " << icount << " entries check ok!" << endl;
     return;
 }
+
+void SelectNodeHelp()
+{
+    cout << "Command \"dbcheck\" example :" << endl << endl
+        << "dbselect filter ..." << endl
+		<< "dbselect \"trade_txid=2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\""<< endl
+        << "major_node_nickname trade_txid ip_address special_code status cert_version validdate node_period" << endl;
+}
+void DBSelect(int argc, char const * argv[])
+{
+    if(argc < 3) {
+        SelectNodeHelp();
+        return;
+    }
+    vector<string> vecFilter;
+    for(int i = 2; i < argc; i++)
+        vecFilter.push_back(argv[i]);
+    vector<CMNode> vecRet;
+    CUlordDb db;
+    if(!db.SelectMNode(vecFilter, vecRet)) {
+        cout << "Read DB failed!" << endl;
+        return;
+    }
+    for(auto mn : vecRet)
+    {
+        cout << mn.ToString() << endl;
+    }
+}
 #endif // MYSQL_ENABLE
