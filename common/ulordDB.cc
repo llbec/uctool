@@ -126,7 +126,7 @@ bool CUlordDb::IsDBOnline(MySQLConnection* ptrDB)
     bool bRet = true;
     try {
         if(ptrDB == NULL) {
-            LOG(ERROR) << "CUlordDb::IsDBOnline:ptr is NULL"
+            LOG(ERROR) << "CUlordDb::IsDBOnline:ptr is NULL";
             return false;
         }
         for (size_t i = 0; i < 3; i++)
