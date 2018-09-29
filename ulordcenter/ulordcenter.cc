@@ -192,25 +192,40 @@ void CUCenter::dumpConnectionList() const
 bool CUCenter::SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn)
 {
     LOCK(cs_);
-    CMNCoin mnCoin(txid, voutid);
+    const CMNCoin mnCoin(txid, voutid);
     int64_t tnow = GetTime();
     if(mapMNodeList_.count(mnCoin) != 0) {
         if(mapMNodeList_[mnCoin]._licperiod >= tnow + db_._needUpdatePeriod) {
             mn = *(mapMNodeList_[mnCoin].GetData());
             return true;
+        } else {
+            /*update mn list from db*/
+            vector<std::string> vecFilter;
+            vector<CMNode> vecRet;
+            vecFilter.push_back("status=1");
+            vecFilter.push_back(Strings::Format("validdate<%ld", tnow + db_._needUpdatePeriod));
+            if(db_.SelectMNode(vecFilter, vecRet)) {
+                for(auto mn:vecRet)
+                {
+                    CMNCoin tx(mn._txid, mn._voutid);
+                    if(mapMNodeList_.count(tx) != 0) mapMNodeList_[tx] = mn;
+                    else mapMNodeList_.insert(make_pair(tx, mn));
+                }
+            }
         }
-    }
-    /*update mn list from db*/
-    vector<std::string> vecFilter;
-    vector<CMNode> vecRet;
-    vecFilter.push_back("status=1");
-    vecFilter.push_back(Strings::Format("validdate<%ld", tnow + db_._needUpdatePeriod));
-    if(db_.SelectMNode(vecFilter, vecRet)) {
-        for(auto mn:vecRet)
-        {
-            CMNCoin tx(mn._txid, mn._voutid);
-            if(mapMNodeList_.count(tx) != 0) mapMNodeList_[tx] = mn;
-            else mapMNodeList_.insert(make_pair(tx, mn));
+    } else {
+        /*update mn list from db*/
+        vector<std::string> vecFilter;
+        vector<CMNode> vecRet;
+        vecFilter.push_back("status=1");
+        vecFilter.push_back(Strings::Format("trade_txid=%s", txid.c_str()));
+        if(db_.SelectMNode(vecFilter, vecRet)) {
+            for(auto mn:vecRet)
+            {
+                CMNCoin tx(mn._txid, mn._voutid);
+                if(mapMNodeList_.count(tx) != 0) mapMNodeList_[tx] = mn;
+                else mapMNodeList_.insert(make_pair(tx, mn));
+            }
         }
     }
 
