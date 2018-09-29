@@ -219,7 +219,7 @@ bool CUCenter::SelectMNData(std::string txid, unsigned int voutid, CMstNodeData 
         vector<std::string> vecFilter;
         vector<CMNode> vecRet;
         vecFilter.push_back("status=1");
-        vecFilter.push_back(Strings::Format("trade_txid=\'%s\'", txid.c_str()));
+        vecFilter.push_back(Strings::Format("trade_txid='%s'", txid.c_str()));
         if(db_.SelectMNode(vecFilter, vecRet)) {
             for(auto mn:vecRet)
             {
