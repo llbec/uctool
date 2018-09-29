@@ -55,7 +55,7 @@ bool CUCenter::InitUCenterKey()
     if(db_.SelectMNode(mapSelect, vecRet)) {
         for(auto mn:vecRet) mapMNodeList_.insert(make_pair(CMNCoin(mn._txid, mn._voutid), mn));
     }
-    printf("Load %d masternodes from DB\n", mapMNodeList_.size());
+    printf("Load %u masternodes from DB\n", mapMNodeList_.size());
     return true;
 }
 
