@@ -204,7 +204,7 @@ bool CUCenter::SelectMNData(std::string txid, unsigned int voutid, CMstNodeData 
             vector<std::string> vecFilter;
             vector<CMNode> vecRet;
             vecFilter.push_back("status=1");
-            vecFilter.push_back(Strings::Format("validdate<%ld", tnow + db_._needUpdatePeriod));
+            vecFilter.push_back(Strings::Format("validdate>%ld", tnow + db_._needUpdatePeriod));
             if(db_.SelectMNode(vecFilter, vecRet)) {
                 for(auto mn:vecRet)
                 {
