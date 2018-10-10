@@ -55,7 +55,7 @@ void Showkey(int argc, char const * argv[])
                 key.ToString().c_str(),
                 key.GetPubKeyString().c_str(),
                 key.GetAddress().c_str(),
-                key.GetPubIdString());
+                key.GetPubIdString().c_str());
     }
     catch(int) {
         printf("String(%s) is not a valid private key!\n", strpriv.c_str());
