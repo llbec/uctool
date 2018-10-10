@@ -17,6 +17,7 @@ public:
     bool IsValid();
     CPubKey GetPubKey() { return pubkey_; }
     std::string GetPubKeyString() { return HexStr(pubkey_); }
+    std::string GetPubIdString();
     std::string GetAddress() { return address_; }
     bool SignCompact(std::string strMsg, std::vector<unsigned char>& vchSigRet);
     bool SignCompact(const uint256 &hash, std::vector<unsigned char>& vchSigRet);

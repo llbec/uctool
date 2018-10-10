@@ -51,10 +51,11 @@ void Showkey(int argc, char const * argv[])
     string strpriv = argv[2];
     try {
         CKeyExtension key(strpriv);
-        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\n",
+        printf("Private Key: %s\nPublic Key: %s\nAddress : %s\nPubKey ID: %s\n",
                 key.ToString().c_str(),
                 key.GetPubKeyString().c_str(),
-                key.GetAddress().c_str());
+                key.GetAddress().c_str(),
+                key.GetPubIdString());
     }
     catch(int) {
         printf("String(%s) is not a valid private key!\n", strpriv.c_str());

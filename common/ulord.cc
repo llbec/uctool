@@ -115,3 +115,8 @@ bool CKeyExtension::Match(std::string strPub)
     CPubKey pubkey(ParseHex(strPub));
     return GetKey().VerifyPubKey(pubkey);
 }
+
+std::string CKeyExtension::GetPubIdString()
+{
+    return pubkey_.GetID().ToString();
+}
