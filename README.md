@@ -34,6 +34,7 @@ CREATE TABLE udevforums_major_node_bind (
 	auditor VARCHAR (32) DEFAULT NULL COMMENT "绑定确认审核人",
 	gmt_audit BIGINT (20) DEFAULT NULL COMMENT "绑定确认审核时间",
 	node_period BIGINT (20) DEFAULT NULL COMMENT "节点有效时间",
+	cert_version INT (3) DEFAULT "1" COMMENT "证书版本号",
 	ext_info VARCHAR (255) DEFAULT NULL COMMENT "扩展信息",
 	PRIMARY KEY (id),
 	UNIQUE KEY trade_vin (trade_txid, trade_vout_no)
