@@ -154,8 +154,8 @@ int CUCenter::HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & me
     mstnodequest mstquest;
     CDataStream oa(SER_NETWORK, PROTOCOL_VERSION);
     try {
-	vector<char> vRcv;
-	vRcv.insert(vRcv.end(), message.begin(), message.end());
+        vector<char> vRcv;
+        vRcv.insert(vRcv.end(), message.begin(), message.end());
         CDataStream rcv(vRcv, SER_NETWORK, PROTOCOL_VERSION);
         rcv >> mstquest;
     } catch (const std::exception& ex) {

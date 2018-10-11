@@ -41,8 +41,11 @@ void AskLicense(int argc, char const * argv[])
     string strRev;
 
     if(MSTRequest(mstquest, strRev)) {
-        std::istringstream strstream(strRev);
-        boost::archive::binary_iarchive ia(strstream);
+        /*std::istringstream strstream(strRev);
+        boost::archive::binary_iarchive ia(strstream);*/
+        vector<char> vRcv;
+        vRcv.insert(vRcv.end(), strRev.begin(), strRev.end());
+        CDataStream ia(vRcv, SER_NETWORK, PROTOCOL_VERSION);
         ia >> mstres;
 
         if(mstres._num == 1 && mstres._nodetype == MST_QUEST_ONE) {  			  
@@ -71,8 +74,11 @@ void AskKeyVersion(int argc, char const * argv[])
     string strRev;
 
     if(MSTRequest(mstquest, strRev)) {
-        std::istringstream strstream(strRev);
-        boost::archive::binary_iarchive ia(strstream);
+        /*std::istringstream strstream(strRev);
+        boost::archive::binary_iarchive ia(strstream);*/
+        vector<char> vRcv;
+        vRcv.insert(vRcv.end(), strRev.begin(), strRev.end());
+        CDataStream ia(vRcv, SER_NETWORK, PROTOCOL_VERSION);
         ia >> mstres;
 
         if(mstres._nodetype == MST_QUEST_KEY) {
@@ -109,7 +115,7 @@ bool MSTRequest(mstnodequest & tAsk, std::string & strResult)
     char cbuf[mstnd_iReqBufLen];
     memset(cbuf,0,sizeof(cbuf));
 
-    int buflength = tAsk.GetMsgBuf(cbuf);
+    int buflength = tAsk.GetMsgBufNew(cbuf);
 
     if(ConnectSocket(tService, tConnect, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
         if (!IsSelectableSocket(tConnect)) {
