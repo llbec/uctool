@@ -82,8 +82,13 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
 {
     uint32_t expectlen = GetArg("-requestlen",137);
     LOG(INFO) << "receive msg  "<< message.size() << " ,expect length is " << expectlen;
-    if(message.size() != expectlen)
+    if(message.size() != expectlen) {
+        if(message.size() == 85) {
+            if(-1 == HandlerMsg(tcpcli, message))
+                LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
+        }
         return;
+    }
     
     //ParseQuest
     std::ostringstream os;
@@ -97,8 +102,7 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
         ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
     }
     catch (const std::exception& ex) {
-        if(-1 == HandlerMsg(tcpcli, message))
-            LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
+        LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
         return;
     }
     if(mstquest._questtype == MST_QUEST_ONE) {
