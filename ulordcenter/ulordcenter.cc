@@ -85,7 +85,7 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
     if(message.size() != expectlen) {
         if(message.size() == 85) {
             if(-1 == HandlerMsg(tcpcli, message))
-                LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
+                LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception!";
         }
         return;
     }
