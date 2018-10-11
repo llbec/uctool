@@ -154,8 +154,9 @@ int CUCenter::HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & me
     mstnodequest mstquest;
     CDataStream oa(SER_NETWORK, PROTOCOL_VERSION);
     try {
-        CDataStream rcv(SER_NETWORK, PROTOCOL_VERSION);
-        rcv.read(message.c_str(), message.length());
+	vector<char> vRcv;
+	vRcv.insert(vRcv.end(), message.begin(), message.end());
+        CDataStream rcv(vRcv, SER_NETWORK, PROTOCOL_VERSION);
         rcv >> mstquest;
     } catch (const std::exception& ex) {
         return -1;
@@ -200,7 +201,7 @@ int CUCenter::HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & me
         return 0;
     }
     LOG(INFO) << strinfo;
-    std::string content = os.str();
+    std::string content = oa.str();
     muduo::StringPiece sendmessage(content);
     codec_.send(tcpcli, sendmessage);
     return 1;
