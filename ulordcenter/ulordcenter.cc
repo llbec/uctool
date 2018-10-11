@@ -90,14 +90,15 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
     boost::archive::binary_oarchive oa(os);
     std::string strinfo;
     std::vector<CMstNodeData> vecnode;
-    mstnodequest  mstquest;
+    mstnodequest mstquest;
     try {
         std::istringstream is(message);  
         boost::archive::binary_iarchive ia(is);  
         ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
     }
     catch (const std::exception& ex) {
-        LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
+        if(-1 == HandlerMsg(tcpcli, message))
+            LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
         return;
     }
     if(mstquest._questtype == MST_QUEST_ONE) {
@@ -116,7 +117,7 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
         mstres._nodetype = MST_QUEST_ONE;
         strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
         
-        oa<<mstres;
+        oa << mstres;
         for(auto & node : vecnode)
         {
             strinfo += Strings::Format("\t<%s:%d-%s> %s - %ld\n", node._txid.c_str(), node._voutid, HexStr(node._pubkey).c_str(), node._licence.c_str(), node._licperiod);
@@ -128,7 +129,7 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
         mstres._nodetype = MST_QUEST_KEY;
         strinfo = Strings::Format("Send msg: %d ucenter keys\n", mstres._num);
 
-        oa<<mstres;
+        oa << mstres;
         for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
         {
             CcenterKeyData keyPair(it->first, HexStr(it->second.GetPubKey()));
@@ -144,6 +145,65 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
     muduo::StringPiece sendmessage(content);
     codec_.send(tcpcli, sendmessage);
     return;
+}
+
+int CUCenter::HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & message)
+{
+    std::string strinfo;
+    std::vector<CMstNodeData> vecnode;
+    mstnodequest mstquest;
+    CDataStream oa(SER_NETWORK, PROTOCOL_VERSION);
+    try {
+        CDataStream rcv(SER_NETWORK, PROTOCOL_VERSION);
+        rcv.read(message.c_str(), message.length());
+        rcv >> mstquest;
+    } catch (const std::exception& ex) {
+        return -1;
+    }
+    if(mstquest._questtype == MST_QUEST_ONE) {
+        CMstNodeData msnode;
+        if(!SelectMNData(mstquest._txid, mstquest._voutid, msnode))
+            LOG(INFO) << "No valid info for masternode <" << mstquest._txid << ":" << mstquest._voutid << ">";
+        else
+            vecnode.push_back(msnode);
+        if(vecnode.size()==0) {
+            CMstNodeData node(0,mstquest._txid, mstquest._voutid);
+            node._status = 0;
+            vecnode.push_back(node);
+        }
+        mstnoderes  mstres(mstquest._msgversion);
+        mstres._num = vecnode.size();
+        mstres._nodetype = MST_QUEST_ONE;
+        strinfo = Strings::Format("Send msg: %d masternodes\n", mstres._num);
+        
+        oa << mstres;
+        for(auto & node : vecnode)
+        {
+            strinfo += Strings::Format("\t<%s:%d-%s> %s - %ld\n", node._txid.c_str(), node._voutid, HexStr(node._pubkey).c_str(), node._licence.c_str(), node._licperiod);
+            oa << node;
+        }
+    } else if (mstquest._questtype == MST_QUEST_KEY) {
+        mstnoderes  mstres(mstquest._msgversion);
+        mstres._num= mapUCenterkey_.size();
+        mstres._nodetype = MST_QUEST_KEY;
+        strinfo = Strings::Format("Send msg: %d ucenter keys\n", mstres._num);
+
+        oa << mstres;
+        for(map_int_key_cit it = mapUCenterkey_.begin(); it != mapUCenterkey_.end(); it++)
+        {
+            CcenterKeyData keyPair(it->first, HexStr(it->second.GetPubKey()));
+            strinfo += Strings::Format("\t<%d:%s>\n", it->first, HexStr(it->second.GetPubKey()).c_str());
+            oa << keyPair;
+        }
+    } else {
+        LOG(INFO) << "Unknown Msg";
+        return 0;
+    }
+    LOG(INFO) << strinfo;
+    std::string content = os.str();
+    muduo::StringPiece sendmessage(content);
+    codec_.send(tcpcli, sendmessage);
+    return 1;
 }
 
 void CUCenter::onTimer()

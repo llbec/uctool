@@ -54,6 +54,7 @@ private:
     void onTimer();
     void dumpConnectionList() const;
     bool SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn);
+    int HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & message);
 };
 #endif // MYSQL_ENABLE
 
