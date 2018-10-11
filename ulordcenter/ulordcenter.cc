@@ -81,7 +81,7 @@ void CUCenter::onConnection(const TcpConnectionPtr & conn)
 void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::string & message, Timestamp time)
 {
     uint32_t expectlen = GetArg("-requestlen",137);
-    uint32_t expectlen1 = GetArg("-requestlen",85);
+    uint32_t expectlen1 = GetArg("-requestlennew",85);
     LOG(INFO) << "receive msg  "<< message.size() << " ,expect length is " << expectlen << " or " << expectlen1;
     if(message.size() != expectlen) {
         if(message.size() == expectlen1) {
