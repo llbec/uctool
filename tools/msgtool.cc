@@ -13,7 +13,7 @@
 
 using namespace std;
 
-bool MSTRequest(mstnodequest & tAsk, std::string & strResult);
+bool MSTRequest(mstnodequest & tAsk, std::string & strResult, bool isNew = false);
 
 void GetMNLicenseHelp()
 {
@@ -115,7 +115,7 @@ void AskLicenseNew(int argc, char const * argv[])
     mstnoderes  mstres;
     string strRev;
 
-    if(MSTRequest(mstquest, strRev)) {
+    if(MSTRequest(mstquest, strRev, true)) {
         /*std::istringstream strstream(strRev);
         boost::archive::binary_iarchive ia(strstream);*/
         vector<char> vRcv;
@@ -148,7 +148,7 @@ void AskKeyVersionNew(int argc, char const * argv[])
     mstnoderes  mstres;
     string strRev;
 
-    if(MSTRequest(mstquest, strRev)) {
+    if(MSTRequest(mstquest, strRev, true)) {
         /*std::istringstream strstream(strRev);
         boost::archive::binary_iarchive ia(strstream);*/
         vector<char> vRcv;
@@ -172,7 +172,7 @@ void AskKeyVersionNew(int argc, char const * argv[])
     return;
 }
 
-bool MSTRequest(mstnodequest & tAsk, std::string & strResult)
+bool MSTRequest(mstnodequest & tAsk, std::string & strResult, bool isNew)
 {
     const int mstnd_iReqBufLen = 600;
     const int mstnd_iReqMsgHeadLen = 4;
@@ -190,7 +190,9 @@ bool MSTRequest(mstnodequest & tAsk, std::string & strResult)
     char cbuf[mstnd_iReqBufLen];
     memset(cbuf,0,sizeof(cbuf));
 
-    int buflength = tAsk.GetMsgBufNew(cbuf);
+    int buflength = 0;
+    
+    isNew ? buflength = tAsk.GetMsgBufNew(cbuf) : buflength = tAsk.GetMsgBuf(cbuf);
 
     if(ConnectSocket(tService, tConnect, DEFAULT_CONNECT_TIMEOUT, &proxyConnectionFailed)) {
         if (!IsSelectableSocket(tConnect)) {
