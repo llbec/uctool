@@ -24,6 +24,8 @@ void RegisterCmd()
 {
     mapCommand.insert(make_pair("asklicense", &AskLicense));
     mapCommand.insert(make_pair("askkeyversion", &AskKeyVersion));
+    mapCommand.insert(make_pair("asknewlic", &AskLicenseNew));
+    mapCommand.insert(make_pair("asknewversion", &AskKeyVersionNew));
     mapCommand.insert(make_pair("keynew", &NewKey));
 	mapCommand.insert(make_pair("keymasternode", &GenKey));
     mapCommand.insert(make_pair("keyshow", &Showkey));
@@ -33,6 +35,7 @@ void RegisterCmd()
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
+    mapCommand.insert(make_pair("dbgetall", &DBGetAll));
     mapCommand.insert(make_pair("dbselect", &DBSelect));
 #endif // MYSQL_ENABLE
 }

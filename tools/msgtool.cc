@@ -41,6 +41,81 @@ void AskLicense(int argc, char const * argv[])
     string strRev;
 
     if(MSTRequest(mstquest, strRev)) {
+        std::istringstream strstream(strRev);
+        boost::archive::binary_iarchive ia(strstream);
+        ia >> mstres;
+
+        if(mstres._num == 1 && mstres._nodetype == MST_QUEST_ONE) {  			  
+            CMstNodeData mstnode;
+            ia >> mstnode;
+            if(mstnode._txid != strtx || mstnode._voutid != nindex) {
+                printf("ERROR:receive a invalid msg mn<%s:%d>\n", mstnode._txid.c_str(), mstnode._voutid);
+                return;
+            }
+            printf("Info:Receive MasterNode<%s:%d> certificate %s time = %ld\n", mstnode._txid.c_str(), mstnode._voutid, mstnode._licence.c_str(), mstnode._licperiod);
+        } else {
+            printf("Error: receive a invalid msg! num=%d, type=%d\n", mstres._num, mstres._nodetype);
+        }
+    }
+    return;
+}
+
+void AskKeyVersion(int argc, char const * argv[])
+{
+    mstnodequest mstquest(111,MST_QUEST_KEY);
+    mstquest._timeStamps = GetTime();
+	mstquest._txid = uint256().GetHex();
+	mstquest._voutid = 0;
+
+    mstnoderes  mstres;
+    string strRev;
+
+    if(MSTRequest(mstquest, strRev)) {
+        std::istringstream strstream(strRev);
+        boost::archive::binary_iarchive ia(strstream);
+        ia >> mstres;
+
+        if(mstres._nodetype == MST_QUEST_KEY) {
+            string output = Strings::Format("Info: Receive %d pairs Key&Version:\n",mstres._num);
+            for(int i = 0; i < mstres._num; i++)
+            {
+                CcenterKeyData keynode;
+                ia >> keynode;
+                Strings::Append(output, "\t<%d:%s>\n", keynode._keyversion, keynode._key.c_str());
+            }
+            printf("%s", output.c_str());
+        } else {
+            printf("Error: receive a invalid msg! type=%d\n", mstres._nodetype);
+        }
+    }
+    return;
+}
+
+void GetMNLicenseNEWHelp()
+{
+    cout << "Command \"asknewlic\" example :" << endl << endl
+        << "asknewlic txid voutid ..." << endl
+		<< "asknewlic \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\" \"1\""<< endl;
+}
+void AskLicenseNew(int argc, char const * argv[])
+{
+    if(argc < 4) {
+        GetMNLicenseNEWHelp();
+        return;
+    }
+
+    string strtx = argv[2];
+    uint32_t nindex = atoi(argv[3]);
+
+    mstnodequest mstquest(111,MST_QUEST_ONE);
+    mstquest._timeStamps = GetTime();
+	mstquest._txid = strtx;
+	mstquest._voutid = nindex;
+
+    mstnoderes  mstres;
+    string strRev;
+
+    if(MSTRequest(mstquest, strRev)) {
         /*std::istringstream strstream(strRev);
         boost::archive::binary_iarchive ia(strstream);*/
         vector<char> vRcv;
@@ -63,7 +138,7 @@ void AskLicense(int argc, char const * argv[])
     return;
 }
 
-void AskKeyVersion(int argc, char const * argv[])
+void AskKeyVersionNew(int argc, char const * argv[])
 {
     mstnodequest mstquest(111,MST_QUEST_KEY);
     mstquest._timeStamps = GetTime();

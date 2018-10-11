@@ -68,6 +68,29 @@ void DBCheckAll(int argc, char const * argv[])
     return;
 }
 
+void DBGetAll(int argc, char const * argv[])
+{
+    CUlordDb::map_col_val_t mapCheck;
+    vector<CMNode> vecRet;
+    CUlordDb db;
+    mapCheck.clear();
+    if(!db.SelectMNode(mapCheck, vecRet)) {
+        cout << "Read DB failed!" << endl;
+        return;
+    }
+    
+    int icount = 0;
+    for(auto mn : vecRet)
+    {
+        string sRet;
+        if(mn.Check(sRet, db._needUpdatePeriod)) {
+            cout << mn.ToString() << endl;
+        } else icount++;
+    }
+    cout << "Read " << vecRet.size() << " entries, " << icount << " entries check ok!" << endl;
+    return;
+}
+
 void SelectNodeHelp()
 {
     cout << "Command \"dbcheck\" example :" << endl << endl
