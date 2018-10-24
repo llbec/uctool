@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
         if(argc > 1) {
             if("test" == string(argv[1])) {
                 vector<CMNode> vecnode;
-                watcher.SelectMNData(vecnode);
+                watcher.SelectNeedUpdateMNData(vecnode);
                 watcher.UpdateDB(vecnode);
                 return 0;
             } else if("clear" == string(argv[1])) {
@@ -49,7 +49,7 @@ int main(int argc, char const *argv[])
                 return 0;
             }
         } else watcher.Run();
-    } catch int {
+    } catch (int) {
         printf("Error: Constructor failed!\n");
         return -1;
     }

@@ -1,6 +1,6 @@
 #ifdef MYSQL_ENABLE
 #include "licensewatcher.h"
-
+#include "ulord.h"
 using namespace std;
 
 CLicenseWatcher::CLicenseWatcher() :
@@ -102,14 +102,14 @@ void CLicenseWatcher::UpdateDB(std::vector<CMNode> & vecnode)
     }
 }
 
-void UpdateLicense::ClearDB()
+void CLicenseWatcher::ClearDB()
 {
     db_.ClearLicenses();
 }
 
-void UpdateLicense::Run()
+void CLicenseWatcher::Run()
 {
-    vector<CMstNodeData> vecnode;
+    vector<CMNode> vecnode;
     printf("Runner inerval is %ld s, update time=%ld s, license period=%ld s\n", runInterval_, needUpdatePeriod_, licPeriodLimit_);
     while(true) {
         vecnode.clear();
