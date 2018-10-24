@@ -179,6 +179,50 @@ bool CUlordDb::UpdateLicenses(const std::vector<CMNode>& vecMNode)
     }
 }
 
+bool CUlordDb::UpdateLicense(const CMNode& mn)
+{
+    try {
+        MySQLConnection db(dbinfo_);
+        if(!IsDBOnline(&db)) {
+            LOG(INFO) << "CUlordDb::UpdateLicenses:db ping failed!";
+            return false;
+        }
+
+        string sql = Strings::Format("UPDATE %s SET validdate = %ld, certificate = '%s', cert_version = %d WHERE trade_txid='%s' AND trade_vout_no=%d",
+                                    tablename_.c_str(),
+                                    mn._licperiod,
+                                    mn._licence.c_str(),
+                                    mn._licversion,
+                                    mn._txid.c_str(),
+                                    mn._voutid);
+
+        return db.execute(sql);
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "CUlordDb::UpdateLicenses:db exception " << ex.what();
+        return false;
+    }
+}
+
+bool CUlordDb::ClearLicenses()
+{
+    try {
+        MySQLConnection db(dbinfo_);
+        if(!IsDBOnline(&db)) {
+            LOG(INFO) << "CUlordDb::UpdateLicenses:db ping failed!";
+            return false;
+        }
+
+        string sql = Strings::Format("UPDATE %s SET validdate = 0, certificate = NULL, cert_version = 1", tablename_.c_str());
+
+        return db.execute(sql);
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << "CUlordDb::UpdateLicenses:db exception " << ex.what();
+        return false;
+    }
+}
+
 bool CUlordDb::IsDBOnline(MySQLConnection* ptrDB)
 {
     bool bRet = true;

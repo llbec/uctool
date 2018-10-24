@@ -55,6 +55,8 @@ public:
     bool SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& vecRet);
     bool SelectMNode(const std::vector<std::string>& vecfilter, std::vector<CMNode>& vecRet);
     bool UpdateLicenses(const std::vector<CMNode>& vecMNode);
+    bool UpdateLicense(const CMNode& mn);
+    bool ClearLicenses();
     bool IsDBOnline(MySQLConnection* ptrDB);
 };
 
