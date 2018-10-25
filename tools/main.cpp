@@ -59,6 +59,8 @@ void InitChain()
         if(!mnodecenter.InitCenter(err)) {
             printf("InitChain:%s\n", err.c_str());
         }
+        if(!mnodecenter.IsUse()) printf("InitChain:UCenter start!\n");
+        else printf("InitChain:UCenter didn't work!\n");
 	}
 
     ECC_Start();
