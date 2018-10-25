@@ -134,7 +134,7 @@ void DBmnhash(int argc, char const * argv[])
         DBmnhashHelp();
         return;
     }
-    string filter = Strings::format("trade_txid=%s",argv[2]);
+    string filter = Strings::Format("trade_txid=%s",argv[2]);
     vector<string> vecFilter;
     vecFilter.push_back(filter);
     vector<CMNode> vecRet;
