@@ -65,6 +65,8 @@ void DBCheckAll(int argc, char const * argv[])
         string sRet;
         if(!mn.Check(sRet, db._needUpdatePeriod)) {
             cout << sRet << endl;
+        } else if(!mn.VerifyLicense()) {
+            cout << mn.ToString() << " verify license failed!" << endl;
         } else icount++;
     }
     cout << "Read " << vecRet.size() << " entries, " << icount << " entries check ok!" << endl;
