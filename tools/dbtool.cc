@@ -54,6 +54,7 @@ void DBCheckAll(int argc, char const * argv[])
     vector<CMNode> vecRet;
     CUlordDb db;
     mapCheck.clear();
+    mapCheck.insert(make_pair("status", to_string(1)));
     if(!db.SelectMNode(mapCheck, vecRet)) {
         cout << "Read DB failed!" << endl;
         return;
