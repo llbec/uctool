@@ -55,6 +55,10 @@ void InitChain()
 	{
         SelectParams(CBaseChainParams::MAIN);
 		printf("Info: select MAIN net!\n");
+        string err;
+        if(!mnodecenter.InitCenter(err)) {
+            printf("InitChain:%s\n", err.c_str());
+        }
 	}
 
     ECC_Start();
