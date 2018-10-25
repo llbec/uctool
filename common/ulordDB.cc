@@ -11,6 +11,18 @@ bool CMNode::IsNull()
     return true;
 }
 
+void CMNode::SetKey(const std::string& strKey)
+{
+    _privkey = strKey;
+    try {
+        CKeyExtension key(_privkey);
+        _pubkey = key.GetPubKey();
+    }
+    catch (int) {
+        LOG(INFO) << "CMNode::SetKey:failed @ " << ToString();
+    }
+}
+
 bool CMNode::Check(std::string& strRet, int64_t needUpdatePeriod)
 {
     bool bRet = true;
@@ -83,7 +95,7 @@ bool CUlordDb::SelectMNode(const map_col_val_t& mapfilter, std::vector<CMNode>& 
         int i = 0;
         row[i] != NULL ? mstnode._txid = row[i] : mstnode._txid = "NULL";
         row[++i] != NULL ? mstnode._voutid = atoi(row[i]) : mstnode._voutid = 0;
-        row[++i] != NULL ? mstnode._privkey = row[i] : mstnode._privkey = "NULL";
+        row[++i] != NULL ? mstnode.SetKey(row[i]) : mstnode.SetKey("NULL");
         row[++i] != NULL ? mstnode._name = row[i] : mstnode._name = "NULL";
         row[++i] != NULL ? mstnode._ipaddr = row[i] : mstnode._ipaddr = "NULL";
         row[++i] != NULL ? mstnode._status = atoi(row[i]) : mstnode._status = -1;
@@ -138,7 +150,7 @@ bool CUlordDb::SelectMNode(const std::vector<std::string>& vecfilter, std::vecto
         int i = 0;
         row[i] != NULL ? mstnode._txid = row[i] : mstnode._txid = "NULL";
         row[++i] != NULL ? mstnode._voutid = atoi(row[i]) : mstnode._voutid = 0;
-        row[++i] != NULL ? mstnode._privkey = row[i] : mstnode._privkey = "NULL";
+        row[++i] != NULL ? mstnode.SetKey(row[i]) : mstnode.SetKey("NULL");
         row[++i] != NULL ? mstnode._name = row[i] : mstnode._name = "NULL";
         row[++i] != NULL ? mstnode._ipaddr = row[i] : mstnode._ipaddr = "NULL";
         row[++i] != NULL ? mstnode._status = atoi(row[i]) : mstnode._status = -1;

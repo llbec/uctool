@@ -13,6 +13,7 @@ public:
     std::string  _ipaddr;
     bool IsNull();
     bool Check(std::string& strRet, int64_t needUpdatePeriod);
+    void SetKey(const std::string& strKey);
     CMstNodeData * GetData() { return (CMstNodeData *)this; }
     std::string ToString() {
         return Strings::Format("MasterNode %s<%s-%d>,privkey<%s>,ipaddress<%s>,status<%d>,license< %s >@[%ld,%ld]@%d",
