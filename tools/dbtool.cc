@@ -41,6 +41,9 @@ void DBCheckNode(int argc, char const * argv[])
         string sRet;
         mn.Check(sRet, db._needUpdatePeriod);
         cout << sRet << endl;
+        if(!mn.VerifyLicense()) {
+            cout << "license verify failed!" << endl;
+        }
     }
     return;
 }
