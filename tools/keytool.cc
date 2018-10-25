@@ -140,3 +140,34 @@ void Decodekey(int argc, char const * argv[])
     }
     return;
 }
+
+void RecoverKeyHelp()
+{
+    cout << "Command \"keyrecover\" example :" << endl << endl
+        << "keyrecover hash vSig" << endl
+		<< "keyrecover \"hex\" \"string\"" << endl;
+}
+void RecoverKey(int argc, char const * argv[])
+{
+    if(argc < 4) {
+        RecoverKeyHelp();
+        return;
+    }
+    uint256 hash;
+    hash.SetHex(argv[2]);
+
+    bool fInvalid = false;
+    vector<unsigned char> vchSigRcv = DecodeBase64(argv[3], &fInvalid);
+    if (fInvalid) {
+        cout << "decode failed vSig = " << argv[3] << endl;
+        return;
+    }
+
+    CPubKey pubkeyFromSig;
+    if(!pubkeyFromSig.RecoverCompact(hash, vchSigRcv)) {
+        cout << "recover pubkey failed vSig = " << argv[3] << endl;
+        return;
+    }
+
+    cout << "Recover pubkey = " << HexStr(pubkeyFromSig) << endl;
+}

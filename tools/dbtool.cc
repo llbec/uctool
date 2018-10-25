@@ -121,4 +121,31 @@ void DBSelect(int argc, char const * argv[])
         cout << mn.ToString() << endl;
     }
 }
+
+void DBmnhashHelp()
+{
+    cout << "Command \"dbmnhash\" example :" << endl << endl
+        << "dbmnhash txid" << endl
+		<< "dbmnhash \"2122660463ab2c041a8b8ab406aa314e76f2b4bf88dec75ce7b17af0c8bc2887\""<< endl;
+}
+void DBmnhash(int argc, char const * argv[])
+{
+    if(argc < 3) {
+        DBmnhashHelp();
+        return;
+    }
+    string filter = Strings::format("trade_txid=%s",argv[2]);
+    vector<string> vecFilter;
+    vecFilter.push_back(filter);
+    vector<CMNode> vecRet;
+    CUlordDb db;
+    if(!db.SelectMNode(vecFilter, vecRet)) {
+        cout << "Read DB failed!" << endl;
+        return;
+    }
+    for(auto mn : vecRet)
+    {
+        cout << mn.ToString() << endl << mn.GetLicenseWord().GetHex() << endl;
+    }
+}
 #endif // MYSQL_ENABLE
