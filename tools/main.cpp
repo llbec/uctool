@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "util.h"
 #include "base58.h"
-
+#include "masternodeman.h"
 
 #include "msgtool.h"
 #include "keytool.h"
