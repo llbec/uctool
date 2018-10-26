@@ -78,6 +78,7 @@ bool CLicenseWatcher::SignMNLicense(CMNode & mn)
             mn._pubkey = key.GetPubKey();
         }
     } catch (int) {
+        LOG(INFO) << "sign license failed, invalid privkey = " << mn._privkey << "masternode<" << mn._txid << ":" << mn._voutid << ">";
         return false;
     }
 
