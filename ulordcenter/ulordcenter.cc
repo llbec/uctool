@@ -125,6 +125,7 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
         oa << mstres;
         for(auto & node : vecnode)
         {
+            node._privkey = "secret";
             strinfo += Strings::Format("\t<%s:%d-%s> %s - %ld\n", node._txid.c_str(), node._voutid, HexStr(node._pubkey).c_str(), node._licence.c_str(), node._licperiod);
             oa << node;
         }
@@ -185,6 +186,7 @@ int CUCenter::HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & me
         oa << mstres;
         for(auto & node : vecnode)
         {
+            node._privkey = "secret";
             strinfo += Strings::Format("\t<%s:%d-%s> %s - %ld\n", node._txid.c_str(), node._voutid, HexStr(node._pubkey).c_str(), node._licence.c_str(), node._licperiod);
             oa << node;
         }
