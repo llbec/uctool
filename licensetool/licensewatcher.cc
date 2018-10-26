@@ -72,6 +72,15 @@ bool CLicenseWatcher::SignMNLicense(CMNode & mn)
         return false;
     }
 
+    try {
+        if(!_pubkey.IsValid()) {
+            CKeyExtension key(_privkey);
+            _pubkey = key.GetPubKey();
+        }
+    } catch (int) {
+        return false;
+    }
+
     mn._licperiod = tnow + licPeriodLimit_;
     if(mn._licperiod > mn._nodeperiod)
         mn._licperiod = mn._nodeperiod;
