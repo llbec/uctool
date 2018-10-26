@@ -73,9 +73,9 @@ bool CLicenseWatcher::SignMNLicense(CMNode & mn)
     }
 
     try {
-        if(!_pubkey.IsValid()) {
-            CKeyExtension key(_privkey);
-            _pubkey = key.GetPubKey();
+        if(!mn._pubkey.IsValid()) {
+            CKeyExtension key(mn._privkey);
+            mn._pubkey = key.GetPubKey();
         }
     } catch (int) {
         return false;
