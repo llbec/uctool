@@ -51,13 +51,13 @@ void MNBoostUnSerialize(int argc, char const * argv[])
     int nversion;
     ParseInt32(version, &nversion);
     int64_t nstamp;
-    ParseInt64(version, &nstamp);
+    ParseInt64(timestamp, &nstamp);
     int ntype;
-    ParseInt32(version, &ntype);
+    ParseInt32(type, &ntype);
     int64_t nlen;
-    ParseInt64(version, &nlen);
+    ParseInt64(txidlen, &nlen);
     int nvout;
-    ParseInt32(version, &nvout);
+    ParseInt32(voutid, &nvout);
     
     cout << "Message Head: " << ParseHex2String(head) << endl
         << "Message version: " << nversion << endl
