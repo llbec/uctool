@@ -55,6 +55,7 @@ private:
     void dumpConnectionList() const;
     bool SelectMNData(std::string txid, unsigned int voutid, CMstNodeData & mn);
     int HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & message);
+    bool UnSerializeBoost(const std::string msg, mstnodequest& mq);
 };
 #endif // MYSQL_ENABLE
 

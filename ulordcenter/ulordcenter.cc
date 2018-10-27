@@ -103,8 +103,10 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
         ia >> mstquest;//从一个保存序列化数据的string里面反序列化，从而得到原来的对象。
     }
     catch (const std::exception& ex) {
-        LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
-        return;
+        if(!UnSerializeBoost(message, mstquest)) {
+            LOG(ERROR) << "receive message (" << HexStr(message.c_str(), (message.c_str()+expectlen)) << ") serialize exception:" << ex.what();
+            return;
+        }
     }
     if(mstquest._questtype == MST_QUEST_ONE) {
         CMstNodeData msnode;
@@ -151,6 +153,31 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
     muduo::StringPiece sendmessage(content);
     codec_.send(tcpcli, sendmessage);
     return;
+}
+
+bool CUCenter::UnSerializeBoost(const std::string msg, mstnodequest& mq)
+{
+    string head = msg.substr(0,90);
+    int version = Hex2Int(msg.substr(90,8));
+    int64_t timestamp = Hex2Int64(msg.substr(98,16));
+    int type = Hex2Int(msg.substr(114,8));
+    int64_t txidlen = Hex2Int64(msg.substr(122,16));
+    string txid = msg.substr(138,128);
+    int voutid = Hex2Int(msg.substr(266,8));
+
+    if(ParseHex(head).find("serialization::archive") != string:npos) return false;
+    if(version != 111) return false;
+    if(type != 1) return false;
+    if(txidlen != 64) return false;
+
+    mq._msgversion = version;
+    mq._questtype = type;
+    mq._timeStamps = timestamp;
+    mq._txid = ParseHex(txid);
+    mq._voutid = (unsigned int)voutid;
+
+    LOG(WARNING) << "receive message request masternode " << mq._txid << "-" << mq._voutid << "by message " << HexStr(msg.c_str(), (msg.c_str()+msg.size()));
+    return true;
 }
 
 int CUCenter::HandlerMsg(const TcpConnectionPtr & tcpcli, const std::string & message)
