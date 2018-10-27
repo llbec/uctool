@@ -33,4 +33,6 @@ void LoadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
                     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet);
 void InitLog(char const *argv[]);
 
+int Hex2Int(const std::string& str);
+int64_t Hex2Int64(const std::string& str);
 #endif // UTCENTER_UTILS_H
