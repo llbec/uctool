@@ -20,6 +20,14 @@ void MNHash(int argc, char const * argv[])
     cout << mn.GetLicenseWord().ToString() << endl <<  mn.GetLicenseWord().GetHex() << endl << endl;
 }
 
+std::string ParseHex2String(const char* psz)
+{
+    std::vector<unsigned char> vch = ParseHex(psz);
+    std::string res;
+    res.insert(res.begin(), vch.begin(), vch.end());
+    return res;
+}
+
 void MNBoostUnSerialize(int argc, char const * argv[])
 {
     if(argc < 3) {
@@ -29,24 +37,24 @@ void MNBoostUnSerialize(int argc, char const * argv[])
     }
     //string content = string(argv[2]);
     char head[45];
-    memccpy(head, argv[2], 45);
+    memcpy(head, argv[2], 45);
     char version[4];
-    memccpy(version, argv[2]+45, 4);
+    memcpy(version, argv[2]+45, 4);
     char timestamp[8];
-    memccpy(timestamp, argv[2]+49, 8);
+    memcpy(timestamp, argv[2]+49, 8);
     char type[4];
-    memccpy(type, argv[2]+57, 4);
+    memcpy(type, argv[2]+57, 4);
     char txidlen[8];
-    memccpy(txidlen, argv[2]+61, 8);
+    memcpy(txidlen, argv[2]+61, 8);
     char txid[64];
-    memccpy(txid, argv[2]+69, 64);
+    memcpy(txid, argv[2]+69, 64);
     char voutid[4];
-    memccpy(txid, argv[2]+133, 4);
-    cout << "Message Head: " << ParseHex(head) << endl
-        << "Message version: " << ParseHex(version) << endl
-        << "Message timestamp: " << ParseHex(timestamp) << endl
-        << "Message type: " << ParseHex(type) << endl
-        << "Message txid length: " << ParseHex(txidlen) << endl
-        << "Message txid: " << ParseHex(txid) << endl
-        << "Message voutid: " << ParseHex(voutid) << endl
+    memcpy(txid, argv[2]+133, 4);
+    cout << "Message Head: " << ParseHex2String(head) << endl
+        << "Message version: " << ParseHex2String(version) << endl
+        << "Message timestamp: " << ParseHex2String(timestamp) << endl
+        << "Message type: " << ParseHex2String(type) << endl
+        << "Message txid length: " << ParseHex2String(txidlen) << endl
+        << "Message txid: " << ParseHex2String(txid) << endl
+        << "Message voutid: " << ParseHex2String(voutid) << endl
 }
