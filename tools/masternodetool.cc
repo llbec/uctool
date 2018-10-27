@@ -41,12 +41,12 @@ void MNBoostUnSerialize(int argc, char const * argv[])
     }
     //string content = string(argv[2]);
     string head(argv[2], argv[2]+45);
-    string head(argv[2]+45, argv[2]+49);
-    string head(argv[2]+49, argv[2]+57);
-    string head(argv[2]+57, argv[2]+61);
-    string head(argv[2]+61, argv[2]+64);
-    string head(argv[2]+64, argv[2]+133);
-    string head(argv[2]+133, argv[2]+137;
+    string version(argv[2]+45, argv[2]+49);
+    string timestamp(argv[2]+49, argv[2]+57);
+    string type(argv[2]+57, argv[2]+61);
+    string txidlen(argv[2]+61, argv[2]+69);
+    string txid(argv[2]+69, argv[2]+133);
+    string voutid(argv[2]+133, argv[2]+137;
     /*char head[45];
     memcpy(head, argv[2], 45);
     char version[4];
