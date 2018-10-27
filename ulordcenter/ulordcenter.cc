@@ -157,12 +157,12 @@ void CUCenter::onStringMessage(const TcpConnectionPtr & tcpcli, const std::strin
 
 bool CUCenter::UnSerializeBoost(const std::string msg, mstnodequest& mq)
 {
-    string head = msg.substr(0,90);
+    std::string head = msg.substr(0,90);
     int version = Hex2Int(msg.substr(90,8));
     int64_t timestamp = Hex2Int64(msg.substr(98,16));
     int type = Hex2Int(msg.substr(114,8));
     int64_t txidlen = Hex2Int64(msg.substr(122,16));
-    string txid = msg.substr(138,128);
+    std::string txid = msg.substr(138,128);
     int voutid = Hex2Int(msg.substr(266,8));
 
     if(ParseHex(head).find("serialization::archive") != string:npos) return false;
