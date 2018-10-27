@@ -27,6 +27,10 @@ std::string ParseHex2String(const char* psz)
     res.insert(res.begin(), vch.begin(), vch.end());
     return res;
 }
+std::string ParseHex2String(const std::string str)
+{
+    return ParseHex2String(str.c_str());
+}
 
 void MNBoostUnSerialize(int argc, char const * argv[])
 {
@@ -36,7 +40,14 @@ void MNBoostUnSerialize(int argc, char const * argv[])
         return;
     }
     //string content = string(argv[2]);
-    char head[45];
+    string head(argv[2], argv[2]+45);
+    string head(argv[2]+45, argv[2]+49);
+    string head(argv[2]+49, argv[2]+57);
+    string head(argv[2]+57, argv[2]+61);
+    string head(argv[2]+61, argv[2]+64);
+    string head(argv[2]+64, argv[2]+133);
+    string head(argv[2]+133, argv[2]+137;
+    /*char head[45];
     memcpy(head, argv[2], 45);
     char version[4];
     memcpy(version, argv[2]+45, 4);
@@ -49,7 +60,7 @@ void MNBoostUnSerialize(int argc, char const * argv[])
     char txid[64];
     memcpy(txid, argv[2]+69, 64);
     char voutid[4];
-    memcpy(txid, argv[2]+133, 4);
+    memcpy(txid, argv[2]+133, 4);*/
     cout << "Message Head: " << ParseHex2String(head) << endl
         << "Message version: " << ParseHex2String(version) << endl
         << "Message timestamp: " << ParseHex2String(timestamp) << endl
