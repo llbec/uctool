@@ -47,23 +47,12 @@ void MNBoostUnSerialize(int argc, char const * argv[])
     string txidlen = hex.substr(122,16);
     string txid = hex.substr(138,128);
     string voutid = hex.substr(266,8);
-
-    int nversion;
-    ParseInt32(version, &nversion);
-    int64_t nstamp;
-    ParseInt64(timestamp, &nstamp);
-    int ntype;
-    ParseInt32(type, &ntype);
-    int64_t nlen;
-    ParseInt64(txidlen, &nlen);
-    int nvout;
-    ParseInt32(voutid, &nvout);
     
     cout << "Message Head: " << ParseHex2String(head) << endl
-        << "Message version: " << nversion << endl
-        << "Message timestamp: " << nstamp << endl
-        << "Message type: " << ntype << endl
-        << "Message txid length: " << nlen << endl
+        << "Message version: " << Hex2Int(version) << endl
+        << "Message timestamp: " << Hex2Int64(timestamp) << endl
+        << "Message type: " << Hex2Int(type) << endl
+        << "Message txid length: " << Hex2Int64(txidlen) << endl
         << "Message txid: " << ParseHex2String(txid) << endl
-        << "Message voutid: " << nvout << endl;
+        << "Message voutid: " << Hex2Int(voutid) << endl;
 }
