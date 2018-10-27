@@ -35,6 +35,7 @@ void RegisterCmd()
     mapCommand.insert(make_pair("keymatch", &Matchkey));
     mapCommand.insert(make_pair("keyrecover", &RecoverKey));
     mapCommand.insert(make_pair("mnhash", &MNHash));
+    mapCommand.insert(make_pair("mnbstunseri", &MNBoostUnSerialize));
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
