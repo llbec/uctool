@@ -46,7 +46,7 @@ void MNBoostUnSerialize(int argc, char const * argv[])
     string type(argv[2]+57, argv[2]+61);
     string txidlen(argv[2]+61, argv[2]+69);
     string txid(argv[2]+69, argv[2]+133);
-    string voutid(argv[2]+133, argv[2]+137;
+    string voutid(argv[2]+133, argv[2]+137);
     /*char head[45];
     memcpy(head, argv[2], 45);
     char version[4];
