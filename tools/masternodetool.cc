@@ -39,33 +39,31 @@ void MNBoostUnSerialize(int argc, char const * argv[])
             << "mnbstunseri HexString" << endl << endl;
         return;
     }
-    //string content = string(argv[2]);
-    string head(argv[2], argv[2]+45);
-    string version(argv[2]+45, argv[2]+49);
-    string timestamp(argv[2]+49, argv[2]+57);
-    string type(argv[2]+57, argv[2]+61);
-    string txidlen(argv[2]+61, argv[2]+69);
-    string txid(argv[2]+69, argv[2]+133);
-    string voutid(argv[2]+133, argv[2]+137);
-    /*char head[45];
-    memcpy(head, argv[2], 45);
-    char version[4];
-    memcpy(version, argv[2]+45, 4);
-    char timestamp[8];
-    memcpy(timestamp, argv[2]+49, 8);
-    char type[4];
-    memcpy(type, argv[2]+57, 4);
-    char txidlen[8];
-    memcpy(txidlen, argv[2]+61, 8);
-    char txid[64];
-    memcpy(txid, argv[2]+69, 64);
-    char voutid[4];
-    memcpy(txid, argv[2]+133, 4);*/
+    string hex = string(argv[2]);
+    string head = hex.substr(0,90);
+    string version = hex.substr(90,8);
+    string timestamp = hex.substr(98,16);
+    string type = hex.substr(114,8);
+    string txidlen = hex.substr(122,16);
+    string txid = hex.substr(138,128);
+    string voutid = hex.substr(266,8);
+
+    int nversion;
+    ParseInt32(version, &nversion);
+    int64_t nstamp;
+    ParseInt64(version, &nstamp);
+    int ntype;
+    ParseInt32(version, &ntype);
+    int64_t nlen;
+    ParseInt64(version, &nlen);
+    int nvout;
+    ParseInt32(version, &nvout);
+    
     cout << "Message Head: " << ParseHex2String(head) << endl
-        << "Message version: " << ParseHex2String(version) << endl
-        << "Message timestamp: " << ParseHex2String(timestamp) << endl
-        << "Message type: " << ParseHex2String(type) << endl
-        << "Message txid length: " << ParseHex2String(txidlen) << endl
+        << "Message version: " << nversion << endl
+        << "Message timestamp: " << nstamp << endl
+        << "Message type: " << ntype << endl
+        << "Message txid length: " << nlen << endl
         << "Message txid: " << ParseHex2String(txid) << endl
-        << "Message voutid: " << ParseHex2String(voutid) << endl;
+        << "Message voutid: " << nvout << endl;
 }
