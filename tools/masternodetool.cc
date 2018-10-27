@@ -56,5 +56,5 @@ void MNBoostUnSerialize(int argc, char const * argv[])
         << "Message type: " << ParseHex2String(type) << endl
         << "Message txid length: " << ParseHex2String(txidlen) << endl
         << "Message txid: " << ParseHex2String(txid) << endl
-        << "Message voutid: " << ParseHex2String(voutid) << endl
+        << "Message voutid: " << ParseHex2String(voutid) << endl;
 }
