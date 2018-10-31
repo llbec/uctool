@@ -1,4 +1,6 @@
 #ifdef MYSQL_ENABLE
+#include <string>
+
 #include "ulordcenter.h"
 #include "ulord.h"
 
@@ -165,7 +167,7 @@ bool CUCenter::UnSerializeBoost(const std::string msg, mstnodequest& mq)
     std::string txid = msg.substr(138,128);
     int voutid = Hex2Int(msg.substr(266,8));
 
-    if(ParseHex(head).find("serialization::archive") != string:npos) return false;
+    if(ParseHex(head).find("serialization::archive") != std::string::npos) return false;
     if(version != 111) return false;
     if(type != 1) return false;
     if(txidlen != 64) return false;
