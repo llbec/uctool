@@ -6,6 +6,18 @@
 
 using namespace std;
 
+std::string ParseHex2String(const char* psz)
+{
+    std::vector<unsigned char> vch = ParseHex(psz);
+    std::string res;
+    res.insert(res.begin(), vch.begin(), vch.end());
+    return res;
+}
+std::string ParseHex2String(const std::string str)
+{
+    return ParseHex2String(str.c_str());
+}
+
 CUCenter::CUCenter(EventLoop* loop) :
 idleSeconds_(GetArg("-idleseconds", 60)),
 server_(loop, InetAddress(static_cast<uint16_t>(GetArg("-tcpport", 5009))), "UCenterServer"),
@@ -167,7 +179,7 @@ bool CUCenter::UnSerializeBoost(const std::string msg, mstnodequest& mq)
     std::string txid = msg.substr(138,128);
     int voutid = Hex2Int(msg.substr(266,8));
 
-    if(ParseHex(head).find("serialization::archive") != std::string::npos) return false;
+    if(ParseHex2String(head).find("serialization::archive") != std::string::npos) return false;
     if(version != 111) return false;
     if(type != 1) return false;
     if(txidlen != 64) return false;
@@ -175,7 +187,7 @@ bool CUCenter::UnSerializeBoost(const std::string msg, mstnodequest& mq)
     mq._msgversion = version;
     mq._questtype = type;
     mq._timeStamps = timestamp;
-    mq._txid = ParseHex(txid);
+    mq._txid = ParseHex2String(txid);
     mq._voutid = (unsigned int)voutid;
 
     LOG(WARNING) << "receive message request masternode " << mq._txid << "-" << mq._voutid << "by message " << HexStr(msg.c_str(), (msg.c_str()+msg.size()));
