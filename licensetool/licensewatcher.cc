@@ -107,7 +107,7 @@ void CLicenseWatcher::UpdateDB(std::vector<CMNode> & vecnode)
             if(!db_.UpdateLicense(mn))
                 LOG(INFO) << "UpdateMNData failed, masternode<" << mn._txid << ":" << mn._voutid << ">";
             else
-                LOG(INFO) << "UpdateMNData success, masternode<" << mn._txid << ":" << mn._voutid << ">";
+                LOG(INFO) << "UpdateMNData success, masternode<" << mn._txid << ":" << mn._voutid << "> license@<" << mn._licperiod << ":" << mn._licversion << ">";
         }
     }
 }
