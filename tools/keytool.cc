@@ -171,3 +171,21 @@ void RecoverKey(int argc, char const * argv[])
 
     cout << "Recover pubkey = " << HexStr(pubkeyFromSig) << endl;
 }
+
+void ShowAddr(int argc, char const * argv[])
+{
+    if(argc < 3) {
+        cout << "Command \"keyaddr\" example :" << endl << endl
+        << "keyaddr address" << endl
+		<< "keyaddr \"UjmXnfcffRvFe4Cp83p3Y3MVrxiX48P86z\"" << endl;
+        return
+    }
+    
+    CBitcoinAddress address(argv[2]);
+    if(address.IsValid()) {
+        cout << "Hex: " << address.ToString() << endl;
+    } else {
+        cout << "Invalid address!" << endl;
+    }
+    return
+}

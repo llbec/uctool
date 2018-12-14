@@ -27,6 +27,7 @@ void RegisterCmd()
     mapCommand.insert(make_pair("askkeyversion", &AskKeyVersion));
     mapCommand.insert(make_pair("asknewlic", &AskLicenseNew));
     mapCommand.insert(make_pair("asknewversion", &AskKeyVersionNew));
+    mapCommand.insert(make_pair("addrshow", &ShowAddr));
     mapCommand.insert(make_pair("keynew", &NewKey));
 	mapCommand.insert(make_pair("keymasternode", &GenKey));
     mapCommand.insert(make_pair("keyshow", &Showkey));
