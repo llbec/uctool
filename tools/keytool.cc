@@ -183,9 +183,13 @@ void ShowAddr(int argc, char const * argv[])
     
     CBitcoinAddress address(argv[2]);
     if(address.IsValid()) {
-        cout << "Hex: " << address.ToString() << endl;
-    } else {
-        cout << "Invalid address!" << endl;
+        uint160 hashBytes;
+        int type = 0;
+        if (address.GetIndexKey(hashBytes, type)) {
+            cout << "Hex: " << hashBytes.ToString() << endl;
+            return;
+        }
     }
+    cout << "Invalid address!" << endl;
     return;
 }
