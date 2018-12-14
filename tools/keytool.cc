@@ -178,7 +178,7 @@ void ShowAddr(int argc, char const * argv[])
         cout << "Command \"keyaddr\" example :" << endl << endl
         << "keyaddr address" << endl
 		<< "keyaddr \"UjmXnfcffRvFe4Cp83p3Y3MVrxiX48P86z\"" << endl;
-        return
+        return;
     }
     
     CBitcoinAddress address(argv[2]);
@@ -187,5 +187,5 @@ void ShowAddr(int argc, char const * argv[])
     } else {
         cout << "Invalid address!" << endl;
     }
-    return
+    return;
 }
