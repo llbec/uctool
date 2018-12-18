@@ -8,9 +8,9 @@ using namespace std;
 void GetPubScript(int argc, char const * argv[])
 {
     if(argc < 3) {
-        cout << "Command \"scriptnew\" example :" << endl
-            << "scriptnew address" << endl
-            << "scriptnew UXVAK4VXpMA7Lyy3DCnEGLWurTjfbT6ie7" << endl;
+        cout << "Command \"scriptpub\" example :" << endl
+            << "scriptpub address" << endl
+            << "scriptpub UXVAK4VXpMA7Lyy3DCnEGLWurTjfbT6ie7" << endl;
         return;
     }
     string addrstr = argv[2];
