@@ -7,6 +7,7 @@
 #include "keytool.h"
 #include "dbtool.h"
 #include "masternodetool.h"
+#include "scripttool.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ void RegisterCmd()
     mapCommand.insert(make_pair("keyrecover", &RecoverKey));
     mapCommand.insert(make_pair("mnhash", &MNHash));
     mapCommand.insert(make_pair("mnbstunseri", &MNBoostUnSerialize));
+    mapCommand.insert(make_pair("scriptnew", &GetPubScript));
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
