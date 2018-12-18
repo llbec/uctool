@@ -1,5 +1,7 @@
 #include "scripttool.h"
 #include "utils.h"
+#include "base58.h"
+#include "core_io.h"
 
 using namespace std;
 
@@ -19,20 +21,20 @@ void GetPubScript(int argc, char const * argv[])
     }
     CScript scriptPubKey = GetScriptForDestination(address.Get());
 
-    cout << "Hex: " << HexStr(scriptPubKey.begin(), scriptPubKey.end()) << endl
-        << "asm: " << ScriptToAsmStr(scriptPubKey) << endl
+    cout << "Hex:       " << HexStr(scriptPubKey.begin(), scriptPubKey.end()) << endl
+        << "asm:       " << ScriptToAsmStr(scriptPubKey) << endl
         << [scriptPubKey]{
             txnouttype type;
             vector<CTxDestination> addresses;
             int nRequired;
             if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired)) {
-                return Strings.Format("type: %s\n", GetTxnOutputType(type));
+                return Strings::Format("type:      %s\n", GetTxnOutputType(type));
             }
-            string ret = Strings.Format("reqSigs: %d\ntype: %s\naddresses: ", nRequired, GetTxnOutputType(type));
-            for_each(vector<CTxDestination>::iterator itor = addresses.begin(); itor!=addressess.end(); ++itor) {
-                Strings.Append(ret, "%s ", CBitcoinAddress(itor).ToString().c_str())
+            string ret = Strings::Format("reqSigs:   %d\ntype:      %s\naddresses: ", nRequired, GetTxnOutputType(type));
+            for(auto val : addresses) {
+                Strings::Append(ret, "%s ", CBitcoinAddress(val).ToString().c_str());
             }
-            Strings.Append(ret, "\n")
+            Strings::Append(ret, "\n");
             return ret;
         }();
 }
