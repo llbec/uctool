@@ -74,7 +74,7 @@ void showBlock(const int & height, const CAmount & nMiner, const CAmount & nBud,
 		<< setw(20) << ShowAmount(nMN)
 		<< setw(20) << ShowAmount(nFud)
 		<< setw(20) << ShowAmount(nBud + nFud + nMiner + nMN)
-        << Strings::Format("%3d year %10d blocks", (height/YEARBLOCKS + 1), (height%YEARBLOCKS));
+        << Strings::Format("%3d year %10d blocks", (height/YEARBLOCKS + 1), (height%YEARBLOCKS))
         << endl;
 }
 
