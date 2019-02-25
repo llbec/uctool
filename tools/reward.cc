@@ -79,9 +79,9 @@ void showBlock(const int & height, const CAmount & nMiner, const CAmount & nBud,
 void showYears(const int & n, const int & nyear, const CAmount & nMiner, const CAmount & nBud, const CAmount & nMN, const CAmount & nFud)
 {
     if (n >= 0) {
-        cout << setw(2) << n+1 << " x " << nyear << "    " << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1)
+        cout << setw(2) << n+1 << " x " << nyear << "    " << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1);
     } else {
-        cout << setw(11) << nyear << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1)
+        cout << setw(11) << nyear << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1);
     }
     cout << setw(20) << ShowAmount(nMiner)
             << setw(20) << ShowAmount(nBud)
@@ -163,7 +163,7 @@ void ShowRewardStatus(int argc, char const * argv[])
     CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0;
     CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
     CAmount rminer = 0, rbud = 0, rmn = 0, rfud = 0;
-    bRunner = true
+    bool bRunner = true
     while(bRunner){
         for(int i = h*iYears*YEARBLOCKS; i < (h+1)*iYears*YEARBLOCKS; i++) {
             GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
