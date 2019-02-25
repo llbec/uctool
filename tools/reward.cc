@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define YEARBLOCKS = 210240
+#define YEARBLOCKS 210240
 
 void GetBlockReward(int height, CAmount & nMiner, CAmount & nBud, CAmount & nMN, CAmount & nFud)
 {
@@ -77,7 +77,7 @@ void ShowReward(int argc, char const * argv[])
         iYears = atoi(argv[2]);
         iRounds = argc > 3 ? atoi(argv[3]) : 1;
     }*/
-    CAmount blkminer, blkbud, blkmn, blkfud, amtSum = 0;
+    CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0, amtSum = 0;
 
     cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
 
@@ -92,8 +92,8 @@ void ShowReward(int argc, char const * argv[])
         return false;
     }*/
 
-    CAmount tmpminer, tmpbud, tmpmn, tmpfud = 0;
-    CAmount summiner, sumbud, summn, sumfud = 0;
+    CAmount tmpminer = 0, tmpbud = 0, tmpmn = 0, tmpfud = 0;
+    CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
     //CAmount rminer, rbud, rmn, rfud = 0;
     /*if(iYears == 0 && iRounds == 0) {
         //for(; amtSum < 100000000000000000; h++)
@@ -105,10 +105,10 @@ void ShowReward(int argc, char const * argv[])
         GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
         if(blkminer == 0 && blkbud == 0 && blkmn == 0 && blkfud == 0) {
             showBlock(h, blkminer, blkbud, blkmn, blkfud);
-            showBlock(h, summiner, sumbud, summn, sumfud);
+            showBlock(h%(YEARBLOCKS-1)==0?h/YEARBLOCKS:(h/YEARBLOCKS+1), summiner, sumbud, summn, sumfud);
             return;
         }
-        if(tmpminer != blkminer && tmpbud != blkbud && tmpmn != blkmn && tmpfud != blkfud) {
+        if(tmpminer != blkminer || tmpbud != blkbud || tmpmn != blkmn || tmpfud != blkfud) {
             showBlock(h, blkminer, blkbud, blkmn, blkfud);
             tmpminer = blkminer;
             tmpbud = blkbud;
@@ -120,5 +120,6 @@ void ShowReward(int argc, char const * argv[])
         summn += blkmn;
         sumfud += blkfud;
         amtSum += (blkminer+blkbud+blkmn+blkfud);
+	h++;
     }
 }
