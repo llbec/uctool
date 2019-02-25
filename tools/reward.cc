@@ -1,4 +1,5 @@
 #include "reward.h"
+#include "main.h"
 #include "ulord.h"
 
 void GetBlockReward(int height, CAmount & nMiner, CAmount & nBud, CAmount nMN, CAmount & nFud)
@@ -39,7 +40,7 @@ void ShowReward(int argc, char const * argv[])
     }
     int blkminer, blkbud, blkmn, blkfud = 0;
 
-    GetBlockReward(iYears, blkMiner, blkbud, blkmn, blkfud);
+    GetBlockReward(iYears, blkminer, blkbud, blkmn, blkfud);
 
     cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
 	cout << setw(10) << h
