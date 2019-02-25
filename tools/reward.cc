@@ -41,8 +41,8 @@ void GetBlockReward(int height, CAmount & nMiner, CAmount & nBud, CAmount & nMN,
 
 string ShowAmount(const CAmount & n)
 {
-    nInt = n / COIN;
-    nDecimal = n - (nInt*COIN);
+    CAmount nInt = n / COIN;
+    CAmount nDecimal = n - (nInt*COIN);
     return Strings::Format("%ld.%ld", nInt, nDecimal);
 }
 
