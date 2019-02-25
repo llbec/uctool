@@ -79,9 +79,9 @@ void showBlock(const int & height, const CAmount & nMiner, const CAmount & nBud,
 void showYears(const int & n, const int & nyear, const CAmount & nMiner, const CAmount & nBud, const CAmount & nMN, const CAmount & nFud)
 {
     if (n >= 0) {
-        cout << setw(2) << n+1 << " x " << nyear << "    " << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1);
+        cout << setw(2) << n+1 << " x " << nyear << "    " << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << ((n+1)*nyear*YEARBLOCKS - 1);
     } else {
-        cout << setw(11) << nyear << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1);
+        cout << setw(11) << nyear << setw(9) << 0 << "--" << setw(9)  << (nyear*YEARBLOCKS - 1);
     }
     cout << setw(20) << ShowAmount(nMiner)
             << setw(20) << ShowAmount(nBud)
@@ -92,26 +92,15 @@ void showYears(const int & n, const int & nyear, const CAmount & nMiner, const C
 
 void ShowReward(int argc, char const * argv[])
 {
-    /*int iYears = 0;
-    int iRounds = 0;*/
     int h = 0;
-    /*if (argc > 2) {
-        iYears = atoi(argv[2]);
-        iRounds = argc > 3 ? atoi(argv[3]) : 1;
-    }*/
+
     CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0, amtSum = 0;
 
     cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
 
     CAmount tmpminer = 0, tmpbud = 0, tmpmn = 0, tmpfud = 0;
     CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
-    //CAmount maxbud = 52083333300000;
-    //CAmount rminer, rbud, rmn, rfud = 0;
-    /*if(iYears == 0 && iRounds == 0) {
-        //for(; amtSum < 100000000000000000; h++)
-        iYears = 4;
-    } else {
-    }*/
+
     while(true)
     {
         GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
@@ -147,7 +136,7 @@ void ShowRewardStatus(int argc, char const * argv[])
     }
 
     cout << endl << "The rewards in every "<< iYears << " years status :" <<endl
-		<< "year         height range              MinerSubsidy           Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
+		<< "year         height range                   MinerSubsidy           Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
     
     /*auto isQuit = []() {
         if(iRounds != 0) {
