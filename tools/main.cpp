@@ -42,6 +42,7 @@ void RegisterCmd()
     mapCommand.insert(make_pair("scriptpub", &GetPubScript));
     mapCommand.insert(make_pair("rewardshow", &ShowReward));
     mapCommand.insert(make_pair("rewardstatus", &ShowRewardStatus));
+    mapCommand.insert(make_pair("rewardblock", &ShowRewardBlock));
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));

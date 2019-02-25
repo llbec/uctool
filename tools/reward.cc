@@ -73,7 +73,9 @@ void showBlock(const int & height, const CAmount & nMiner, const CAmount & nBud,
 		<< setw(20) << ShowAmount(nBud)
 		<< setw(20) << ShowAmount(nMN)
 		<< setw(20) << ShowAmount(nFud)
-		<< setw(20) << ShowAmount(nBud + nFud + nMiner + nMN) << endl;
+		<< setw(20) << ShowAmount(nBud + nFud + nMiner + nMN)
+        << Strings::Format("%3d year %10d blocks", (height/YEARBLOCKS + 1), (height%YEARBLOCKS));
+        << endl;
 }
 
 void showYears(const int & n, const int & nyear, const CAmount & nMiner, const CAmount & nBud, const CAmount & nMN, const CAmount & nFud)
@@ -185,4 +187,26 @@ void ShowRewardStatus(int argc, char const * argv[])
             showYears(flagtotal, nyears, summiner, sumbud, summn, sumfud);
         }
     }
+}
+
+void ShowRewardBlock(int argc, char const * argv[])
+{
+    if (argc < 3) {
+        cout << "Command \"rewardblock\" example :" << endl
+            << "rewardblock height" << endl
+            << "rewardblock 10000000" << endl;
+        return;
+    }
+    int h = atoi(argv[2]);
+    CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0;
+    CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
+    for(int i = 0; i <= h; i++)
+    {
+        GetBlockReward(i, blkminer, blkbud, blkmn, blkfud);
+        summiner += blkminer;
+        sumbud += blkbud;
+        summn += blkmn;
+        sumfud += blkfud;
+    }
+    showBlock(h, summiner, sumbud, summn, sumfud);
 }
