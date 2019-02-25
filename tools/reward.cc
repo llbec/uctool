@@ -1,6 +1,7 @@
 #include "reward.h"
 #include "main.h"
 #include "ulord.h"
+#include "utils.h"
 
 #include <iomanip>
 
@@ -38,6 +39,13 @@ void GetBlockReward(int height, CAmount & nMiner, CAmount & nBud, CAmount & nMN,
     }
 }
 
+string ShowAmount(const CAmount & n)
+{
+    nInt = n / COIN;
+    nDecimal = n - (nInt*COIN);
+    return Strings::Format("%ld.%ld", nInt, nDecimal);
+}
+
 void ShowReward(int argc, char const * argv[])
 {
     int iYears = 0;
@@ -52,9 +60,9 @@ void ShowReward(int argc, char const * argv[])
 
     cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
 	cout << setw(10) << iYears
-		<< setw(20) << blkminer/* / COIN*/
-		<< setw(20) << blkbud/* / COIN*/
-		<< setw(20) << blkmn/* / COIN*/
-		<< setw(20) << blkfud/* / COIN*/
-		<< setw(20) << (blkbud + blkfud + blkminer + blkmn)/* / COIN*/ << endl;
+		<< setw(20) << ShowAmount(blkminer)
+		<< setw(20) << ShowAmount(blkbud)
+		<< setw(20) << ShowAmount(blkmn)
+		<< setw(20) << ShowAmount(blkfud)
+		<< setw(20) << ShowAmount(blkbud + blkfud + blkminer + blkmn) << endl;
 }
