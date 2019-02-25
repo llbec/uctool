@@ -63,7 +63,7 @@ string ShowAmount(const CAmount & n)
 {
     CAmount nInt = n / COIN;
     CAmount nDecimal = n - (nInt*COIN);
-    return Strings::Format("%ld.%ld", nInt, nDecimal);
+    return Strings::Format("%ld.%08ld", nInt, nDecimal);
 }
 
 void showBlock(const int & height, const CAmount & nMiner, const CAmount & nBud, const CAmount & nMN, const CAmount & nFud)
@@ -136,7 +136,7 @@ void ShowRewardStatus(int argc, char const * argv[])
     }
 
     cout << endl << "The rewards in every "<< iYears << " years status :" <<endl
-		<< "year         height range                   MinerSubsidy           Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
+		<< "year             height range         MinerSubsidy         Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
     
     /*auto isQuit = []() {
         if(iRounds != 0) {
@@ -155,7 +155,7 @@ void ShowRewardStatus(int argc, char const * argv[])
     bool bRunner = true;
     while(bRunner){
         for(int i = h*iYears*YEARBLOCKS; i < (h+1)*iYears*YEARBLOCKS; i++) {
-            GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
+            GetBlockReward(i, blkminer, blkbud, blkmn, blkfud);
             if(blkminer == 0 && blkbud == 0 && blkmn == 0 && blkfud == 0 && IsSuperBlock(i)) {
                 bRunner = false;
                 break;
