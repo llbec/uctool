@@ -9,6 +9,17 @@ using namespace std;
 
 #define YEARBLOCKS 210240
 
+bool IsSuperBlock(int height)
+{
+    const Consensus::Params &cp = Params().GetConsensus();
+    if(height >= cp.nMasternodePaymentsStartBlock) {
+        if(height >= cp.nSuperblockStartBlock &&
+            ((height % cp.nSuperblockCycle) == 0))
+            return true;
+    }
+    return false;
+}
+
 void GetBlockReward(int height, CAmount & nMiner, CAmount & nBud, CAmount & nMN, CAmount & nFud)
 {
     const Consensus::Params &cp = Params().GetConsensus();
@@ -94,6 +105,7 @@ void ShowReward(int argc, char const * argv[])
 
     CAmount tmpminer = 0, tmpbud = 0, tmpmn = 0, tmpfud = 0;
     CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
+    CAmount maxbud = 52083333300000;
     //CAmount rminer, rbud, rmn, rfud = 0;
     /*if(iYears == 0 && iRounds == 0) {
         //for(; amtSum < 100000000000000000; h++)
@@ -103,7 +115,7 @@ void ShowReward(int argc, char const * argv[])
     while(true)
     {
         GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
-        if(blkminer == 0 && blkbud == 0 && blkmn == 0 && blkfud == 0) {
+        if(blkminer == 0 && blkbud == 0 && blkmn == 0 && blkfud == 0 && IsSuperBlock(h)) {
             showBlock(h, blkminer, blkbud, blkmn, blkfud);
             showBlock(h%(YEARBLOCKS-1)==0?h/YEARBLOCKS:(h/YEARBLOCKS+1), summiner, sumbud, summn, sumfud);
             return;
@@ -123,3 +135,17 @@ void ShowReward(int argc, char const * argv[])
 	h++;
     }
 }
+
+/*void ShowRewardStatus(int argc, char const * argv[])
+{
+    int iYears = 0;
+    int iRounds = 0;
+    int h = 0;
+    if (argc > 2) {
+        iYears = atoi(argv[2]);
+        iRounds = argc > 3 ? atoi(argv[3]) : 0;
+    }
+
+    cout << endl << "The rewards in every "<< iYears << " years status :" <<endl
+		<< "year         height range              MinerSubsidy           Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
+}*/
