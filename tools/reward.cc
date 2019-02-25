@@ -76,8 +76,19 @@ void showBlock(const int & height, const CAmount & nMiner, const CAmount & nBud,
 		<< setw(20) << ShowAmount(nBud + nFud + nMiner + nMN) << endl;
 }
 
-void showYears(const int & nyear, const CAmount & nMiner, const CAmount & nBud, const CAmount & nMN, const CAmount & nFud)
-{}
+void showYears(const int & n, const int & nyear, const CAmount & nMiner, const CAmount & nBud, const CAmount & nMN, const CAmount & nFud)
+{
+    if (n >= 0) {
+        cout << setw(2) << n+1 << " x " << nyear << "    " << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1)
+    } else {
+        cout << setw(11) << nyear << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << (n*nyear*YEARBLOCKS - 1)
+    }
+    cout << setw(20) << ShowAmount(nMiner)
+            << setw(20) << ShowAmount(nBud)
+            << setw(20) << ShowAmount(nMN)
+            << setw(20) << ShowAmount(nFud)
+            << setw(20) << ShowAmount(nBud + nFud + nMiner + nMN) << endl;
+}
 
 void ShowReward(int argc, char const * argv[])
 {
@@ -92,20 +103,9 @@ void ShowReward(int argc, char const * argv[])
 
     cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
 
-    /*auto isQuit = []() {
-        if(iYears == 0 && iRounds == 0) {
-            if(amtSum >= 100000000000000000)
-                return true;
-        } else {
-            if(h >= (CAmount)(iYears*iRounds*YEARBLOCKS))
-                return true;
-        }
-        return false;
-    }*/
-
     CAmount tmpminer = 0, tmpbud = 0, tmpmn = 0, tmpfud = 0;
     CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
-    CAmount maxbud = 52083333300000;
+    //CAmount maxbud = 52083333300000;
     //CAmount rminer, rbud, rmn, rfud = 0;
     /*if(iYears == 0 && iRounds == 0) {
         //for(; amtSum < 100000000000000000; h++)
@@ -138,7 +138,7 @@ void ShowReward(int argc, char const * argv[])
 
 void ShowRewardStatus(int argc, char const * argv[])
 {
-    int iYears = 0;
+    int iYears = 4;
     int iRounds = 0;
     int h = 0;
     if (argc > 2) {
@@ -148,4 +148,48 @@ void ShowRewardStatus(int argc, char const * argv[])
 
     cout << endl << "The rewards in every "<< iYears << " years status :" <<endl
 		<< "year         height range              MinerSubsidy           Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
+    
+    /*auto isQuit = []() {
+        if(iRounds != 0) {
+            if(h >= (CAmount)(iYears*iRounds*YEARBLOCKS))
+                return true;
+        } else {
+            if (h*iYears >= 190)
+                return true;
+        }
+        return false;
+    }*/
+
+    CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0;
+    CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
+    CAmount rminer = 0, rbud = 0, rmn = 0, rfud = 0;
+    bRunner = true
+    while(bRunner){
+        for(int i = h*iYears*YEARBLOCKS; i < (h+1)*iYears*YEARBLOCKS; i++) {
+            GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
+            if(blkminer == 0 && blkbud == 0 && blkmn == 0 && blkfud == 0 && IsSuperBlock(i)) {
+                bRunner = false;
+                break;
+            }
+            summiner += blkminer;
+            sumbud += blkbud;
+            summn += blkmn;
+            sumfud += blkfud;
+            //amtSum += (blkminer+blkbud+blkmn+blkfud);
+            rminer += blkminer;
+            rbud += blkbud;
+            rmn += blkmn;
+            rfud += blkfud;
+        }
+        showYears(h, iYears, rminer, rbud, rmn, rfud);
+        h++;
+        if(iRounds > 0 && h >= iRounds) {
+            bRunner = false;
+        }
+        if(!bRunner) {
+            int flagtotal = -1;
+            int nyears = h * iYears;
+            showYears(flagtotal, nyears, summiner, sumbud, summn, sumfud)
+        }
+    }
 }
