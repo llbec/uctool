@@ -81,7 +81,7 @@ void showYears(const int & n, const int & nyear, const CAmount & nMiner, const C
     if (n >= 0) {
         cout << setw(2) << n+1 << " x " << nyear << "    " << setw(9) << (n*nyear*YEARBLOCKS) << "--" << setw(9)  << ((n+1)*nyear*YEARBLOCKS - 1);
     } else {
-        cout << setw(11) << nyear << setw(9) << 0 << "--" << setw(9)  << (nyear*YEARBLOCKS - 1);
+        cout << "total" << setw(5) << nyear << setw(9) << 0 << "--" << setw(9)  << (nyear*YEARBLOCKS - 1);
     }
     cout << setw(20) << ShowAmount(nMiner)
             << setw(20) << ShowAmount(nBud)
@@ -172,6 +172,10 @@ void ShowRewardStatus(int argc, char const * argv[])
         }
         showYears(h, iYears, rminer, rbud, rmn, rfud);
         h++;
+        rminer = 0;
+        rbud = 0;
+        rmn = 0;
+        rfud = 0;
         if(iRounds > 0 && h >= iRounds) {
             bRunner = false;
         }
