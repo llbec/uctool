@@ -107,8 +107,7 @@ void ShowReward(int argc, char const * argv[])
     {
         GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
         if(blkminer == 0 && blkbud == 0 && blkmn == 0 && blkfud == 0 && IsSuperBlock(h)) {
-            showBlock(h, blkminer, blkbud, blkmn, blkfud);
-            showBlock(h%(YEARBLOCKS-1)==0?h/YEARBLOCKS:(h/YEARBLOCKS+1), summiner, sumbud, summn, sumfud);
+            showBlock(h, summiner, sumbud, summn, sumfud);
             return;
         }
         if(tmpminer != blkminer || tmpbud != blkbud || tmpmn != blkmn || tmpfud != blkfud) {
