@@ -136,7 +136,7 @@ void ShowReward(int argc, char const * argv[])
     }
 }
 
-/*void ShowRewardStatus(int argc, char const * argv[])
+void ShowRewardStatus(int argc, char const * argv[])
 {
     int iYears = 0;
     int iRounds = 0;
@@ -148,4 +148,4 @@ void ShowReward(int argc, char const * argv[])
 
     cout << endl << "The rewards in every "<< iYears << " years status :" <<endl
 		<< "year         height range              MinerSubsidy           Budget        MasternodePayment      FoundersReward       BlockSubsidy" <<endl;
-}*/
+}
