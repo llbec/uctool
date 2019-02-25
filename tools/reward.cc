@@ -163,7 +163,7 @@ void ShowRewardStatus(int argc, char const * argv[])
     CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0;
     CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
     CAmount rminer = 0, rbud = 0, rmn = 0, rfud = 0;
-    bool bRunner = true
+    bool bRunner = true;
     while(bRunner){
         for(int i = h*iYears*YEARBLOCKS; i < (h+1)*iYears*YEARBLOCKS; i++) {
             GetBlockReward(h, blkminer, blkbud, blkmn, blkfud);
@@ -189,7 +189,7 @@ void ShowRewardStatus(int argc, char const * argv[])
         if(!bRunner) {
             int flagtotal = -1;
             int nyears = h * iYears;
-            showYears(flagtotal, nyears, summiner, sumbud, summn, sumfud)
+            showYears(flagtotal, nyears, summiner, sumbud, summn, sumfud);
         }
     }
 }
