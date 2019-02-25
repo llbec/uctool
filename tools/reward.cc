@@ -42,7 +42,7 @@ void GetBlockReward(int height, CAmount & nMiner, CAmount & nBud, CAmount & nMN,
 
     //Miner
     if (height == 1) {
-        nMiner == 0;
+        nMiner = 0;
     } else {
         nMiner = GetMinerSubsidy(height, cp);
     }
@@ -108,7 +108,7 @@ void ShowReward(int argc, char const * argv[])
             showBlock(h, summiner, sumbud, summn, sumfud);
             return;
         }
-        if(tmpminer != blkminer && tmpbud != blkbud && tmpmn != blkmn, tmpfud != blkfud) {
+        if(tmpminer != blkminer && tmpbud != blkbud && tmpmn != blkmn && tmpfud != blkfud) {
             showBlock(h, blkminer, blkbud, blkmn, blkfud);
             tmpminer = blkminer;
             tmpbud = blkbud;
