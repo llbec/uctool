@@ -39,21 +39,19 @@ void GetPubScript(int argc, char const * argv[])
         }();
 }
 
-void PrintVch(string name, const vector<unsigned char> &vch)
-{
-    cout << "type " << name << ":" << endl;
-    for( auto ch : vch)
-    {
-        cout << ch << endl;
-    }
-}
-
 void ShowBase58Prefix(int argc, char const * argv[])
 {
-    PrintVch("PUBKEY_ADDRESS", Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS));
-    PrintVch("SCRIPT_ADDRESS", Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS));
-    PrintVch("SECRET_KEY", Params().Base58Prefix(CChainParams::SECRET_KEY));
-    PrintVch("EXT_PUBLIC_KEY", Params().Base58Prefix(CChainParams::EXT_PUBLIC_KEY));
-    PrintVch("EXT_SECRET_KEY", Params().Base58Prefix(CChainParams::EXT_SECRET_KEY));
-    PrintVch("EXT_COIN_TYPE", Params().Base58Prefix(CChainParams::EXT_COIN_TYPE));
+    printVch = [](string name, const vector<unsigned char> &vch) {
+        cout << "type " << name << ":" << endl;
+        for( auto ch : vch)
+        {
+            cout << ch << endl;
+        }
+    }
+    printVch("PUBKEY_ADDRESS", Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS));
+    printVch("SCRIPT_ADDRESS", Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS));
+    printVch("SECRET_KEY", Params().Base58Prefix(CChainParams::SECRET_KEY));
+    printVch("EXT_PUBLIC_KEY", Params().Base58Prefix(CChainParams::EXT_PUBLIC_KEY));
+    printVch("EXT_SECRET_KEY", Params().Base58Prefix(CChainParams::EXT_SECRET_KEY));
+    printVchs("EXT_COIN_TYPE", Params().Base58Prefix(CChainParams::EXT_COIN_TYPE));
 }
