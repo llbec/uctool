@@ -39,15 +39,21 @@ void GetPubScript(int argc, char const * argv[])
         }();
 }
 
+void PrintVch(string name, const vector<unsigned char> &vch)
+{
+    cout << "type " << name << ":" << endl;
+    for( auto ch : vch)
+    {
+        cout << ch << endl;
+    }
+}
+
 void ShowBase58Prefix(int argc, char const * argv[])
 {
-    for(uint i = 0; i < CChainParams::MAX_BASE58_TYPES; i++)
-    {
-        std::vector<unsigned char> vch = Params().Base58Prefix(i);
-        cout << "type " << i << ":" << endl
-        for( auto ch : vch)
-        {
-            cout << ch << endl
-        }
-    }
+    PrintVch("PUBKEY_ADDRESS", Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS));
+    PrintVch("SCRIPT_ADDRESS", Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS));
+    PrintVch("SECRET_KEY", Params().Base58Prefix(CChainParams::SECRET_KEY));
+    PrintVch("EXT_PUBLIC_KEY", Params().Base58Prefix(CChainParams::EXT_PUBLIC_KEY));
+    PrintVch("EXT_SECRET_KEY", Params().Base58Prefix(CChainParams::EXT_SECRET_KEY));
+    PrintVch("EXT_COIN_TYPE", Params().Base58Prefix(CChainParams::EXT_COIN_TYPE));
 }
