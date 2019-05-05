@@ -45,13 +45,13 @@ void ShowBase58Prefix(int argc, char const * argv[])
         cout << "type " << name << ":" << endl;
         for( auto ch : vch)
         {
-            cout << ch << endl;
+            printf("%d\n", ch);
         }
-    }
+    };
     printVch("PUBKEY_ADDRESS", Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS));
     printVch("SCRIPT_ADDRESS", Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS));
     printVch("SECRET_KEY", Params().Base58Prefix(CChainParams::SECRET_KEY));
     printVch("EXT_PUBLIC_KEY", Params().Base58Prefix(CChainParams::EXT_PUBLIC_KEY));
     printVch("EXT_SECRET_KEY", Params().Base58Prefix(CChainParams::EXT_SECRET_KEY));
-    printVchs("EXT_COIN_TYPE", Params().Base58Prefix(CChainParams::EXT_COIN_TYPE));
+    printVch("EXT_COIN_TYPE", Params().Base58Prefix(CChainParams::EXT_COIN_TYPE));
 }
