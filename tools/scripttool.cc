@@ -41,7 +41,7 @@ void GetPubScript(int argc, char const * argv[])
 
 void ShowBase58Prefix(int argc, char const * argv[])
 {
-    printVch = [](string name, const vector<unsigned char> &vch) {
+    auto printVch = [](string name, const vector<unsigned char> &vch) {
         cout << "type " << name << ":" << endl;
         for( auto ch : vch)
         {
