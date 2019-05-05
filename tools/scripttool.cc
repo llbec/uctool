@@ -38,3 +38,16 @@ void GetPubScript(int argc, char const * argv[])
             return ret;
         }();
 }
+
+void ShowBase58Prefix(int argc, char const * argv[])
+{
+    for(uint i = 0; i < CChainParams::MAX_BASE58_TYPES; i++)
+    {
+        std::vector<unsigned char> vch = Params().Base58Prefix(i);
+        cout << "type " << i << ":" << endl
+        for( auto ch : vch)
+        {
+            cout << ch << endl
+        }
+    }
+}
