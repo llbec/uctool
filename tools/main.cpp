@@ -9,6 +9,7 @@
 #include "masternodetool.h"
 #include "scripttool.h"
 #include "reward.h"
+#include "vdstool.h"
 
 using namespace std;
 
@@ -44,6 +45,7 @@ void RegisterCmd()
     mapCommand.insert(make_pair("rewardshow", &ShowReward));
     mapCommand.insert(make_pair("rewardstatus", &ShowRewardStatus));
     mapCommand.insert(make_pair("rewardblock", &ShowRewardBlock));
+    mapCommand.insert(make_pair("vdsblock", &ShowVdsHash));
 #ifdef MYSQL_ENABLE
     mapCommand.insert(make_pair("dbcheck", &DBCheckNode));
     mapCommand.insert(make_pair("dbcheckall", &DBCheckAll));
