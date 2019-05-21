@@ -1,4 +1,4 @@
-#include "vdstool.h"
+#include "vdsblock.h"
 
 #include "hash.h"
 #include "tinyformat.h"
@@ -43,5 +43,5 @@ void ShowVdsHash(int argc, char const * argv[])
     block.nNonce = uint256S("012f7b3d000000000000000000000000000000000000000000000000d6ed0060");
 
     printf("%s\n", block.ToString().c_str());
-    return 0;
+    return;
 }
