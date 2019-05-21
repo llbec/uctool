@@ -68,7 +68,8 @@ add_definitions(-DHAVE_CONFIG_H)
 # Root Dir of Chain's Source Code: -DCHAIN_SRC_ROOT=<path>
 #
 if(NOT CHAIN_SRC_ROOT)
-  message(FATAL_ERROR "Root dir of chain's source code not defined! (-DCHAIN_SRC_ROOT=<path>)")
+  #message(FATAL_ERROR "Root dir of chain's source code not defined! (-DCHAIN_SRC_ROOT=<path>)")
+  set(CHAIN_SRC_ROOT "/root/github/bitcoin")
 endif()
 message("-- Root Dir of ${CHAIN_NAME}: ${CHAIN_SRC_ROOT} (-DCHAIN_SRC_ROOT=${CHAIN_SRC_ROOT})")
 if (NOT EXISTS "${CHAIN_SRC_ROOT}/src/version.h")
@@ -87,6 +88,9 @@ set(BITCOIN_LIBRARIES ${BITCOIN_LIBRARIES}
     "${CHAIN_SRC_ROOT}/src/libbitcoin_consensus.a"
     "${CHAIN_SRC_ROOT}/src/libbitcoin_util.a"
     "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto_base.a"
+    "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto_avx2.a"
+    "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto_shani.a"
+    "${CHAIN_SRC_ROOT}/src/crypto/libbitcoin_crypto_sse41.a"
     )
 
 list(GET BITCOIN_LIBRARIES 0 BITCOIN_LIBRARIE)
@@ -203,8 +207,7 @@ message("") # add an empty line
 message("") # empty line
 message("------------------------------- Targets -------------------------------")
 
-include_directories(common
-                    ${CHAIN_SRC_ROOT}/src
+include_directories(${CHAIN_SRC_ROOT}/src
                     ${CHAIN_SRC_ROOT}/src/config
                     ${CHAIN_SRC_ROOT}/src/wallet
                     ${CHAIN_SRC_ROOT}/src/crypto
@@ -243,10 +246,11 @@ endif()
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 message("") # empty line
-file(GLOB LIB_SOURCES common/*.cc)
-file(GLOB LIB_HEAD common/*.h)
-add_library(vdslib STATIC ${LIB_SOURCES})
+#file(GLOB LIB_SOURCES common/*.cc)
+#file(GLOB LIB_HEAD common/*.h)
+#add_library(vtool STATIC ${LIB_SOURCES})
 
-file(GLOB_RECURSE VDS_SOURCES vdstool/*.cc)
-add_executable(vdstool ${VDS_SOURCES})
-target_link_libraries(vdstool vdslib ${THIRD_LIBRARIES})
+file(GLOB VDS_HEAD *.h)
+file(GLOB VDS_SOURCES *.cc)
+add_executable(vdstool ${VDS_SOURCES} ${VDS_HEAD})
+target_link_libraries(vdstool ${THIRD_LIBRARIES})

@@ -2,7 +2,7 @@
 
 #include "hash.h"
 #include "tinyformat.h"
-#include "utilstrencodings.h"
+#include <util/strencodings.h>
 #include "crypto/common.h"
 
 uint256 CVdsBlockHeader::GetHash() const

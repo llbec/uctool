@@ -9,7 +9,6 @@ class CVdsBlockHeader
 {
 public:
     // header
-    static const int32_t CURRENT_VERSION=4;
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
@@ -25,9 +24,8 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+    inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(this->nVersion);
-        nVersion = this->nVersion;
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
@@ -37,12 +35,12 @@ public:
 
     void SetNull()
     {
-        nVersion = CVdsBlockHeader::CURRENT_VERSION;
+        nVersion = 0;
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
         nTime = 0;
         nBits = 0;
-        nNonce = 0;
+        nNonce.SetNull();
     }
 
     bool IsNull() const
