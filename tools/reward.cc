@@ -96,6 +96,9 @@ void ShowReward(int argc, char const * argv[])
 {
     int h = 0;
 
+    int iRounds = 0;
+    iRounds = argc > 2 ? atoi(argv[2]) : 0;
+
     CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0, amtSum = 0;
 
     cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
@@ -122,7 +125,12 @@ void ShowReward(int argc, char const * argv[])
         summn += blkmn;
         sumfud += blkfud;
         amtSum += (blkminer+blkbud+blkmn+blkfud);
-	h++;
+	    h++;
+        if(iRounds != 0) {
+            if(h >= iRounds){
+                return;
+            }
+        }
     }
 }
 
@@ -192,13 +200,15 @@ void ShowRewardBlock(int argc, char const * argv[])
 {
     if (argc < 3) {
         cout << "Command \"rewardblock\" example :" << endl
-            << "rewardblock height" << endl
-            << "rewardblock 10000000" << endl;
+            << "rewardblock height detail" << endl
+            << "rewardblock 10000000 1" << endl;
         return;
     }
     int h = atoi(argv[2]);
+    int d = argc > 3 ? atoi(argv[3]) : 0;
     CAmount blkminer = 0, blkbud = 0, blkmn = 0, blkfud = 0;
     CAmount summiner = 0, sumbud = 0, summn = 0, sumfud = 0;
+    cout << "    height        MinerSubsidy              Budget    MasternodePayment     FoundersReward        BlockSubsidy" << endl;
     for(int i = 0; i <= h; i++)
     {
         GetBlockReward(i, blkminer, blkbud, blkmn, blkfud);
@@ -206,6 +216,9 @@ void ShowRewardBlock(int argc, char const * argv[])
         sumbud += blkbud;
         summn += blkmn;
         sumfud += blkfud;
+        if(d == 1) {
+            showBlock(h, blkminer, blkbud, blkmn, blkfud);
+        }
     }
     showBlock(h, summiner, sumbud, summn, sumfud);
 }
